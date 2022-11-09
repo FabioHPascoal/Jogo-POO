@@ -5,6 +5,7 @@ class Personagem1:
     def __init__(self, posicao):
         self.posicao = posicao
         self.velocidade = [0, 0]
+        self.x2 = 0
     
     def mover_para_cima(self):
         self.velocidade[1] = -Configs.VELOCIDADE_PERSONAGEM
@@ -18,7 +19,11 @@ class Personagem1:
     def mover_para_direita(self):
         self.velocidade[0] = Configs.VELOCIDADE_PERSONAGEM
 
-    def parar(self):
+    def pararX(self):
+        self.velocidade[0] = 0
+        self.velocidade[1] = 0
+
+    def pararY(self):
         self.velocidade[0] = 0
         self.velocidade[1] = 0
 
