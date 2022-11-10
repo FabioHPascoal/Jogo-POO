@@ -30,18 +30,14 @@ class CenaPrincipal:
         # Personagem 1
         if pg.key.get_pressed()[pg.K_w]:
             self.personagem1.mover_para_cima()
-            print("W")
         elif pg.key.get_pressed()[pg.K_s]:
             self.personagem1.mover_para_baixo()
-            print("S")
         else:
             self.personagem1.pararY()
         if pg.key.get_pressed()[pg.K_a]:
             self.personagem1.mover_para_esquerda()
-            print("A")
         elif pg.key.get_pressed()[pg.K_d]:
             self.personagem1.mover_para_direita()
-            print("D")
         else:
             self.personagem1.pararX()
 

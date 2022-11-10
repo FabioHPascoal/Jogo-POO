@@ -21,10 +21,8 @@ class Personagem1:
 
     def pararX(self):
         self.velocidade[0] = 0
-        self.velocidade[1] = 0
 
     def pararY(self):
-        self.velocidade[0] = 0
         self.velocidade[1] = 0
 
     def atualizar_posicao(self):
@@ -34,9 +32,11 @@ class Personagem1:
 
         if (novo_y >= 0) and ((novo_y + Configs.ALTURA_PERSONAGEM) <= Configs.ALTURA_TELA):
             self.posicao = (x, novo_y)
+            y = novo_y
    
         if (novo_x >= 0) and ((novo_x + Configs.LARGURA_PERSONAGEM) <= Configs.LARGURA_TELA):
             self.posicao = (novo_x, y)
+            x = novo_x
 
     def desenha(self, tela):
         x = self.posicao[0]
