@@ -1,23 +1,23 @@
 import pygame as pg
 from configs import Configs
 
-class Personagem1:
-    def __init__(self, posicao):
+class Jogador:
+    def __init__(self, classe_jogador, posicao):
         self.posicao = posicao
         self.velocidade = [0, 0]
-        self.x2 = 0
+        self.classe_jogador = classe_jogador
     
     def mover_para_cima(self):
-        self.velocidade[1] = -Configs.VELOCIDADE_PERSONAGEM
+        self.velocidade[1] = -Configs.velocidade_personagem[self.classe_jogador]
 
     def mover_para_baixo(self):
-        self.velocidade[1] = Configs.VELOCIDADE_PERSONAGEM 
+        self.velocidade[1] = Configs.velocidade_personagem[self.classe_jogador]
     
     def mover_para_esquerda(self):
-        self.velocidade[0] = -Configs.VELOCIDADE_PERSONAGEM 
+        self.velocidade[0] = -Configs.velocidade_personagem[self.classe_jogador]
    
     def mover_para_direita(self):
-        self.velocidade[0] = Configs.VELOCIDADE_PERSONAGEM
+        self.velocidade[0] = Configs.velocidade_personagem[self.classe_jogador]
 
     def pararX(self):
         self.velocidade[0] = 0
@@ -29,18 +29,21 @@ class Personagem1:
         x, y = self.posicao
         novo_x = x + self.velocidade[0]
         novo_y = y + self.velocidade[1]
+        l = Configs.dimensoes_personagem[self.classe_jogador][0]
+        a = Configs.dimensoes_personagem[self.classe_jogador][1]
 
-        if (novo_y >= 0) and ((novo_y + Configs.ALTURA_PERSONAGEM) <= Configs.ALTURA_TELA):
-            self.posicao = (x, novo_y)
-            y = novo_y
-   
-        if (novo_x >= 0) and ((novo_x + Configs.LARGURA_PERSONAGEM) <= Configs.LARGURA_TELA):
+        if (novo_x >= 0) and ((novo_x + l) <= Configs.LARGURA_TELA):
             self.posicao = (novo_x, y)
             x = novo_x
 
+        if (novo_y >= 0) and ((novo_y + a) <= Configs.ALTURA_TELA):
+            self.posicao = (x, novo_y)
+            y = novo_y
+
     def desenha(self, tela):
+        cor = Configs.cor_personagem[self.classe_jogador]
         x = self.posicao[0]
         y = self.posicao[1]
-        l = Configs.LARGURA_PERSONAGEM
-        a = Configs.ALTURA_PERSONAGEM
-        pg.draw.rect(tela, Configs.COR_PERSONAGEM, pg.rect.Rect(x, y, l, a))
+        l = Configs.dimensoes_personagem[self.classe_jogador][0]
+        a = Configs.dimensoes_personagem[self.classe_jogador][1]
+        pg.draw.rect(tela, cor, pg.rect.Rect(x, y, l, a))
