@@ -14,10 +14,12 @@ class CenaPrincipal:
         self.rodando = True
 
     def rodar(self):
+        framesPorSegundo = pg.time.Clock()
         while self.rodando:
             self.tratamento_eventos()
             self.atualiza_estado()
             self.desenha()
+            framesPorSegundo.tick(Configs.FPS)
 
     def tratamento_eventos(self):
         pg.event.get()
