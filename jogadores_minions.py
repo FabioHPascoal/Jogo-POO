@@ -1,4 +1,5 @@
 import pygame as pg
+import math
 from configs import Configs
 
 class Jogador:
@@ -7,17 +8,11 @@ class Jogador:
         self.velocidade = [0, 0]
         self.classe_jogador = classe_jogador
     
-    def mover_para_cima(self):
-        self.velocidade[1] = -Configs.velocidade_personagem[self.classe_jogador]
+    def moverX(self, angulo):
+        self.velocidade[0] = int(Configs.velocidade_personagem[self.classe_jogador] * math.cos(angulo))
 
-    def mover_para_baixo(self):
-        self.velocidade[1] = Configs.velocidade_personagem[self.classe_jogador]
-    
-    def mover_para_esquerda(self):
-        self.velocidade[0] = -Configs.velocidade_personagem[self.classe_jogador]
-   
-    def mover_para_direita(self):
-        self.velocidade[0] = Configs.velocidade_personagem[self.classe_jogador]
+    def moverY(self, angulo):
+        self.velocidade[1] = int(Configs.velocidade_personagem[self.classe_jogador] * math.sin(angulo)) * -1
 
     def pararX(self):
         self.velocidade[0] = 0
@@ -47,6 +42,7 @@ class Jogador:
         r = Configs.raio_personagem[self.classe_jogador]
         pg.draw.circle(tela, cor, (x, y), r)
 
+class Ataques:
+    pass
 class Minion:
-    def __init__(self):
-        pass
+    pass

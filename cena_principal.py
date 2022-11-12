@@ -28,32 +28,32 @@ class CenaPrincipal:
             sys.exit(0)
 
         # Jogador 1
-        if pg.key.get_pressed()[pg.K_w]:
-            self.jogador1.mover_para_cima()
-        elif pg.key.get_pressed()[pg.K_s]:
-            self.jogador1.mover_para_baixo()
-        else:
-            self.jogador1.pararY()
         if pg.key.get_pressed()[pg.K_a]:
-            self.jogador1.mover_para_esquerda()
+            self.jogador1.moverX(Configs.angulo["esquerda"])
         elif pg.key.get_pressed()[pg.K_d]:
-            self.jogador1.mover_para_direita()
+            self.jogador1.moverX(Configs.angulo["direita"])
         else:
             self.jogador1.pararX()
+        if pg.key.get_pressed()[pg.K_w]:
+            self.jogador1.moverY(Configs.angulo["cima"])
+        elif pg.key.get_pressed()[pg.K_s]:
+            self.jogador1.moverY(Configs.angulo["baixo"])
+        else:
+            self.jogador1.pararY()
 
         # Jogador 2
-        if pg.key.get_pressed()[pg.K_i]:
-            self.jogador2.mover_para_cima()
-        elif pg.key.get_pressed()[pg.K_k]:
-            self.jogador2.mover_para_baixo()
-        else:
-            self.jogador2.pararY()
         if pg.key.get_pressed()[pg.K_j]:
-            self.jogador2.mover_para_esquerda()
+            self.jogador2.moverX(Configs.angulo["esquerda"])
         elif pg.key.get_pressed()[pg.K_l]:
-            self.jogador2.mover_para_direita()
+            self.jogador2.moverX(Configs.angulo["direita"])
         else:
             self.jogador2.pararX()
+        if pg.key.get_pressed()[pg.K_i]:
+            self.jogador2.moverY(Configs.angulo["cima"])
+        elif pg.key.get_pressed()[pg.K_k]:
+            self.jogador2.moverY(Configs.angulo["baixo"])
+        else:
+            self.jogador2.pararY()
 
     def atualiza_estado(self):
         self.jogador1.atualizar_posicao()
