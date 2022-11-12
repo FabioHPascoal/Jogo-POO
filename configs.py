@@ -2,6 +2,7 @@ class Configs:
     LARGURA_TELA = 1080
     ALTURA_TELA = 720
     FPS = 60
+    
     spawnX_1 = (0.1 * LARGURA_TELA)
     spawnY_1 = (0.7 * ALTURA_TELA)
     spawnX_2 = (0.9 * LARGURA_TELA)
@@ -12,11 +13,16 @@ class Configs:
         "archer": 5
     }
    
-    dimensoes_personagem = {
-        "warrior": (100, 100),
-        "archer": (50, 50)
+    raio_personagem = {
+        "warrior": 50,
+        "archer": 25
     }
     
+    massa_personagem = {
+        "warrior": 50,
+        "archer": 25
+    }
+
     cor_personagem = {
         "warrior": (0, 0, 0),
         "archer": (100, 100, 100)

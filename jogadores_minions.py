@@ -29,21 +29,24 @@ class Jogador:
         x, y = self.posicao
         novo_x = x + self.velocidade[0]
         novo_y = y + self.velocidade[1]
-        l = Configs.dimensoes_personagem[self.classe_jogador][0]
-        a = Configs.dimensoes_personagem[self.classe_jogador][1]
-
-        if (novo_x >= 0) and ((novo_x + l) <= Configs.LARGURA_TELA):
+        r = Configs.raio_personagem[self.classe_jogador]
+        
+        if  (novo_x + r >= 0) and (novo_x + r <= Configs.LARGURA_TELA)\
+        and (novo_x - r >= 0) and (novo_x - r <= Configs.LARGURA_TELA):
             self.posicao = (novo_x, y)
             x = novo_x
 
-        if (novo_y >= 0) and ((novo_y + a) <= Configs.ALTURA_TELA):
+        if  (novo_y + r >= 0) and (novo_y + r <= Configs.ALTURA_TELA)\
+        and (novo_y - r >= 0) and (novo_y - r <= Configs.ALTURA_TELA):
             self.posicao = (x, novo_y)
             y = novo_y
 
     def desenha(self, tela):
         cor = Configs.cor_personagem[self.classe_jogador]
-        x = self.posicao[0]
-        y = self.posicao[1]
-        l = Configs.dimensoes_personagem[self.classe_jogador][0]
-        a = Configs.dimensoes_personagem[self.classe_jogador][1]
-        pg.draw.rect(tela, cor, pg.rect.Rect(x, y, l, a))
+        x, y = self.posicao
+        r = Configs.raio_personagem[self.classe_jogador]
+        pg.draw.circle(tela, cor, (x, y), r)
+
+class Minion:
+    def __init__(self):
+        pass

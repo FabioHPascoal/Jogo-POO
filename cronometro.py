@@ -1,5 +1,4 @@
 from time import time
-
 class Cronometro:
     def __init__(self):
         self.reset()

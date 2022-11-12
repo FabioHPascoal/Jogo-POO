@@ -1,7 +1,7 @@
 import sys
 import pygame as pg
 
-from personagens import Jogador
+from jogadores_minions import Jogador
 from configs import Configs
 
 class CenaPrincipal:
@@ -64,3 +64,6 @@ class CenaPrincipal:
         self.jogador1.desenha(self.tela)
         self.jogador2.desenha(self.tela)
         pg.display.flip()
+
+    def colisao_jogadores(self):
+        pass
