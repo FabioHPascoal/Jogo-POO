@@ -12,7 +12,7 @@ class Configs:
     }
     
     spawnX_1 = (0.1 * LARGURA_TELA)
-    spawnY_1 = (0.7 * ALTURA_TELA)
+    spawnY_1 = (0.6 * ALTURA_TELA)
     spawnX_2 = (0.9 * LARGURA_TELA)
     spawnY_2 = (0.1 * ALTURA_TELA)
 

@@ -56,14 +56,17 @@ class CenaPrincipal:
             self.jogador2.pararY()
 
     def atualiza_estado(self):
-        self.jogador1.atualizar_posicao()
-        self.jogador2.atualizar_posicao()
+        posicao1 = self.jogador1.posicao
+        posicao2 = self.jogador2.posicao
+        
+        raio1 = Configs.raio_personagem["archer"]
+        raio2 = Configs.raio_personagem["warrior"]
+        
+        self.jogador1.atualizar_posicao(posicao2, raio1)
+        self.jogador2.atualizar_posicao(posicao1, raio2)
 
     def desenha(self):
         self.tela.fill((255, 255, 255))
         self.jogador1.desenha(self.tela)
         self.jogador2.desenha(self.tela)
         pg.display.flip()
-
-    def colisao_jogadores(self):
-        pass

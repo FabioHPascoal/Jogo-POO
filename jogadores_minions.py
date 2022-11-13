@@ -20,21 +20,40 @@ class Jogador:
     def pararY(self):
         self.velocidade[1] = 0
 
-    def atualizar_posicao(self):
+    def atualizar_posicao(self, posicao_oponente, raio_oponente):
+        self.posicao_oponente = posicao_oponente
+        self.raio_oponente = raio_oponente
+        
         x, y = self.posicao
+        x2, y2 = self.posicao_oponente
+        
+        r = Configs.raio_personagem[self.classe_jogador]
+        r2 = self.raio_oponente
+      
         novo_x = x + self.velocidade[0]
         novo_y = y + self.velocidade[1]
-        r = Configs.raio_personagem[self.classe_jogador]
+
+        distancia = Jogador.distancia(novo_x, novo_y, x2, y2)
         
-        if  (novo_x + r >= 0) and (novo_x + r <= Configs.LARGURA_TELA)\
-        and (novo_x - r >= 0) and (novo_x - r <= Configs.LARGURA_TELA):
+        if (distancia >= r + r2):
             self.posicao = (novo_x, y)
             x = novo_x
 
-        if  (novo_y + r >= 0) and (novo_y + r <= Configs.ALTURA_TELA)\
-        and (novo_y - r >= 0) and (novo_y - r <= Configs.ALTURA_TELA):
+        # else:
+        #     self.velocidade[0] = distancia - (r + r2)
+        #     novo_x = x + self.velocidade[0]
+        #     self.posicao = (novo_x, y)
+        #     x = novo_x
+
+        if (distancia >= r + r2):
             self.posicao = (x, novo_y)
             y = novo_y
+
+        # else:
+        #     self.velocidade[1] = distancia - (r + r2)
+        #     novo_y = y + self.velocidade[1]
+        #     self.posicao = (x, novo_y)
+        #     y = novo_y
 
     def desenha(self, tela):
         cor = Configs.cor_personagem[self.classe_jogador]
@@ -42,7 +61,12 @@ class Jogador:
         r = Configs.raio_personagem[self.classe_jogador]
         pg.draw.circle(tela, cor, (x, y), r)
 
+    def distancia(x1, y1, x2, y2):
+        distancia = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        return int(distancia)
+
 class Ataques:
     pass
+
 class Minion:
     pass
