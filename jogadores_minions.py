@@ -33,27 +33,28 @@ class Jogador:
         novo_x = x + self.velocidade[0]
         novo_y = y + self.velocidade[1]
 
-        distancia = Jogador.distancia(novo_x, novo_y, x2, y2)
+        distancia_squared = Jogador.distancia_squared(novo_x, novo_y, x2, y2)
+        inclinacao = Jogador.inclinacao(novo_x, novo_y, x2, y2)
         
-        if (distancia >= r + r2):
-            self.posicao = (novo_x, y)
+        if distancia_squared >= (r + r2) ** 2:
+            self.posicao = (novo_x, novo_y)
+        
+        else:
+            for i in range(1, abs(self.velocidade[0])):
+                novo_x = x + i * Jogador.sinal(self.velocidade[0])
+                nova_distancia = Jogador.distancia_squared(novo_x, y, x2, y2)
+                if nova_distancia < (r + r2) ** 2:
+                    break
+                self.posicao = (novo_x, y)
             x = novo_x
-
-        # else:
-        #     self.velocidade[0] = distancia - (r + r2)
-        #     novo_x = x + self.velocidade[0]
-        #     self.posicao = (novo_x, y)
-        #     x = novo_x
-
-        if (distancia >= r + r2):
-            self.posicao = (x, novo_y)
+            
+            for i in range(1, abs(self.velocidade[1])):
+                novo_y = y + i * Jogador.sinal(self.velocidade[1])
+                nova_distancia = Jogador.distancia_squared(x, novo_y, x2, y2)
+                if nova_distancia < (r + r2) ** 2:
+                    break
+                self.posicao = (x, novo_y)
             y = novo_y
-
-        # else:
-        #     self.velocidade[1] = distancia - (r + r2)
-        #     novo_y = y + self.velocidade[1]
-        #     self.posicao = (x, novo_y)
-        #     y = novo_y
 
     def desenha(self, tela):
         cor = Configs.cor_personagem[self.classe_jogador]
@@ -61,9 +62,27 @@ class Jogador:
         r = Configs.raio_personagem[self.classe_jogador]
         pg.draw.circle(tela, cor, (x, y), r)
 
-    def distancia(x1, y1, x2, y2):
-        distancia = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-        return int(distancia)
+    def distancia_squared(x1, y1, x2, y2):
+        distancia = (x1 - x2) ** 2 + (y1 - y2) ** 2
+        return distancia
+    
+    def inclinacao(x1, y1, x2, y2):
+        if x1 - x2 == 0:
+            return math.pi/2
+        else:
+            inclinacao = math.atan((y1 - y2)/(x1 - x2))
+            return inclinacao
+
+    def elementoSuperior():
+        pass
+
+    def sinal(x):
+        if x > 0:
+            return 1
+        elif x < 0:
+            return -1
+        else:
+            return 0
 
 class Ataques:
     pass
