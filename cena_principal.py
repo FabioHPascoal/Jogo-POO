@@ -59,11 +59,22 @@ class CenaPrincipal:
         posicao1 = self.jogador1.posicao
         posicao2 = self.jogador2.posicao
         
-        raio1 = Configs.raio_personagem["archer"]
-        raio2 = Configs.raio_personagem["warrior"]
+        raio1 = Configs.raio_personagem[self.jogador1.classe_jogador]
+        raio2 = Configs.raio_personagem[self.jogador2.classe_jogador]
         
-        self.jogador1.atualizar_posicao(posicao2, raio1)
-        self.jogador2.atualizar_posicao(posicao1, raio2)
+        massa1 = Configs.massa_personagem[self.jogador1.classe_jogador]
+        massa2 = Configs.massa_personagem[self.jogador2.classe_jogador]
+
+        velocidade1 = self.jogador1.velocidade
+        velocidade2 = self.jogador2.velocidade
+        
+        J1_novaPosicao = self.jogador1.atualiza_posicao(posicao2, raio2)
+        J2_novaPosicao = self.jogador2.atualiza_posicao(posicao1, raio1)
+
+        self.jogador1.posicao_caso_colidiu(J1_novaPosicao, J2_novaPosicao, velocidade2, massa2)
+        self.jogador2.posicao_caso_colidiu(J2_novaPosicao, J1_novaPosicao, velocidade1, massa1)
+
+        print("")
 
     def desenha(self):
         self.tela.fill((255, 255, 255))
