@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1080
     ALTURA_TELA = 720
-    FPS = 60
+    FrameRate = 60
 
     angulo = {
         "direita": 0,
@@ -12,13 +12,13 @@ class Configs:
     }
     
     spawnX_1 = (0.1 * LARGURA_TELA)
-    spawnY_1 = (0.6 * ALTURA_TELA)
+    spawnY_1 = (0.5 * ALTURA_TELA)
     spawnX_2 = (0.9 * LARGURA_TELA)
-    spawnY_2 = (0.1 * ALTURA_TELA)
+    spawnY_2 = (0.5 * ALTURA_TELA)
 
     velocidade_personagem = {
-        "warrior": 2,
-        "archer": 5
+        "warrior": 10,
+        "archer": 50
     }
    
     raio_personagem = {
@@ -27,8 +27,8 @@ class Configs:
     }
     
     massa_personagem = {
-        "warrior": 50,
-        "archer": 10
+        "warrior": 10,
+        "archer": 2
     }
 
     cor_personagem = {

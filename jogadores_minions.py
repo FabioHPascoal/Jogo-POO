@@ -1,96 +1,94 @@
 import pygame as pg
-from scipy.optimize import fsolve
 import sympy as sym
 import math
 from configs import Configs
 
-class Jogador:
-    def __init__(self, classe_jogador, posicao):
-        self.classe_jogador = classe_jogador
-        self.raio = Configs.raio_personagem[self.classe_jogador]
-        self.massa = Configs.massa_personagem[self.classe_jogador]
-        self.velocidade = [0, 0]
-        self.posicao = posicao
-        self.colidiu = False
-    
-    def moverX(self, angulo):
-        self.velocidade[0] = int(Configs.velocidade_personagem[self.classe_jogador] * math.cos(angulo))
+class Jogadores:
+    def __init__(self, classe_Jogador1, classe_Jogador2):
+        self.classe_Jogador1 = classe_Jogador1
+        self.raio1 = Configs.raio_personagem[self.classe_Jogador1]
+        self.massa1 = Configs.massa_personagem[self.classe_Jogador1]
+        self.velocidade1 = [0, 0]
+        self.V1_adicional = [0, 0]
+        self.posicao1 = (Configs.spawnX_1, Configs.spawnY_1)
 
-    def moverY(self, angulo):
-        self.velocidade[1] = int(Configs.velocidade_personagem[self.classe_jogador] * math.sin(angulo)) * -1
+        self.classe_Jogador2 = classe_Jogador2
+        self.raio2 = Configs.raio_personagem[self.classe_Jogador2]
+        self.massa2 = Configs.massa_personagem[self.classe_Jogador2]
+        self.velocidade2 = [0, 0]
+        self.V2_adicional = [0, 0]
+        self.posicao2 = (Configs.spawnX_2, Configs.spawnY_2)
 
-    def pararX(self):
-        self.velocidade[0] = 0
+        Jogadores.velocidade_colisao(self.massa1, self.velocidade1[0], self.massa2, self.velocidade2[0])
 
-    def pararY(self):
-        self.velocidade[1] = 0
+    def moverX1(self, angulo):
+        self.velocidade1[0] = int(Configs.velocidade_personagem[self.classe_Jogador1] * math.cos(angulo))
+    def moverY1(self, angulo):
+        self.velocidade1[1] = int(Configs.velocidade_personagem[self.classe_Jogador1] * math.sin(angulo)) * -1
+    def pararX1(self):
+        self.velocidade1[0] = 0
+    def pararY1(self):
+        self.velocidade1[1] = 0
 
-    def atualiza_posicao(self, posicao_oponente, raio_oponente): 
-        self.posicao_oponente = posicao_oponente
-        self.raio_oponente = raio_oponente
+    def moverX2(self, angulo):
+        self.velocidade2[0] = int(Configs.velocidade_personagem[self.classe_Jogador2] * math.cos(angulo))
+    def moverY2(self, angulo):
+        self.velocidade2[1] = int(Configs.velocidade_personagem[self.classe_Jogador2] * math.sin(angulo)) * -1
+    def pararX2(self):
+        self.velocidade2[0] = 0
+    def pararY2(self):
+        self.velocidade2[1] = 0
+
+    def atualiza_posicao(self):      
         
-        x, y = self.posicao
-        x2, y2 = self.posicao_oponente
+        X1, Y1 = self.posicao1
+        X2, Y2 = self.posicao2
         
-        r = self.raio
-        r2 = self.raio_oponente
+        r1 = self.raio1
+        r2 = self.raio2
+
+        if abs(self.V1_adicional[0]) > 0:
+            self.V1_adicional[0] = int(self.V1_adicional[0] * 0.7)
+        if abs(self.V1_adicional[1]) > 0:
+            self.V1_adicional[1] = int(self.V1_adicional[1] * 0.7)
+        if abs(self.V2_adicional[0]) > 0:
+            self.V2_adicional[0] = int(self.V2_adicional[0] * 0.7)
+        if abs(self.V2_adicional[1]) > 0:
+            self.V2_adicional[1] = int(self.V2_adicional[1] * 0.7)
       
-        novo_x = x + self.velocidade[0]
-        novo_y = y + self.velocidade[1]
+        novo_X1 = X1 + self.velocidade1[0] + self.V1_adicional[0]
+        novo_Y1 = Y1 + self.velocidade1[1] + self.V1_adicional[1]
+        novo_X2 = X2 + self.velocidade2[0] + self.V2_adicional[0]
+        novo_Y2 = Y2 + self.velocidade2[1] + self.V2_adicional[1]
 
-        distancia_squared = Jogador.distancia_squared(novo_x, novo_y, x2, y2)
+        distancia_squared = Jogadores.distancia_squared(novo_X1, novo_Y1, novo_X2, novo_Y2)
        
-        if distancia_squared >= (r + r2) ** 2:
-            self.posicao = (novo_x, novo_y)
-            self.colidiu = False
+        if distancia_squared >= (r1 + r2) ** 2:
+            self.posicao1 = (novo_X1, novo_Y1)
+            self.posicao2 = (novo_X2, novo_Y2)
 
-        elif distancia_squared < (r + r2) ** 2:
-            self.colidiu = True
-    
-        return self.posicao
+        elif distancia_squared < ((r1 + r2) ** 2):
+            inclinacao = Jogadores.inclinacao(X1, Y1, X2, Y2)
 
-    def posicao_caso_colidiu(self, novaPosicao, novaPosicao_oponente, velocidade_oponente, massa_oponente):
-        x, y = self.posicao
-        x2, y2 = self.posicao_oponente
-
-        r = Configs.raio_personagem[self.classe_jogador]
-        r2 = self.raio_oponente
-
-        V1x, V1y = self.velocidade
-        V2x, V2y = velocidade_oponente
-
-        m = self.massa
-        m2 = massa_oponente
-
-        novo_x, novo_y = novaPosicao
-        novo_x2, novo_y2 = novaPosicao_oponente
-
-        if self.colidiu:
-            
-            self.velocidade[0] = Jogador.velocidade_colisao(m, V1x, m2, V2x)
-            self.velocidade[1] = Jogador.velocidade_colisao(m, V1y, m2, V2y)
-
-            for i in range(1, abs(self.velocidade[0])):
-                novo_x = x + i * Jogador.sinal(self.velocidade[0])
-                nova_distancia = Jogador.distancia_squared(novo_x, y, novo_x2, y2)
-                if nova_distancia < (r + r2) ** 2:
-                    break
-                self.posicao = (novo_x, y)
-            x = novo_x
-            
-            for i in range(1, abs(self.velocidade[1])):
-                novo_y = y + i * Jogador.sinal(self.velocidade[1])
-                nova_distancia = Jogador.distancia_squared(x, novo_y, x2, novo_y2)
-                if nova_distancia < (r + r2) ** 2:
-                    break
-                self.posicao = (x, novo_y)
-            y = novo_y
+            vX_adicional = Jogadores.velocidade_colisao(self.massa1, self.velocidade1[0], self.massa2, self.velocidade2[0])
+            vY_adicional = Jogadores.velocidade_colisao(self.massa1, self.velocidade1[1], self.massa2, self.velocidade2[1])
+          
+            self.V1_adicional = [int(vX_adicional[0]), int(vY_adicional[0])]
+            self.V2_adicional = [int(vX_adicional[1]), int(vY_adicional[1])]
 
     def desenha(self, tela):
-        cor = Configs.cor_personagem[self.classe_jogador]
-        x, y = self.posicao
-        r = Configs.raio_personagem[self.classe_jogador]
-        pg.draw.circle(tela, cor, (x, y), r)
+        cor1 = Configs.cor_personagem[self.classe_Jogador1]
+        X1, Y1 = self.posicao1
+        r1 = Configs.raio_personagem[self.classe_Jogador1]
+        pg.draw.circle(tela, cor1, (X1, Y1), r1)
+
+        cor2 = Configs.cor_personagem[self.classe_Jogador2]
+        X2, Y2 = self.posicao2
+        r2 = Configs.raio_personagem[self.classe_Jogador2]
+        pg.draw.circle(tela, cor2, (X2, Y2), r2)
+
+    def tempoCorrido(self, tempoCorrido):
+        print(tempoCorrido)
 
     def velocidade_colisao(massa1, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2
@@ -101,8 +99,15 @@ class Jogador:
         eq1 = sym.Eq(massa1 * velocidade1Final ** 2 + massa2 * velocidade2Final ** 2, (2 * Eci))
 
         resultado = sym.solve([eq1,eq2],(velocidade1Final, velocidade2Final))
-        print(resultado)
-        return int(resultado[0][0])
+
+        if len(resultado) == 1:
+            solucao_correta = [resultado[0][0] - velocidade1, resultado[0][1] - velocidade2]
+        elif abs(velocidade1) == abs(resultado[0][0]):
+            solucao_correta = [resultado[1][0] - velocidade1, resultado[1][1] - velocidade2]
+        elif abs(velocidade1) == abs(resultado[1][0]):
+            solucao_correta = [resultado[0][0] - velocidade1, resultado[0][1] - velocidade2]
+
+        return solucao_correta
 
     def distancia_squared(x1, y1, x2, y2):
         distancia_squared = (x1 - x2) ** 2 + (y1 - y2) ** 2
@@ -115,10 +120,10 @@ class Jogador:
             inclinacao = math.atan((y1 - y2)/(x1 - x2))
             return inclinacao
 
-    def sinal(x):
-        if x > 0:
+    def sinal(valor):
+        if valor > 0:
             return 1
-        elif x < 0:
+        elif valor < 0:
             return -1
         else:
             return 0

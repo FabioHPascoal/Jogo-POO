@@ -1,25 +1,23 @@
 import sys
 import pygame as pg
 
-from jogadores_minions import Jogador
+from jogadores_minions import Jogadores
 from configs import Configs
 
 class CenaPrincipal:
     def __init__(self, tela):
+        self.frameRate = pg.time.Clock()
+        self.tempoCorrido = 0
+        self.jogadores = Jogadores("warrior", "archer")
         self.tela = tela
-
-        self.jogador1 = Jogador("warrior", posicao = (Configs.spawnX_1, Configs.spawnY_1))
-        self.jogador2 = Jogador("archer", posicao = (Configs.spawnX_2, Configs.spawnY_2))
-        
         self.rodando = True
 
     def rodar(self):
-        framesPorSegundo = pg.time.Clock()
         while self.rodando:
             self.tratamento_eventos()
             self.atualiza_estado()
             self.desenha()
-            framesPorSegundo.tick(Configs.FPS)
+            self.frameRate.tick(Configs.FrameRate)
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -29,55 +27,37 @@ class CenaPrincipal:
 
         # Jogador 1
         if pg.key.get_pressed()[pg.K_a]:
-            self.jogador1.moverX(Configs.angulo["esquerda"])
+            self.jogadores.moverX1(Configs.angulo["esquerda"])
         elif pg.key.get_pressed()[pg.K_d]:
-            self.jogador1.moverX(Configs.angulo["direita"])
+            self.jogadores.moverX1(Configs.angulo["direita"])
         else:
-            self.jogador1.pararX()
+            self.jogadores.pararX1()
         if pg.key.get_pressed()[pg.K_w]:
-            self.jogador1.moverY(Configs.angulo["cima"])
+            self.jogadores.moverY1(Configs.angulo["cima"])
         elif pg.key.get_pressed()[pg.K_s]:
-            self.jogador1.moverY(Configs.angulo["baixo"])
+            self.jogadores.moverY1(Configs.angulo["baixo"])
         else:
-            self.jogador1.pararY()
+            self.jogadores.pararY1()
 
         # Jogador 2
         if pg.key.get_pressed()[pg.K_j]:
-            self.jogador2.moverX(Configs.angulo["esquerda"])
+            self.jogadores.moverX2(Configs.angulo["esquerda"])
         elif pg.key.get_pressed()[pg.K_l]:
-            self.jogador2.moverX(Configs.angulo["direita"])
+            self.jogadores.moverX2(Configs.angulo["direita"])
         else:
-            self.jogador2.pararX()
+            self.jogadores.pararX2()
         if pg.key.get_pressed()[pg.K_i]:
-            self.jogador2.moverY(Configs.angulo["cima"])
+            self.jogadores.moverY2(Configs.angulo["cima"])
         elif pg.key.get_pressed()[pg.K_k]:
-            self.jogador2.moverY(Configs.angulo["baixo"])
+            self.jogadores.moverY2(Configs.angulo["baixo"])
         else:
-            self.jogador2.pararY()
+            self.jogadores.pararY2()
 
     def atualiza_estado(self):
-        posicao1 = self.jogador1.posicao
-        posicao2 = self.jogador2.posicao
-        
-        raio1 = Configs.raio_personagem[self.jogador1.classe_jogador]
-        raio2 = Configs.raio_personagem[self.jogador2.classe_jogador]
-        
-        massa1 = Configs.massa_personagem[self.jogador1.classe_jogador]
-        massa2 = Configs.massa_personagem[self.jogador2.classe_jogador]
-
-        velocidade1 = self.jogador1.velocidade
-        velocidade2 = self.jogador2.velocidade
-        
-        J1_novaPosicao = self.jogador1.atualiza_posicao(posicao2, raio2)
-        J2_novaPosicao = self.jogador2.atualiza_posicao(posicao1, raio1)
-
-        self.jogador1.posicao_caso_colidiu(J1_novaPosicao, J2_novaPosicao, velocidade2, massa2)
-        self.jogador2.posicao_caso_colidiu(J2_novaPosicao, J1_novaPosicao, velocidade1, massa1)
-
-        print("")
+        self.jogadores.atualiza_posicao()
+        # self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
 
     def desenha(self):
         self.tela.fill((255, 255, 255))
-        self.jogador1.desenha(self.tela)
-        self.jogador2.desenha(self.tela)
+        self.jogadores.desenha(self.tela)
         pg.display.flip()
