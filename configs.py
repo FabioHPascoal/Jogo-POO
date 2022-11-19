@@ -11,14 +11,14 @@ class Configs:
         "baixo": (3/2) * math.pi
     }
     
-    spawnX_1 = (0.1 * LARGURA_TELA)
+    spawnX_1 = (0.2 * LARGURA_TELA)
     spawnY_1 = (0.5 * ALTURA_TELA)
-    spawnX_2 = (0.9 * LARGURA_TELA)
+    spawnX_2 = (0.8 * LARGURA_TELA)
     spawnY_2 = (0.5 * ALTURA_TELA)
 
     velocidade_personagem = {
         "warrior": 10,
-        "archer": 50
+        "archer": 20
     }
    
     raio_personagem = {
@@ -27,7 +27,7 @@ class Configs:
     }
     
     massa_personagem = {
-        "warrior": 10,
+        "warrior": 20,
         "archer": 2
     }
 

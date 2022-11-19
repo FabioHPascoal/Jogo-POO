@@ -18,6 +18,7 @@ class CenaPrincipal:
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FrameRate)
+            print("")
 
     def tratamento_eventos(self):
         pg.event.get()

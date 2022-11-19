@@ -19,7 +19,7 @@ class Jogadores:
         self.V2_adicional = [0, 0]
         self.posicao2 = (Configs.spawnX_2, Configs.spawnY_2)
 
-        Jogadores.velocidade_colisao(self.massa1, self.velocidade1[0], self.massa2, self.velocidade2[0])
+        Jogadores.velocidade_colisao(1, 1, 1, 1)
 
     def moverX1(self, angulo):
         self.velocidade1[0] = int(Configs.velocidade_personagem[self.classe_Jogador1] * math.cos(angulo))
@@ -44,37 +44,54 @@ class Jogadores:
         X1, Y1 = self.posicao1
         X2, Y2 = self.posicao2
         
+        V1x, V1y = self.velocidade1
+        V2x, V2y = self.velocidade2
+
+        V1x_adicional, V1y_adicional = self.V1_adicional
+        V2x_adicional, V2y_adicional = self.V2_adicional
+        
         r1 = self.raio1
         r2 = self.raio2
 
-        if abs(self.V1_adicional[0]) > 0:
-            self.V1_adicional[0] = int(self.V1_adicional[0] * 0.7)
-        if abs(self.V1_adicional[1]) > 0:
-            self.V1_adicional[1] = int(self.V1_adicional[1] * 0.7)
-        if abs(self.V2_adicional[0]) > 0:
-            self.V2_adicional[0] = int(self.V2_adicional[0] * 0.7)
-        if abs(self.V2_adicional[1]) > 0:
-            self.V2_adicional[1] = int(self.V2_adicional[1] * 0.7)
-      
-        novo_X1 = X1 + self.velocidade1[0] + self.V1_adicional[0]
-        novo_Y1 = Y1 + self.velocidade1[1] + self.V1_adicional[1]
-        novo_X2 = X2 + self.velocidade2[0] + self.V2_adicional[0]
-        novo_Y2 = Y2 + self.velocidade2[1] + self.V2_adicional[1]
+        m1 = self.massa1
+        m2 = self.massa2
+
+        #Desaceleração
+        if abs(V1x_adicional) > 0:
+            self.V1_adicional[0] = int(V1x_adicional * 0.4)
+        if abs(V1y_adicional) > 0:
+            self.V1_adicional[1] = int(V1y_adicional * 0.4)
+        if abs(V2x_adicional) > 0:
+            self.V2_adicional[0] = int(V2x_adicional * 0.4)
+        if abs(V2y_adicional) > 0:
+            self.V2_adicional[1] = int(V2y_adicional * 0.4)
+
+        novaVelocidade1 = [V1x + V1x_adicional, V1y + V1y_adicional]
+        novaVelocidade2 = [V2x + V2x_adicional, V2y + V2y_adicional]
+
+        novo_X1 = X1 + novaVelocidade1[0]
+        novo_Y1 = Y1 + novaVelocidade1[1]
+        novo_X2 = X2 + novaVelocidade2[0]
+        novo_Y2 = Y2 + novaVelocidade2[1]
 
         distancia_squared = Jogadores.distancia_squared(novo_X1, novo_Y1, novo_X2, novo_Y2)
        
+        #Não-colisão
         if distancia_squared >= (r1 + r2) ** 2:
             self.posicao1 = (novo_X1, novo_Y1)
             self.posicao2 = (novo_X2, novo_Y2)
 
+        #Colisão
         elif distancia_squared < ((r1 + r2) ** 2):
-            inclinacao = Jogadores.inclinacao(X1, Y1, X2, Y2)
+            print("colidiu")
+            
+            inclinacao = int(Jogadores.inclinacao(X1, Y1, X2, Y2))
 
-            vX_adicional = Jogadores.velocidade_colisao(self.massa1, self.velocidade1[0], self.massa2, self.velocidade2[0])
-            vY_adicional = Jogadores.velocidade_colisao(self.massa1, self.velocidade1[1], self.massa2, self.velocidade2[1])
-          
-            self.V1_adicional = [int(vX_adicional[0]), int(vY_adicional[0])]
-            self.V2_adicional = [int(vX_adicional[1]), int(vY_adicional[1])]
+            solucaoX = Jogadores.velocidade_colisao(m1, novaVelocidade1[0], m2, novaVelocidade2[0])
+            solucaoY = Jogadores.velocidade_colisao(m1, novaVelocidade1[1], m2, novaVelocidade2[1])
+
+            self.V1_adicional = [int(solucaoX[0] - novaVelocidade1[0]), int(solucaoY[0] - novaVelocidade1[1])]
+            self.V2_adicional = [int(solucaoX[1] - novaVelocidade2[0]), int(solucaoY[1] - novaVelocidade2[1])]
 
     def desenha(self, tela):
         cor1 = Configs.cor_personagem[self.classe_Jogador1]
@@ -89,35 +106,35 @@ class Jogadores:
 
     def tempoCorrido(self, tempoCorrido):
         print(tempoCorrido)
-
+   
     def velocidade_colisao(massa1, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2
-        Eci = (massa1 * velocidade1 ** 2)/2 + (massa2 * velocidade2 ** 2)/2
+        EciX2 = massa1 * velocidade1 ** 2 + massa2 * velocidade2 ** 2
         
         velocidade1Final, velocidade2Final = sym.symbols('velocidade1Final,velocidade2Final')
         eq2 = sym.Eq(massa1 * velocidade1Final + massa2 * velocidade2Final, Qmvi)
-        eq1 = sym.Eq(massa1 * velocidade1Final ** 2 + massa2 * velocidade2Final ** 2, (2 * Eci))
+        eq1 = sym.Eq(massa1 * velocidade1Final ** 2 + massa2 * velocidade2Final ** 2, EciX2)
 
         resultado = sym.solve([eq1,eq2],(velocidade1Final, velocidade2Final))
 
         if len(resultado) == 1:
-            solucao_correta = [resultado[0][0] - velocidade1, resultado[0][1] - velocidade2]
-        elif abs(velocidade1) == abs(resultado[0][0]):
-            solucao_correta = [resultado[1][0] - velocidade1, resultado[1][1] - velocidade2]
-        elif abs(velocidade1) == abs(resultado[1][0]):
-            solucao_correta = [resultado[0][0] - velocidade1, resultado[0][1] - velocidade2]
+            solucao = resultado[0]
+        elif velocidade1 == resultado[0][0]:
+            solucao = resultado[1]
+        else:
+            solucao = resultado[0]
+            
+        return solucao
 
-        return solucao_correta
-
-    def distancia_squared(x1, y1, x2, y2):
-        distancia_squared = (x1 - x2) ** 2 + (y1 - y2) ** 2
+    def distancia_squared(X1, Y1, X2, Y2):
+        distancia_squared = (X1 - X2) ** 2 + (Y1 - Y2) ** 2
         return distancia_squared
     
-    def inclinacao(x1, y1, x2, y2):
-        if x1 - x2 == 0:
+    def inclinacao(X1, Y1, X2, Y2):
+        if X1 - X2 == 0:
             return math.pi/2
         else:
-            inclinacao = math.atan((y1 - y2)/(x1 - x2))
+            inclinacao = math.atan((Y1 - Y2)/(X1 - X2))
             return inclinacao
 
     def sinal(valor):
