@@ -56,7 +56,7 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
         self.jogadores.atualiza_posicao()
-        # self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
+        self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
 
     def desenha(self):
         self.tela.fill((255, 255, 255))

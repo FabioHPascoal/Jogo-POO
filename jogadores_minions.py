@@ -8,14 +8,14 @@ class Jogadores:
         self.classe_Jogador1 = classe_Jogador1
         self.raio1 = Configs.raio_personagem[self.classe_Jogador1]
         self.massa1 = Configs.massa_personagem[self.classe_Jogador1]
-        self.velocidade1 = [0, 0]
+        self.velocidade1 = pg.math.Vector2()
         self.V1_adicional = [0, 0]
         self.posicao1 = (Configs.spawnX_1, Configs.spawnY_1)
 
         self.classe_Jogador2 = classe_Jogador2
         self.raio2 = Configs.raio_personagem[self.classe_Jogador2]
         self.massa2 = Configs.massa_personagem[self.classe_Jogador2]
-        self.velocidade2 = [0, 0]
+        self.velocidade2 = pg.math.Vector2()
         self.V2_adicional = [0, 0]
         self.posicao2 = (Configs.spawnX_2, Configs.spawnY_2)
 
@@ -58,13 +58,13 @@ class Jogadores:
 
         #Desaceleração
         if abs(V1x_adicional) > 0:
-            self.V1_adicional[0] = int(V1x_adicional * 0.4)
+            self.V1_adicional[0] = int(V1x_adicional * Configs.desaceleracao)
         if abs(V1y_adicional) > 0:
-            self.V1_adicional[1] = int(V1y_adicional * 0.4)
+            self.V1_adicional[1] = int(V1y_adicional * Configs.desaceleracao)
         if abs(V2x_adicional) > 0:
-            self.V2_adicional[0] = int(V2x_adicional * 0.4)
+            self.V2_adicional[0] = int(V2x_adicional * Configs.desaceleracao)
         if abs(V2y_adicional) > 0:
-            self.V2_adicional[1] = int(V2y_adicional * 0.4)
+            self.V2_adicional[1] = int(V2y_adicional * Configs.desaceleracao)
 
         novaVelocidade1 = [V1x + V1x_adicional, V1y + V1y_adicional]
         novaVelocidade2 = [V2x + V2x_adicional, V2y + V2y_adicional]
@@ -106,7 +106,7 @@ class Jogadores:
 
     def tempoCorrido(self, tempoCorrido):
         print(tempoCorrido)
-   
+
     def velocidade_colisao(massa1, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2
         EciX2 = massa1 * velocidade1 ** 2 + massa2 * velocidade2 ** 2
