@@ -58,13 +58,13 @@ class Jogadores:
 
         #Desaceleração
         if abs(V1x_adicional) > 0:
-            self.V1_adicional[0] = int(V1x_adicional * 0.4)
+            self.V1_adicional[0] = int(V1x_adicional * Configs.desaceleracao)
         if abs(V1y_adicional) > 0:
-            self.V1_adicional[1] = int(V1y_adicional * 0.4)
+            self.V1_adicional[1] = int(V1y_adicional * Configs.desaceleracao)
         if abs(V2x_adicional) > 0:
-            self.V2_adicional[0] = int(V2x_adicional * 0.4)
+            self.V2_adicional[0] = int(V2x_adicional * Configs.desaceleracao)
         if abs(V2y_adicional) > 0:
-            self.V2_adicional[1] = int(V2y_adicional * 0.4)
+            self.V2_adicional[1] = int(V2y_adicional * Configs.desaceleracao)
 
         novaVelocidade1 = [V1x + V1x_adicional, V1y + V1y_adicional]
         novaVelocidade2 = [V2x + V2x_adicional, V2y + V2y_adicional]
@@ -108,7 +108,7 @@ class Jogadores:
 
     def tempoCorrido(self, tempoCorrido):
         print(tempoCorrido)
-   
+
     def velocidade_colisao(massa1, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2
         EciX2 = massa1 * velocidade1 ** 2 + massa2 * velocidade2 ** 2
