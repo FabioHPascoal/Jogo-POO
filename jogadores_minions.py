@@ -8,6 +8,7 @@ class Jogadores:
         self.classe_Jogador1 = classe_Jogador1
         self.raio1 = Configs.raio_personagem[self.classe_Jogador1]
         self.massa1 = Configs.massa_personagem[self.classe_Jogador1]
+        self.vetorUnitario1 = [0, 0]
         self.velocidade1 = [0, 0]
         self.V1_adicional = [0, 0]
         self.posicao1 = (Configs.spawnX_1, Configs.spawnY_1)
@@ -15,29 +16,28 @@ class Jogadores:
         self.classe_Jogador2 = classe_Jogador2
         self.raio2 = Configs.raio_personagem[self.classe_Jogador2]
         self.massa2 = Configs.massa_personagem[self.classe_Jogador2]
+        self.vetorUnitario2 = [0, 0]
         self.velocidade2 = [0, 0]
         self.V2_adicional = [0, 0]
         self.posicao2 = (Configs.spawnX_2, Configs.spawnY_2)
 
         Jogadores.velocidade_colisao(1, 1, 1, 1)
 
-    def moverX1(self, angulo):
-        self.velocidade1[0] = int(Configs.velocidade_personagem[self.classe_Jogador1] * math.cos(angulo))
-    def moverY1(self, angulo):
-        self.velocidade1[1] = int(Configs.velocidade_personagem[self.classe_Jogador1] * math.sin(angulo)) * -1
-    def pararX1(self):
-        self.velocidade1[0] = 0
-    def pararY1(self):
-        self.velocidade1[1] = 0
-
-    def moverX2(self, angulo):
-        self.velocidade2[0] = int(Configs.velocidade_personagem[self.classe_Jogador2] * math.cos(angulo))
-    def moverY2(self, angulo):
-        self.velocidade2[1] = int(Configs.velocidade_personagem[self.classe_Jogador2] * math.sin(angulo)) * -1
-    def pararX2(self):
-        self.velocidade2[0] = 0
-    def pararY2(self):
-        self.velocidade2[1] = 0
+    def mover1(self):
+        if self.vetorUnitario1[0] == self.vetorUnitario1[1] == 0:
+            self.velocidade1 = [0,0]
+        else:
+            Vmodulo = Configs.velocidade_personagem[self.classe_Jogador1]  
+            angulo = Jogadores.inclinacaoSinCos(self.vetorUnitario1[1], self.vetorUnitario1[0])
+            self.velocidade1 = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
+                
+    def mover2(self):
+        if self.vetorUnitario2[0] == self.vetorUnitario2[1] == 0:
+            self.velocidade2 = [0,0]
+        else:
+            Vmodulo = Configs.velocidade_personagem[self.classe_Jogador1]  
+            angulo = Jogadores.inclinacaoSinCos(self.vetorUnitario2[1], self.vetorUnitario2[0])
+            self.velocidade2 = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
 
     def atualiza_posicao(self):      
         
@@ -75,6 +75,8 @@ class Jogadores:
         novo_Y2 = Y2 + novaVelocidade2[1]
 
         distancia_squared = Jogadores.distancia_squared(novo_X1, novo_Y1, novo_X2, novo_Y2)
+        angulo1 = Jogadores.inclinacaoPontos(X2, Y2, X1, Y1) + math.pi
+        angulo2 = Jogadores.inclinacaoPontos(X1, Y1, X2, Y2) + math.pi
        
         #Não-colisão
         if distancia_squared >= (r1 + r2) ** 2:
@@ -83,15 +85,15 @@ class Jogadores:
 
         #Colisão
         elif distancia_squared < ((r1 + r2) ** 2):
-            print("colidiu")
-            
-            inclinacao = int(Jogadores.inclinacao(X1, Y1, X2, Y2))
+            moduloVelocidade1 = ((novaVelocidade1[0] ** 2) + (novaVelocidade1[1] ** 2)) ** 0.5
+            moduloVelocidade2 = ((novaVelocidade2[0] ** 2) + (novaVelocidade2[1] ** 2)) ** 0.5
 
-            solucaoX = Jogadores.velocidade_colisao(m1, novaVelocidade1[0], m2, novaVelocidade2[0])
-            solucaoY = Jogadores.velocidade_colisao(m1, novaVelocidade1[1], m2, novaVelocidade2[1])
+            solucao = Jogadores.velocidade_colisao(m1, int(moduloVelocidade1), m2, int(moduloVelocidade2))
 
-            self.V1_adicional = [int(solucaoX[0] - novaVelocidade1[0]), int(solucaoY[0] - novaVelocidade1[1])]
-            self.V2_adicional = [int(solucaoX[1] - novaVelocidade2[0]), int(solucaoY[1] - novaVelocidade2[1])]
+            self.V1_adicional[0] = int(abs(solucao[0] - moduloVelocidade1) * math.cos(angulo1)) 
+            self.V1_adicional[1] = int(abs(solucao[0] - moduloVelocidade1) * math.sin(angulo1))
+            self.V2_adicional[0] = int(abs(solucao[1] - moduloVelocidade2) * math.cos(angulo2)) 
+            self.V2_adicional[1] = int(abs(solucao[1] - moduloVelocidade2) * math.sin(angulo2))
 
     def desenha(self, tela):
         cor1 = Configs.cor_personagem[self.classe_Jogador1]
@@ -123,27 +125,20 @@ class Jogadores:
             solucao = resultado[1]
         else:
             solucao = resultado[0]
-            
+
         return solucao
 
     def distancia_squared(X1, Y1, X2, Y2):
         distancia_squared = (X1 - X2) ** 2 + (Y1 - Y2) ** 2
         return distancia_squared
     
-    def inclinacao(X1, Y1, X2, Y2):
-        if X1 - X2 == 0:
-            return math.pi/2
-        else:
-            inclinacao = math.atan((Y1 - Y2)/(X1 - X2))
-            return inclinacao
+    def inclinacaoPontos(X1, Y1, X2, Y2):
+        inclinacao = math.atan2(Y1 - Y2, X1 - X2)
+        return inclinacao
 
-    def sinal(valor):
-        if valor > 0:
-            return 1
-        elif valor < 0:
-            return -1
-        else:
-            return 0
+    def inclinacaoSinCos(sin, cos):
+        inclinacao = math.atan2(sin, cos)
+        return inclinacao
 
 class Ataques:
     pass

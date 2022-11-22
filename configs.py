@@ -18,7 +18,7 @@ class Configs:
 
     velocidade_personagem = {
         "warrior": 10,
-        "archer": 20
+        "archer": 30
     }
    
     raio_personagem = {
@@ -27,7 +27,7 @@ class Configs:
     }
     
     massa_personagem = {
-        "warrior": 20,
+        "warrior": 10,
         "archer": 2
     }
 

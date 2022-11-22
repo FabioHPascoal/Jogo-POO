@@ -18,7 +18,6 @@ class CenaPrincipal:
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FrameRate)
-            print("")
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -28,33 +27,35 @@ class CenaPrincipal:
 
         # Jogador 1
         if pg.key.get_pressed()[pg.K_a]:
-            self.jogadores.moverX1(Configs.angulo["esquerda"])
+            self.jogadores.vetorUnitario1[0] = -1
         elif pg.key.get_pressed()[pg.K_d]:
-            self.jogadores.moverX1(Configs.angulo["direita"])
+            self.jogadores.vetorUnitario1[0] = 1
         else:
-            self.jogadores.pararX1()
+            self.jogadores.vetorUnitario1[0] = 0
         if pg.key.get_pressed()[pg.K_w]:
-            self.jogadores.moverY1(Configs.angulo["cima"])
+            self.jogadores.vetorUnitario1[1] = -1
         elif pg.key.get_pressed()[pg.K_s]:
-            self.jogadores.moverY1(Configs.angulo["baixo"])
+            self.jogadores.vetorUnitario1[1] = 1
         else:
-            self.jogadores.pararY1()
+            self.jogadores.vetorUnitario1[1] = 0
 
         # Jogador 2
         if pg.key.get_pressed()[pg.K_j]:
-            self.jogadores.moverX2(Configs.angulo["esquerda"])
+            self.jogadores.vetorUnitario2[0] = -1
         elif pg.key.get_pressed()[pg.K_l]:
-            self.jogadores.moverX2(Configs.angulo["direita"])
+            self.jogadores.vetorUnitario2[0] = 1
         else:
-            self.jogadores.pararX2()
+            self.jogadores.vetorUnitario2[0] = 0
         if pg.key.get_pressed()[pg.K_i]:
-            self.jogadores.moverY2(Configs.angulo["cima"])
+            self.jogadores.vetorUnitario2[1] = -1
         elif pg.key.get_pressed()[pg.K_k]:
-            self.jogadores.moverY2(Configs.angulo["baixo"])
+            self.jogadores.vetorUnitario2[1] = 1
         else:
-            self.jogadores.pararY2()
+            self.jogadores.vetorUnitario2[1] = 0
 
     def atualiza_estado(self):
+        self.jogadores.mover1()
+        self.jogadores.mover2()
         self.jogadores.atualiza_posicao()
         # self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
 
