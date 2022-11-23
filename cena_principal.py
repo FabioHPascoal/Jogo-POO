@@ -1,7 +1,7 @@
 import sys
 import pygame as pg
 
-from jogadores_minions import Jogadores
+from jogadores import Jogadores
 from configs import Configs
 
 class CenaPrincipal:
@@ -57,7 +57,7 @@ class CenaPrincipal:
         self.jogadores.mover1()
         self.jogadores.mover2()
         self.jogadores.atualiza_posicao()
-        self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
+        # self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
 
     def desenha(self):
         self.tela.fill((255, 255, 255))

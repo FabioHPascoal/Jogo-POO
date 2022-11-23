@@ -86,7 +86,7 @@ class Jogadores:
             self.posicao2 = (novo_X2, novo_Y2)
 
         #Colisão
-        elif distancia_squared < ((r1 + r2) ** 2):
+        elif distancia_squared < (r1 + r2) ** 2:
             moduloVelocidade1 = ((novaVelocidade1[0] ** 2) + (novaVelocidade1[1] ** 2)) ** 0.5
             moduloVelocidade2 = ((novaVelocidade2[0] ** 2) + (novaVelocidade2[1] ** 2)) ** 0.5
 
@@ -141,9 +141,6 @@ class Jogadores:
     def inclinacaoSinCos(sin, cos):
         inclinacao = math.atan2(sin, cos)
         return inclinacao
-
-class Ataques:
-    pass
 
 class Minion:
     pass
