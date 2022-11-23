@@ -8,17 +8,19 @@ class Jogadores:
         self.classe_Jogador1 = classe_Jogador1
         self.raio1 = Configs.raio_personagem[self.classe_Jogador1]
         self.massa1 = Configs.massa_personagem[self.classe_Jogador1]
-        self.vetorUnitario1 = [0, 0]
-        self.velocidade1 = [0, 0]
-        self.V1_adicional = [0, 0]
+        self.vetorUnitario1 = pg.math.Vector2()
+        self.velocidade1 = pg.math.Vector2()
+        self.V1_adicional = pg.math.Vector2()
+        self.posicao1 = pg.math.Vector2()
         self.posicao1 = (Configs.spawnX_1, Configs.spawnY_1)
 
         self.classe_Jogador2 = classe_Jogador2
         self.raio2 = Configs.raio_personagem[self.classe_Jogador2]
         self.massa2 = Configs.massa_personagem[self.classe_Jogador2]
-        self.vetorUnitario2 = [0, 0]
-        self.velocidade2 = [0, 0]
-        self.V2_adicional = [0, 0]
+        self.vetorUnitario2 = pg.math.Vector2()
+        self.velocidade2 = pg.math.Vector2()
+        self.V2_adicional = pg.math.Vector2()
+        self.posicao2 = pg.math.Vector2()
         self.posicao2 = (Configs.spawnX_2, Configs.spawnY_2)
 
         Jogadores.velocidade_colisao(1, 1, 1, 1)
