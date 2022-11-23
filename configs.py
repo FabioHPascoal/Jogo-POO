@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1080
     ALTURA_TELA = 720
-    FrameRate = 60
+    FrameRate = 144
     BLOCOS_TAMANHO = 32
 
     #CORES
@@ -48,13 +48,13 @@ class Configs:
     spawnY_2 = (0.5 * ALTURA_TELA)
 
     velocidade_personagem = {
-        "warrior": 10,
-        "archer": 30
+        "warrior": 3,
+        "archer": 10
     }
    
     raio_personagem = {
-        "warrior": 50,
-        "archer": 20
+        "warrior": 80,
+        "archer": 40
     }
     
     massa_personagem = {
