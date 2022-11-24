@@ -27,31 +27,31 @@ class CenaPrincipal:
 
         # Jogador 1
         if pg.key.get_pressed()[pg.K_a]:
-            self.jogadores.vetorUnitario1[0] = -1
+            self.jogadores.direcao1.x = -1
         elif pg.key.get_pressed()[pg.K_d]:
-            self.jogadores.vetorUnitario1[0] = 1
+            self.jogadores.direcao1.x = 1
         else:
-            self.jogadores.vetorUnitario1[0] = 0
+            self.jogadores.direcao1.x = 0
         if pg.key.get_pressed()[pg.K_w]:
-            self.jogadores.vetorUnitario1[1] = -1
+            self.jogadores.direcao1.y = -1
         elif pg.key.get_pressed()[pg.K_s]:
-            self.jogadores.vetorUnitario1[1] = 1
+            self.jogadores.direcao1.y = 1
         else:
-            self.jogadores.vetorUnitario1[1] = 0
+            self.jogadores.direcao1.y = 0
 
         # Jogador 2
         if pg.key.get_pressed()[pg.K_j]:
-            self.jogadores.vetorUnitario2[0] = -1
+            self.jogadores.direcao2.x = -1
         elif pg.key.get_pressed()[pg.K_l]:
-            self.jogadores.vetorUnitario2[0] = 1
+            self.jogadores.direcao2.x = 1
         else:
-            self.jogadores.vetorUnitario2[0] = 0
+            self.jogadores.direcao2.x = 0
         if pg.key.get_pressed()[pg.K_i]:
-            self.jogadores.vetorUnitario2[1] = -1
+            self.jogadores.direcao2.y = -1
         elif pg.key.get_pressed()[pg.K_k]:
-            self.jogadores.vetorUnitario2[1] = 1
+            self.jogadores.direcao2.y = 1
         else:
-            self.jogadores.vetorUnitario2[1] = 0
+            self.jogadores.direcao2.y = 0
 
     def atualiza_estado(self):
         self.jogadores.mover1()

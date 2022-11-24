@@ -48,18 +48,18 @@ class Configs:
     spawnY_2 = (0.5 * ALTURA_TELA)
 
     velocidade_personagem = {
-        "warrior": 3,
-        "archer": 10
+        "warrior": 4,
+        "archer": 6
     }
    
     raio_personagem = {
-        "warrior": 80,
-        "archer": 40
+        "warrior": 40,
+        "archer": 20
     }
     
     massa_personagem = {
-        "warrior": 10,
-        "archer": 2
+        "warrior": 8,
+        "archer": 4
     }
 
     cor_personagem = {
