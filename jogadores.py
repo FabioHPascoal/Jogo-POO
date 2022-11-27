@@ -74,10 +74,8 @@ class Jogadores:
         X1, Y1 = self.posicao1
         X2, Y2 = self.posicao2
         
-        V1x = self.velocidade1.x
-        V1y = self.velocidade1.y
-        V2x = self.velocidade2.x
-        V2y = self.velocidade2.y
+        V1x, V1y = self.velocidade1
+        V2x, V2y = self.velocidade2
 
         V1x_adicional, V1y_adicional = self.V1_adicional
         V2x_adicional, V2y_adicional = self.V2_adicional
