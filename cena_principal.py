@@ -8,7 +8,7 @@ class CenaPrincipal:
     def __init__(self, tela):
         self.frameRate = pg.time.Clock()
         self.tempoCorrido = 0
-        self.jogadores = Jogadores("warrior", "archer")
+        self.jogadores = Jogadores("saxao", "archer")
         self.tela = tela
         self.rodando = True
 
@@ -17,7 +17,8 @@ class CenaPrincipal:
             self.tratamento_eventos()
             self.atualiza_estado()
             self.desenha()
-            self.frameRate.tick(Configs.FrameRate)
+            self.frameRate.tick(Configs.FRAME_RATE)
+            # print("")
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -57,9 +58,8 @@ class CenaPrincipal:
         self.jogadores.mover1()
         self.jogadores.mover2()
         self.jogadores.atualiza_posicao()
-        # self.jogadores.tempoCorrido(self.frameRate.tick(Configs.FrameRate))
 
     def desenha(self):
         self.tela.fill((255, 255, 255))
-        self.jogadores.desenha(self.tela)
+        self.jogadores.desenha(self.tela, pg.time.get_ticks())
         pg.display.flip()
