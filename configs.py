@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1280
     ALTURA_TELA = 720
-    ESCALA = 2
+    ESCALA = 4
     FRAME_RATE = 60
     DURACAO_FRAME = 200
     BLOCOS_TAMANHO = 32
@@ -52,19 +52,19 @@ class Configs:
     }
 
     velocidade_personagem = {
-        "saxao": 4,
-        "archer": 10
+        "saxao": 5,
+        "archer": 15
     }
 
     dimensoes_personagem = {
         "saxao": (32, 32),
-        "archer": 40
+        "archer": (32, 32)
     }
 
     raio_personagem = 8 * ESCALA
 
     massa_personagem = {
-        "saxao": 5,
+        "saxao": 10,
         "archer": 2
     }
 

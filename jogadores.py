@@ -4,14 +4,14 @@ from configs import Configs
 from funcoes import Funcoes
 
 class Jogadores(pg.sprite.Sprite):
-    def __init__(self,posicao,classe,grupos,sprites_obstaculos):
+    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
         super().__init__(grupos)
+        self.classe = classe
+        self.largura, self.altura = Configs.dimensoes_personagem[self.classe]
+        self.massa = Configs.massa_personagem[self.classe]
         self.raio = Configs.raio_personagem
         self.escala = Configs.ESCALA
-        self.classe = classe
         self.posicao = posicao
-        self.massa = Configs.massa_personagem[self.classe]
-        self.largura, self.altura = Configs.dimensoes_personagem[self.classe]
         self.vetorUnitario = [0, 0]
         self.animacao_atual = 3
         self.frame_atual = 0
@@ -20,7 +20,6 @@ class Jogadores(pg.sprite.Sprite):
         self.image = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.sprites_obstaculos = sprites_obstaculos
-
         self.funcoes = Funcoes()
 
         #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
@@ -31,8 +30,6 @@ class Jogadores(pg.sprite.Sprite):
                 lista_temporaria.append(self.sprite_selecionado(self.image, contadorFrames, Configs.ESCALA))
                 contadorFrames += 1
             self.sprites.append(lista_temporaria)
-        contadorFrames = 0
-
 
     def sprite_selecionado(self,sheet, frame, escala):
         self.imagem = pg.Surface((self.largura, self.altura)).convert_alpha()
@@ -44,8 +41,8 @@ class Jogadores(pg.sprite.Sprite):
     def mover(self):
         if self.vetorUnitario[0] == self.vetorUnitario[1] == 0:
             self.velocidade = [0,0]
-            self.andando = False
             self.frame_atual = 0
+            self.andando = False
         else:
             Vmodulo = Configs.velocidade_personagem[self.classe]  
             angulo = self.funcoes.inclinacaoSinCos(self.vetorUnitario[1], self.vetorUnitario[0])
@@ -54,28 +51,18 @@ class Jogadores(pg.sprite.Sprite):
             self.andando = True
             
     def desenha(self, tela, tempoAtual):
-        self.posicao_rect = [self.posicao[0] - 16 * self.escala, self.posicao[1] - 24 * self.escala]
-        tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
-            self.frame_atual += 1
-            if self.frame_atual == len(self.sprites[self.animacao_atual]):
-                self.frame_atual = 0
-            self.tempo_anterior = tempoAtual
-   
+        # self.posicao_rect = [self.posicao[0] - 16 * self.escala, self.posicao[1] - 24 * self.escala]
+        # tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
+        # if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
+        #     self.frame_atual += 1
+        #     if self.frame_atual == len(self.sprites[self.animacao_atual]):
+        #         self.frame_atual = 0
+        #     self.tempo_anterior = tempoAtual
 
-        # cor1 = Configs.cor_personagem[self.classe_Jogador1]
-        # r1 = self.raio
-        # pg.draw.circle(tela, cor1, self.posicao, r1)
-
-        # cor2 = Configs.cor_personagem[self.classe_Jogador2]
-        # r2 = self.raio
-        # pg.draw.circle(tela, cor2, self.posicao2, r2)
+        cor = Configs.cor_personagem[self.classe]
+        pg.draw.circle(tela, cor, self.posicao, self.raio)
         
-class Jogador1(Jogadores):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
-        super().__init__(posicao, classe, grupos, sprites_obstaculos)
-        
-class Jogador2(Jogadores):
+class Jogador(Jogadores):
     def __init__(self, posicao, classe, grupos, sprites_obstaculos):
         super().__init__(posicao, classe, grupos, sprites_obstaculos)
 
@@ -93,32 +80,27 @@ class Interacoes():
 
         V1x, V1y = velocidade1
         V2x, V2y = velocidade2
-
-        V1x_adicional, V1y_adicional = self.Vadicional1
-        V2x_adicional, V2y_adicional = self.Vadicional2
         
         r = Configs.raio_personagem
 
-        m1 = massa1
-        m2 = massa2
-
         # Desaceleração
-        if V1x_adicional != 0:
-            self.Vadicional1[0] -= Configs.desaceleracao * self.funcoes.sinal(V1x_adicional)
-        if V1y_adicional != 0:
-            self.Vadicional1[1] -= Configs.desaceleracao * self.funcoes.sinal(V1y_adicional)
-        if V2x_adicional != 0:
-            self.Vadicional2[0] -= Configs.desaceleracao * self.funcoes.sinal(V2x_adicional)
-        if V2y_adicional != 0:
-            self.Vadicional2[1] -= Configs.desaceleracao * self.funcoes.sinal(V2y_adicional)
+        if self.Vadicional1[0] != 0:
+            self.Vadicional1[0] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional1[0])
+        if self.Vadicional1[1] != 0:
+            self.Vadicional1[1] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional1[1])
+        if self.Vadicional2[0] != 0:
+            self.Vadicional2[0] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional2[0])
+        if self.Vadicional2[1] != 0:
+            self.Vadicional2[1] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional2[1])
 
-        novaVelocidade1 = [V1x + V1x_adicional, V1y + V1y_adicional]
-        novaVelocidade2 = [V2x + V2x_adicional, V2y + V2y_adicional]
+        novaVelocidade1 = [V1x + self.Vadicional1[0], V1y + self.Vadicional1[1]]
+        novaVelocidade2 = [V2x + self.Vadicional2[0], V2y + self.Vadicional2[1]]
 
         novo_X1 = self.X1 + novaVelocidade1[0]
         novo_Y1 = self.Y1 + novaVelocidade1[1]
         novo_X2 = self.X2 + novaVelocidade2[0]
         novo_Y2 = self.Y2 + novaVelocidade2[1]
+
         distancia_squared = self.funcoes.distancia_squared(novo_X1, novo_Y1, novo_X2, novo_Y2)
        
         #Não-colisão
@@ -127,12 +109,13 @@ class Interacoes():
 
         #Colisão
         else:
+            angulo1 = self.funcoes.inclinacaoPontos(self.X2, self.Y2, self.X1, self.Y1) + math.pi
+            angulo2 = self.funcoes.inclinacaoPontos(self.X1, self.Y1, self.X2, self.Y2) + math.pi
+
             moduloVelocidade1 = ((V1x ** 2) + (V1y ** 2)) ** 0.5
             moduloVelocidade2 = ((V2x ** 2) + (V2y ** 2)) ** 0.5
 
-            solucao = self.funcoes.velocidade_colisao(m1, int(moduloVelocidade1), m2, int(moduloVelocidade2))
-            angulo1 = math.pi + math.atan2(self.Y1 - self.Y2, self.X1 - self.X2)
-            angulo2 = math.pi + math.atan2(self.Y2 - self.Y1, self.X2 - self.X1)
+            solucao = self.funcoes.velocidade_colisao(massa1, int(moduloVelocidade1), massa2, int(moduloVelocidade2))
 
             self.Vadicional1[0] += int(abs(solucao[0] - moduloVelocidade1) * math.cos(angulo1)) 
             self.Vadicional1[1] += int(abs(solucao[0] - moduloVelocidade1) * math.sin(angulo1))

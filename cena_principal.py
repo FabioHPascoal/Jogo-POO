@@ -11,11 +11,14 @@ class CenaPrincipal:
         self.tempoCorrido = 0
         self.tela = tela
         self.rodando = True
-         #CAPTURAR SUPERFÍCIE DA TELA
+       
+        #CAPTURAR SUPERFÍCIE DA TELA
         self.superficie_tela = pg.display.get_surface()
+       
         #GRUPOS DE SPRITES
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
+        
         #Mapa com posição dos sprites
         self.interacoes = Interacoes()
         self.criar_mapa()
@@ -30,11 +33,11 @@ class CenaPrincipal:
                 if coluna == '1':
                     Configs.spawnX_1 = x
                     Configs.spawnY_1 = y
-                    self.jogador1 = Jogador1([Configs.spawnX_1,Configs.spawnY_1,],'saxao',[],self.sprites_obstaculos)
+                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'saxao',[],self.sprites_obstaculos)
                 if coluna == '2':
                     Configs.spawnX_2 = x
                     Configs.spawnY_2 = y
-                    self.jogador2 = Jogador2([Configs.spawnX_2,Configs.spawnY_2,],'saxao',[],self.sprites_obstaculos)
+                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'archer',[],self.sprites_obstaculos)
 
     def rodar(self):
         while self.rodando:
@@ -42,7 +45,6 @@ class CenaPrincipal:
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
-            # print("")
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -87,6 +89,13 @@ class CenaPrincipal:
         self.tela.fill(Configs.BRANCO)
         self.sprites_visiveis.draw(self.superficie_tela)
         self.sprites_visiveis.update()
-        self.jogador1.desenha(self.tela, pg.time.get_ticks())
-        self.jogador2.desenha(self.tela, pg.time.get_ticks())
+    
+        if self.jogador1.posicao[1] < self.jogador2.posicao[1]:
+            self.jogador1.desenha(self.tela, pg.time.get_ticks())
+            self.jogador2.desenha(self.tela, pg.time.get_ticks())
+
+        elif self.jogador1.posicao[1] >= self.jogador2.posicao[1]:
+            self.jogador2.desenha(self.tela, pg.time.get_ticks())
+            self.jogador1.desenha(self.tela, pg.time.get_ticks())
+      
         pg.display.flip()
