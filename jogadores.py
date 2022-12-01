@@ -17,8 +17,7 @@ class Jogadores(pg.sprite.Sprite):
         self.frame_atual = 0
         self.tempo_anterior = pg.time.get_ticks()
         self.sprites = [] #[[E], [D], [C], [B], [CE], [CD], [BE], [BD]]
-        self.image = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
-        self.rect = self.image.get_rect()
+        self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
 
@@ -27,7 +26,7 @@ class Jogadores(pg.sprite.Sprite):
         for i in range(len(Configs.frames_por_animacao1)):
             lista_temporaria = []
             for _ in range(Configs.frames_por_animacao1[i]):
-                lista_temporaria.append(self.sprite_selecionado(self.image, contadorFrames, Configs.ESCALA))
+                lista_temporaria.append(self.sprite_selecionado(self.images, contadorFrames, Configs.ESCALA))
                 contadorFrames += 1
             self.sprites.append(lista_temporaria)
 
@@ -51,20 +50,49 @@ class Jogadores(pg.sprite.Sprite):
             self.andando = True
             
     def desenha(self, tela, tempoAtual):
-        # self.posicao_rect = [self.posicao[0] - 16 * self.escala, self.posicao[1] - 24 * self.escala]
-        # tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        # if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
-        #     self.frame_atual += 1
-        #     if self.frame_atual == len(self.sprites[self.animacao_atual]):
-        #         self.frame_atual = 0
-        #     self.tempo_anterior = tempoAtual
+        self.posicao_rect = [self.posicao[0] - 16 * self.escala, self.posicao[1] - 24 * self.escala]
+        tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
+        if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
+            self.frame_atual += 1
+            if self.frame_atual == len(self.sprites[self.animacao_atual]):
+                self.frame_atual = 0
+            self.tempo_anterior = tempoAtual
 
-        cor = Configs.cor_personagem[self.classe]
-        pg.draw.circle(tela, cor, self.posicao, self.raio)
+        # cor = Configs.cor_personagem[self.classe]
+        # pg.draw.circle(tela, cor, self.posicao, self.raio)
         
 class Jogador(Jogadores):
     def __init__(self, posicao, classe, grupos, sprites_obstaculos):
         super().__init__(posicao, classe, grupos, sprites_obstaculos)
+        self.image = pg.image.load('personagemColisao.png')
+        self.image = pg.transform.scale(self.image, (self.largura/2, self.altura/2))
+        self.rect = self.image.get_rect(center = posicao)
+        self.direcao = [0,0]
+
+    def moverParteSolida(self,posicao):
+        self.rect.x = posicao[0]
+        self.colisao('horizontal')
+        self.rect.y = posicao[1]
+        self.colisao('vertical')
+        print(self.rect)
+        return self.rect[0],self.rect[1]
+
+    def colisao(self,direcao):
+            if direcao ==  'horizontal':
+                for sprite in self.sprites_obstaculos:
+                    if sprite.rect.colliderect(self.rect):
+                        if self.rect.left < sprite.rect.left:
+                            self.rect.right = sprite.rect.left
+                        else:
+                            self.rect.left = sprite.rect.right
+            
+            if direcao ==  'vertical':
+                for sprite in self.sprites_obstaculos:
+                    if sprite.rect.colliderect(self.rect):
+                        if self.rect.top < sprite.rect.top:
+                            self.rect.bottom = sprite.rect.top
+                        else:
+                            self.rect.top = sprite.rect.bottom
 
 class Interacoes():
     def __init__(self):
