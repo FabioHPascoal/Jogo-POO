@@ -13,10 +13,11 @@ class Jogadores(pg.sprite.Sprite):
         self.escala = Configs.ESCALA
         self.posicao = posicao
         self.vetorUnitario = [0, 0]
+        self.direcaoInicial = [0,0]
         self.animacao_atual = 3
         self.frame_atual = 0
         self.tempo_anterior = pg.time.get_ticks()
-        self.sprites = [] #[[E], [D], [C], [B], [CE], [CD], [BE], [BD]]
+        self.sprites = [] #[[idleE], [E], [idleD], [D], [idleC], [C], [idleB], [B], [morte]]
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
@@ -41,16 +42,22 @@ class Jogadores(pg.sprite.Sprite):
         if self.vetorUnitario[0] == self.vetorUnitario[1] == 0:
             self.velocidade = [0,0]
             self.frame_atual = 0
+            self.animacao_atual = Configs.seleciona_animacoes_parado[self.direcaoInicial[0], self.direcaoInicial[1]]
             self.andando = False
         else:
-            Vmodulo = Configs.velocidade_personagem[self.classe]  
             angulo = self.funcoes.inclinacaoSinCos(self.vetorUnitario[1], self.vetorUnitario[0])
+            Vmodulo = Configs.velocidade_personagem[self.classe]  
+         
+            if angulo % (math.pi/2) == 0:
+                self.direcaoInicial[0] = self.vetorUnitario[0]
+                self.direcaoInicial[1] = self.vetorUnitario[1]
+         
             self.velocidade = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
-            self.animacao_atual = Configs.seleciona_animacoes[self.vetorUnitario[0], self.vetorUnitario[1]]
+            self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]]
             self.andando = True
             
     def desenha(self, tela, tempoAtual):
-        self.posicao_rect = [self.posicao[0] - 16 * self.escala, self.posicao[1] - 24 * self.escala]
+        self.posicao_rect = [self.posicao[0] - 31 * self.escala, self.posicao[1] - 41 * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
         if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
             self.frame_atual += 1
@@ -74,7 +81,7 @@ class Jogador(Jogadores):
         self.colisao('horizontal')
         self.rect.y = posicao[1]
         self.colisao('vertical')
-        print(self.rect)
+        # print(self.rect)
         return self.rect[0],self.rect[1]
 
     def colisao(self,direcao):

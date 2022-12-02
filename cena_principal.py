@@ -36,12 +36,12 @@ class CenaPrincipal:
                     Configs.spawnX_1 = x
                     Configs.spawnY_1 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'saxao',[],self.sprites_obstaculos)
+                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'cavaleiro',[],self.sprites_obstaculos)
                 if coluna == '2':
                     Configs.spawnX_2 = x
                     Configs.spawnY_2 = y
-                    Grama((x,y),[self.sprites_visiveis,self.sprites_obstaculos])
-                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'saxao',[],self.sprites_obstaculos)
+                    Grama((x,y),[self.sprites_visiveis])
+                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos)
 
     def rodar(self):
         while self.rodando:

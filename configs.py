@@ -4,7 +4,7 @@ class Configs:
     ALTURA_TELA = 720
     ESCALA = 2
     FRAME_RATE = 60
-    DURACAO_FRAME = 200
+    DURACAO_FRAME = 150
     BLOCOS_TAMANHO = 32
 
     spawnX_1 = (0.2 * LARGURA_TELA)
@@ -42,7 +42,7 @@ class Configs:
     ['4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4'],
     ]
 
-    frames_por_animacao1 = [6, 6, 6, 6, 6, 6, 6, 6]
+    frames_por_animacao1 = [1, 8, 1, 8, 1, 8, 1, 8, 6]
     
     angulo = {
         "direita": 0,
@@ -52,37 +52,41 @@ class Configs:
     }
 
     velocidade_personagem = {
-        "saxao": 5,
-        "archer": 15
+        "cavaleiro": 5,
+        "arqueiro": 7
     }
 
     dimensoes_personagem = {
-        "saxao": (32, 32),
-        "archer": (32, 32)
+        "cavaleiro": (64, 64),
+        "arqueiro": (64, 64)
     }
 
-    raio_personagem = 6 * ESCALA
+    raio_personagem = 16 * ESCALA
 
     massa_personagem = {
-        "saxao": 10,
-        "archer": 2
+        "cavaleiro": 10,
+        "arqueiro": 2
     }
 
     cor_personagem = {
-        "saxao": (0, 0, 0),
-        "archer": (100, 100, 100)
+        "cavaleiro": (0, 0, 0),
+        "arqueiro": (100, 100, 100)
     }
 
     seleciona_animacoes = {
-        (-1, 0): 0,
-        (1, 0): 1,
-        (0, -1): 2,
-        (0, 1): 3,
-        (-1, -1): 4,
-        (1, -1): 5,
-        (-1, 1): 6,
-        (1, 1): 7,
+        (-1, 0): 1,
+        (1, 0): 3,
+        (0, -1): 5,
+        (0, 1): 7,
         (0, 0): 3
+    }
+
+    seleciona_animacoes_parado = {
+        (-1, 0): 0,
+        (1, 0): 2,
+        (0, -1): 4,
+        (0, 1): 6,
+        (0, 0): 2
     }
 
     COR_FUNDO = (71, 175, 191)
