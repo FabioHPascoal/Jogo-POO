@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1280
     ALTURA_TELA = 720
-    ESCALA = 2
+    ESCALA = 1
     FRAME_RATE = 60
     DURACAO_FRAME = 150
     BLOCOS_TAMANHO = 32
@@ -61,7 +61,7 @@ class Configs:
         "arqueiro": (64, 64)
     }
 
-    raio_personagem = 16 * ESCALA
+    raio_personagem = BLOCOS_TAMANHO/2
 
     massa_personagem = {
         "cavaleiro": 10,

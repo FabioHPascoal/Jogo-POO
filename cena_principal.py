@@ -107,9 +107,13 @@ class CenaPrincipal:
         if self.jogador1.posicao[1] < self.jogador2.posicao[1]:
             self.jogador1.desenha(self.tela, pg.time.get_ticks())
             self.jogador2.desenha(self.tela, pg.time.get_ticks())
+            # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador1.rect)
+            # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador2.rect)
 
         elif self.jogador1.posicao[1] >= self.jogador2.posicao[1]:
             self.jogador2.desenha(self.tela, pg.time.get_ticks())
             self.jogador1.desenha(self.tela, pg.time.get_ticks())
+            # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador1.rect)
+            # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador2.rect)
       
         pg.display.flip()

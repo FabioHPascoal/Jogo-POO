@@ -72,17 +72,16 @@ class Jogador(Jogadores):
     def __init__(self, posicao, classe, grupos, sprites_obstaculos):
         super().__init__(posicao, classe, grupos, sprites_obstaculos)
         self.image = pg.image.load('personagemColisao.png')
-        self.image = pg.transform.scale(self.image, (self.largura/2, self.altura/2))
+        self.image = pg.transform.scale(self.image, (Configs.raio_personagem*2,Configs.raio_personagem*2))
         self.rect = self.image.get_rect(center = posicao)
         self.direcao = [0,0]
 
     def moverParteSolida(self,posicao):
-        self.rect.x = posicao[0]
+        self.rect.x = posicao[0]-Configs.raio_personagem
         self.colisao('horizontal')
-        self.rect.y = posicao[1]
+        self.rect.y = posicao[1]-Configs.raio_personagem
         self.colisao('vertical')
-        # print(self.rect)
-        return self.rect[0],self.rect[1]
+        return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
             if direcao ==  'horizontal':
