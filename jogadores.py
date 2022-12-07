@@ -21,6 +21,7 @@ class Jogadores(pg.sprite.Sprite):
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
+        self.vida = 3
 
         #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
@@ -84,22 +85,32 @@ class Jogador(Jogadores):
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
-            if direcao ==  'horizontal':
-                for sprite in self.sprites_obstaculos:
-                    if sprite.rect.colliderect(self.rect):
-                        if self.rect.left < sprite.rect.left:
-                            self.rect.right = sprite.rect.left
-                        else:
-                            self.rect.left = sprite.rect.right
-            
-            if direcao ==  'vertical':
-                for sprite in self.sprites_obstaculos:
-                    if sprite.rect.colliderect(self.rect):
-                        if self.rect.top < sprite.rect.top:
-                            self.rect.bottom = sprite.rect.top
-                        else:
-                            self.rect.top = sprite.rect.bottom
-
+        if direcao ==  'horizontal':
+            for sprite in self.sprites_obstaculos:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.left < sprite.rect.left:
+                        self.rect.right = sprite.rect.left
+                    else:
+                        self.rect.left = sprite.rect.right
+        
+        if direcao ==  'vertical':
+            for sprite in self.sprites_obstaculos:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
+                    else:
+                        self.rect.top = sprite.rect.bottom
+                            
+    def dano(self,direcao,sprites_inimigos):
+        if direcao ==  'horizontal':
+            for sprite in sprites_inimigos:
+                if sprite.rect.colliderect(self.rect):
+                   self.vida -= 1
+        
+        if direcao ==  'vertical':
+            for sprite in sprites_inimigos:
+                if sprite.rect.colliderect(self.rect):
+                    self.vida -= 1
 class Interacoes():
     def __init__(self):
         self.funcoes = Funcoes()

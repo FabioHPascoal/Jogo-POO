@@ -4,6 +4,8 @@ import pygame as pg
 from jogadores import*
 from configs import Configs
 from bloco import*
+from minion import Minion
+from placar import placar
 
 class CenaPrincipal:
     def __init__(self, tela):
@@ -18,6 +20,7 @@ class CenaPrincipal:
         #GRUPOS DE SPRITES
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
+        self.sprites_minions = pg.sprite.Group()
         
         #Mapa com posição dos sprites
         self.interacoes = Interacoes()
@@ -42,7 +45,9 @@ class CenaPrincipal:
                     Configs.spawnY_2 = y
                     Grama((x,y),[self.sprites_visiveis])
                     self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos)
-
+                if coluna == '3':
+                    Grama((x,y),[self.sprites_visiveis])
+                    self.minion = Minion((x,y),[self.sprites_minions],self.sprites_obstaculos)
     def rodar(self):
         while self.rodando:
             self.tratamento_eventos()
@@ -93,6 +98,7 @@ class CenaPrincipal:
             self.jogador2.vetorUnitario[1] = 0
 
     def atualiza_estado(self):
+        self.minion.movimento(self.jogador1.posicao,self.jogador2.posicao)
         self.jogador1.mover()
         self.jogador1.posicao = self.jogador1.moverParteSolida(self.jogador1.posicao)
         self.jogador2.mover()
@@ -103,6 +109,8 @@ class CenaPrincipal:
         self.tela.fill(Configs.BRANCO)
         self.sprites_visiveis.draw(self.superficie_tela)
         self.sprites_visiveis.update()
+        self.sprites_minions.draw(self.superficie_tela)
+        self.sprites_minions.update()
     
         if self.jogador1.posicao[1] < self.jogador2.posicao[1]:
             self.jogador1.desenha(self.tela, pg.time.get_ticks())
@@ -115,5 +123,5 @@ class CenaPrincipal:
             self.jogador1.desenha(self.tela, pg.time.get_ticks())
             # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador1.rect)
             # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador2.rect)
-      
+        placar(self.jogador1.vida,self.jogador2.vida)
         pg.display.flip()
