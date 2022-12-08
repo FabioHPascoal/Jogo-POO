@@ -77,14 +77,13 @@ class Jogador(Jogadores):
         self.direcao = [0,0]
         self.sprites_obstaculos = sprites_obstaculos
         self.sprites_minions = sprites_minions
-        self.tempoImunidade = 0
+        self.tempoImunidade = 501
 
     def moverParteSolida(self,posicao):
         self.rect.x = posicao[0]-Configs.raio_personagem
         self.colisao('horizontal')
         self.rect.y = posicao[1]-Configs.raio_personagem
         self.colisao('vertical')
-        self.dano(self.sprites_minions)
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
@@ -95,6 +94,17 @@ class Jogador(Jogadores):
                         self.rect.right = sprite.rect.left
                     else:
                         self.rect.left = sprite.rect.right
+
+            for sprite in self.sprites_minions:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.left < sprite.rect.left:
+                        self.rect.right = sprite.rect.left
+                    else:
+                        self.rect.left = sprite.rect.right
+                    if self.tempoImunidade >= 100:
+                        self.vida -= 1
+                        self.tempoImunidade = 0
+                    self.tempoImunidade += 1
         
         if direcao ==  'vertical':
             for sprite in self.sprites_obstaculos:
@@ -103,13 +113,18 @@ class Jogador(Jogadores):
                         self.rect.bottom = sprite.rect.top
                     else:
                         self.rect.top = sprite.rect.bottom
-                            
-    def dano(self,sprites_inimigos):
-            for sprite in sprites_inimigos:
-                if sprite.rect.colliderect(self.rect) and self.tempoImunidade >= 100:
-                    self.vida -= 1
-                    self.tempoImunidade = 0
-                self.tempoImunidade += 1
+    
+            for sprite in self.sprites_minions:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
+                    else:
+                        self.rect.top = sprite.rect.bottom
+                    if self.tempoImunidade >= 100:
+                        self.vida -= 1
+                        self.tempoImunidade = 0
+                    self.tempoImunidade += 1
+
 
 class Interacoes():
     def __init__(self):
