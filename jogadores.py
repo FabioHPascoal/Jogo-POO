@@ -95,6 +95,7 @@ class Jogador(Jogadores):
         self.colisao('horizontal')
         self.rect.y = posicao[1]-Configs.raio_personagem
         self.colisao('vertical')
+        self.correcaoSairDoMapa()
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
@@ -103,14 +104,14 @@ class Jogador(Jogadores):
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.left < sprite.rect.left:
                         self.rect.right = sprite.rect.left
-                    else:
+                    elif self.rect.left > sprite.rect.left:
                         self.rect.left = sprite.rect.right
 
             for sprite in self.sprites_minions:
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.left < sprite.rect.left:
-                        self.rect.right = sprite.rect.left
-                    else:
+                        self.rect.right = sprite.rect.left - 5
+                    elif self.rect.left > sprite.rect.left:
                         self.rect.left = sprite.rect.right
                     if self.tempoImunidade >= 100:
                         self.vida -= 1
@@ -122,19 +123,29 @@ class Jogador(Jogadores):
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.top < sprite.rect.top:
                         self.rect.bottom = sprite.rect.top
-                    else:
+                    elif self.rect.top > sprite.rect.top:
                         self.rect.top = sprite.rect.bottom
     
             for sprite in self.sprites_minions:
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.top < sprite.rect.top:
                         self.rect.bottom = sprite.rect.top
-                    else:
+                    elif self.rect.top > sprite.rect.top:
                         self.rect.top = sprite.rect.bottom
                     if self.tempoImunidade >= 100:
                         self.vida -= 1
                         self.tempoImunidade = 0
                     self.tempoImunidade += 1
+
+    def correcaoSairDoMapa(self):
+        if self.rect.left < Configs.BLOCOS_TAMANHO:
+            self.rect.left = Configs.BLOCOS_TAMANHO
+        if self.rect.right > Configs.LARGURA_TELA - Configs.BLOCOS_TAMANHO:
+            self.rect.right = Configs.LARGURA_TELA - Configs.BLOCOS_TAMANHO
+        if self.rect.top < Configs.BLOCOS_TAMANHO:
+            self.rect.top = Configs.BLOCOS_TAMANHO
+        if self.rect.bottom > Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO:
+            self.rect.bottom = Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO
 
 
 class Interacoes():
