@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
 
+from random import randint
 from jogadores import*
 from configs import Configs
 from bloco import*
@@ -13,7 +14,7 @@ class CenaPrincipal:
         self.tempoCorrido = 0
         self.tela = tela
         self.rodando = True
-       
+        self.tempoImunidade = 1000
         #CAPTURAR SUPERFÍCIE DA TELA
         self.superficie_tela = pg.display.get_surface()
        
@@ -39,17 +40,16 @@ class CenaPrincipal:
                     Configs.spawnX_1 = x
                     Configs.spawnY_1 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'cavaleiro',[],self.sprites_obstaculos,self.sprites_minions)
+                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'ladino',[],self.sprites_obstaculos,self.sprites_minions)
                 if coluna == '2':
                     Configs.spawnX_2 = x
                     Configs.spawnY_2 = y
                     Grama((x,y),[self.sprites_visiveis])
                     self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos,self.sprites_minions)
-                if coluna == '3':
-                    Grama((x,y),[self.sprites_visiveis])
-                    self.minion = Minion((x,y),[self.sprites_minions],self.sprites_obstaculos)
+
     def rodar(self):
         while self.rodando:
+            self.gerarMinions()
             self.tratamento_eventos()
             self.atualiza_estado()
             self.desenha()
@@ -109,7 +109,6 @@ class CenaPrincipal:
             self.jogador2.vetorUnitario[1] = 0
 
     def atualiza_estado(self):
-        self.minion.movimento(self.jogador1.posicao,self.jogador2.posicao)
         self.jogador1.mover()
         self.jogador1.posicao = self.jogador1.moverParteSolida(self.jogador1.posicao)
         self.jogador2.mover()
@@ -120,6 +119,8 @@ class CenaPrincipal:
                                                                                         self.jogador2.velocidade, 
                                                                                         self.jogador1.massa, 
                                                                                         self.jogador2.massa)
+        for minion in self.sprites_minions:
+            minion.movimento(self.jogador1.posicao,self.jogador2.posicao)
 
     def desenha(self):
         self.tela.fill(Configs.BRANCO)
@@ -141,3 +142,10 @@ class CenaPrincipal:
             # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador2.rect)
         placar(self.jogador1.vida,self.jogador2.vida)
         pg.display.flip()
+
+    def gerarMinions(self):
+        if len(self.sprites_minions) < 5 and self.tempoImunidade > 500 :
+            Minion((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
+            randint(Configs.BLOCOS_TAMANHO,Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)),[self.sprites_minions],self.sprites_obstaculos)
+            self.tempoImunidade = 0
+        self.tempoImunidade += 1
