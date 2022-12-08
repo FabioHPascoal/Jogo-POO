@@ -4,7 +4,7 @@ from configs import Configs
 from funcoes import Funcoes
 
 class Jogadores(pg.sprite.Sprite):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
+    def __init__(self, posicao, classe, grupos):
         super().__init__(grupos)
         self.classe = classe
         self.largura, self.altura = Configs.dimensoes_personagem[self.classe]
@@ -21,8 +21,8 @@ class Jogadores(pg.sprite.Sprite):
         self.tempo_anterior = pg.time.get_ticks()
         self.sprites = []
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
-        self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
+        self.vida = 3
 
         #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
@@ -79,37 +79,62 @@ class Jogadores(pg.sprite.Sprite):
         # pg.draw.circle(tela, cor, self.posicao, self.raio)
         
 class Jogador(Jogadores):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
-        super().__init__(posicao, classe, grupos, sprites_obstaculos)
-        self.image = pg.image.load("personagemColisao.png")
-        self.image = pg.transform.scale(self.image, (self.largura/2, self.altura/2))
+    def __init__(self, posicao, classe, grupos, sprites_obstaculos,sprites_minions):
+        super().__init__(posicao, classe, grupos)
+        self.image = pg.image.load('personagemColisao.png')
+        self.image = pg.transform.scale(self.image, (Configs.raio_personagem*2,Configs.raio_personagem*2))
         self.rect = self.image.get_rect(center = posicao)
         self.direcao = [0,0]
+        self.sprites_obstaculos = sprites_obstaculos
+        self.sprites_minions = sprites_minions
+        self.tempoImunidade = 501
 
     def moverParteSolida(self,posicao):
-        self.rect.x = posicao[0]
-        self.colisao("horizontal")
-        self.rect.y = posicao[1]
-        self.colisao("vertical")
-        # print(self.rect)
-        return self.rect[0],self.rect[1]
+        self.rect.x = posicao[0]-Configs.raio_personagem
+        self.colisao('horizontal')
+        self.rect.y = posicao[1]-Configs.raio_personagem
+        self.colisao('vertical')
+        return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
-            if direcao ==  "horizontal":
-                for sprite in self.sprites_obstaculos:
-                    if sprite.rect.colliderect(self.rect):
-                        if self.rect.left < sprite.rect.left:
-                            self.rect.right = sprite.rect.left
-                        else:
-                            self.rect.left = sprite.rect.right
-            
-            if direcao ==  "vertical":
-                for sprite in self.sprites_obstaculos:
-                    if sprite.rect.colliderect(self.rect):
-                        if self.rect.top < sprite.rect.top:
-                            self.rect.bottom = sprite.rect.top
-                        else:
-                            self.rect.top = sprite.rect.bottom
+        if direcao ==  'horizontal':
+            for sprite in self.sprites_obstaculos:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.left < sprite.rect.left:
+                        self.rect.right = sprite.rect.left
+                    else:
+                        self.rect.left = sprite.rect.right
+
+            for sprite in self.sprites_minions:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.left < sprite.rect.left:
+                        self.rect.right = sprite.rect.left
+                    else:
+                        self.rect.left = sprite.rect.right
+                    if self.tempoImunidade >= 100:
+                        self.vida -= 1
+                        self.tempoImunidade = 0
+                    self.tempoImunidade += 1
+        
+        if direcao ==  'vertical':
+            for sprite in self.sprites_obstaculos:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
+                    else:
+                        self.rect.top = sprite.rect.bottom
+    
+            for sprite in self.sprites_minions:
+                if sprite.rect.colliderect(self.rect):
+                    if self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
+                    else:
+                        self.rect.top = sprite.rect.bottom
+                    if self.tempoImunidade >= 100:
+                        self.vida -= 1
+                        self.tempoImunidade = 0
+                    self.tempoImunidade += 1
+
 
 class Interacoes():
     def __init__(self):
