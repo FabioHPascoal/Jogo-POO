@@ -4,7 +4,7 @@ from configs import Configs
 from funcoes import Funcoes
 
 class Jogadores(pg.sprite.Sprite):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
+    def __init__(self, posicao, classe, grupos):
         super().__init__(grupos)
         self.classe = classe
         self.largura, self.altura = Configs.dimensoes_personagem[self.classe]
@@ -19,7 +19,6 @@ class Jogadores(pg.sprite.Sprite):
         self.tempo_anterior = pg.time.get_ticks()
         self.sprites = [] #[[idleE], [E], [idleD], [D], [idleC], [C], [idleB], [B], [morte]]
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
-        self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
         self.vida = 3
 
@@ -70,18 +69,21 @@ class Jogadores(pg.sprite.Sprite):
         # pg.draw.circle(tela, cor, self.posicao, self.raio)
         
 class Jogador(Jogadores):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos):
-        super().__init__(posicao, classe, grupos, sprites_obstaculos)
+    def __init__(self, posicao, classe, grupos, sprites_obstaculos,sprites_minions):
+        super().__init__(posicao, classe, grupos)
         self.image = pg.image.load('personagemColisao.png')
         self.image = pg.transform.scale(self.image, (Configs.raio_personagem*2,Configs.raio_personagem*2))
         self.rect = self.image.get_rect(center = posicao)
         self.direcao = [0,0]
-
+        self.sprites_obstaculos = sprites_obstaculos
+        self.sprites_minions = sprites_minions
     def moverParteSolida(self,posicao):
         self.rect.x = posicao[0]-Configs.raio_personagem
         self.colisao('horizontal')
+        self.dano('horizontal',self.sprites_minions)
         self.rect.y = posicao[1]-Configs.raio_personagem
         self.colisao('vertical')
+        self.dano('vertical',self.sprites_minions)
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):

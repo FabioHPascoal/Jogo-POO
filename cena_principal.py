@@ -39,12 +39,12 @@ class CenaPrincipal:
                     Configs.spawnX_1 = x
                     Configs.spawnY_1 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'cavaleiro',[],self.sprites_obstaculos)
+                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'cavaleiro',[],self.sprites_obstaculos,self.sprites_minions)
                 if coluna == '2':
                     Configs.spawnX_2 = x
                     Configs.spawnY_2 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos)
+                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos,self.sprites_minions)
                 if coluna == '3':
                     Grama((x,y),[self.sprites_visiveis])
                     self.minion = Minion((x,y),[self.sprites_minions],self.sprites_obstaculos)
