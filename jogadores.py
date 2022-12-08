@@ -77,13 +77,14 @@ class Jogador(Jogadores):
         self.direcao = [0,0]
         self.sprites_obstaculos = sprites_obstaculos
         self.sprites_minions = sprites_minions
+        self.tempoImunidade = 0
+
     def moverParteSolida(self,posicao):
         self.rect.x = posicao[0]-Configs.raio_personagem
         self.colisao('horizontal')
-        self.dano('horizontal',self.sprites_minions)
         self.rect.y = posicao[1]-Configs.raio_personagem
         self.colisao('vertical')
-        self.dano('vertical',self.sprites_minions)
+        self.dano(self.sprites_minions)
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
     def colisao(self,direcao):
@@ -103,16 +104,13 @@ class Jogador(Jogadores):
                     else:
                         self.rect.top = sprite.rect.bottom
                             
-    def dano(self,direcao,sprites_inimigos):
-        if direcao ==  'horizontal':
+    def dano(self,sprites_inimigos):
             for sprite in sprites_inimigos:
-                if sprite.rect.colliderect(self.rect):
-                   self.vida -= 1
-        
-        if direcao ==  'vertical':
-            for sprite in sprites_inimigos:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.rect.colliderect(self.rect) and self.tempoImunidade >= 100:
                     self.vida -= 1
+                    self.tempoImunidade = 0
+                self.tempoImunidade += 1
+
 class Interacoes():
     def __init__(self):
         self.funcoes = Funcoes()
