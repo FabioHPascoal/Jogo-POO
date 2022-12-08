@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1280
     ALTURA_TELA = 720
-    ESCALA = 1
+    ESCALA = 2
     FRAME_RATE = 60
     DURACAO_FRAME = 100
     BLOCOS_TAMANHO = 32
@@ -43,7 +43,7 @@ class Configs:
     ]
 
     frames_por_animacao = {
-        "cavaleiro": [1, 8, 1, 8, 1, 8, 1, 8, 6],
+        "cavaleiro": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6],
         "arqueiro": [1, 8, 11, 1, 8, 11, 1, 8, 11, 1, 8, 11, 6],
         "ladino": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6]
     }
@@ -61,13 +61,19 @@ class Configs:
         "ladino": 5
     }
 
-    dimensoes_personagem = {
-        "cavaleiro": (64, 64),
+    dimensoes_sprite = {
+        "cavaleiro": (148, 90),
         "arqueiro": (64, 64),
         "ladino": (64, 64)
     }
 
-    raio_personagem = 16*ESCALA
+    subracao_rect = {
+        "cavaleiro": (74, 45),
+        "arqueiro": (31, 41),
+        "ladino": (31, 41)
+    }
+
+    raio_personagem = 16 * ESCALA
 
     massa_personagem = {
         "cavaleiro": 5,

@@ -7,7 +7,7 @@ class Jogadores(pg.sprite.Sprite):
     def __init__(self, posicao, classe, grupos):
         super().__init__(grupos)
         self.classe = classe
-        self.largura, self.altura = Configs.dimensoes_personagem[self.classe]
+        self.largura, self.altura = Configs.dimensoes_sprite[self.classe]
         self.massa = Configs.massa_personagem[self.classe]
         self.raio = Configs.raio_personagem
         self.escala = Configs.ESCALA
@@ -65,7 +65,8 @@ class Jogadores(pg.sprite.Sprite):
         self.atacando = True
 
     def desenha(self, tela, tempoAtual):
-        self.posicao_rect = [self.posicao[0] - 31 * self.escala, self.posicao[1] - 41 * self.escala]
+        self.posicao_rect = [self.posicao[0] - Configs.subracao_rect[self.classe][0] * self.escala, 
+                             self.posicao[1] - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
         if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME:
             self.frame_atual += 1

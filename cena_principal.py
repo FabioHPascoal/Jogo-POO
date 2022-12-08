@@ -31,21 +31,21 @@ class CenaPrincipal:
             for indice_coluna, coluna in enumerate(linha):
                 x = indice_coluna*Configs.BLOCOS_TAMANHO
                 y = indice_linha*Configs.BLOCOS_TAMANHO
-                if coluna == '4':
+                if coluna == "4":
                     Bloco((x,y),[self.sprites_visiveis,self.sprites_obstaculos])
-                if coluna == ' ':
+                if coluna == " ":
                     Grama((x,y),[self.sprites_visiveis])
-                if coluna == '1':
+                if coluna == "1":
                     Configs.spawnX_1 = x
                     Configs.spawnY_1 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],'cavaleiro',[],self.sprites_obstaculos,self.sprites_minions)
-                if coluna == '2':
+                    self.jogador1 = Jogador([Configs.spawnX_1,Configs.spawnY_1,],"cavaleiro",[],self.sprites_obstaculos,self.sprites_minions)
+                if coluna == "2":
                     Configs.spawnX_2 = x
                     Configs.spawnY_2 = y
                     Grama((x,y),[self.sprites_visiveis])
-                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],'arqueiro',[],self.sprites_obstaculos,self.sprites_minions)
-                if coluna == '3':
+                    self.jogador2 = Jogador([Configs.spawnX_2,Configs.spawnY_2,],"arqueiro",[],self.sprites_obstaculos,self.sprites_minions)
+                if coluna == "3":
                     Grama((x,y),[self.sprites_visiveis])
                     self.minion = Minion((x,y),[self.sprites_minions],self.sprites_obstaculos)
     def rodar(self):
@@ -64,7 +64,7 @@ class CenaPrincipal:
 
         # Jogador 1
         if self.jogador1.livre:
-            if pg.key.get_pressed()[pg.K_LSHIFT]:
+            if pg.key.get_pressed()[pg.K_c]:
                 self.jogador1.ataqueBasico()
 
         if pg.key.get_pressed()[pg.K_a]:
@@ -87,7 +87,7 @@ class CenaPrincipal:
 
         # Jogador 2
         if self.jogador2.livre:
-            if pg.key.get_pressed()[pg.K_SEMICOLON]:
+            if pg.key.get_pressed()[pg.K_PERIOD]:
                 self.jogador2.ataqueBasico()
         
         if pg.key.get_pressed()[pg.K_j]:
