@@ -11,27 +11,29 @@ class Jogadores(pg.sprite.Sprite):
         self.massa = Configs.massa_personagem[self.classe]
         self.raio = Configs.raio_personagem
         self.escala = Configs.ESCALA
+        self.livre = True
+        self.atacando = False
         self.posicao = posicao
         self.vetorUnitario = [0, 0]
         self.direcaoInicial = [0,0]
         self.animacao_atual = 3
         self.frame_atual = 0
         self.tempo_anterior = pg.time.get_ticks()
-        self.sprites = [] #[[idleE], [E], [idleD], [D], [idleC], [C], [idleB], [B], [morte]]
+        self.sprites = []
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.sprites_obstaculos = sprites_obstaculos
         self.funcoes = Funcoes()
 
         #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
-        for i in range(len(Configs.frames_por_animacao1)):
+        for i in range(len(Configs.frames_por_animacao[self.classe])):
             lista_temporaria = []
-            for _ in range(Configs.frames_por_animacao1[i]):
+            for _ in range(Configs.frames_por_animacao[self.classe][i]):
                 lista_temporaria.append(self.sprite_selecionado(self.images, contadorFrames, Configs.ESCALA))
                 contadorFrames += 1
             self.sprites.append(lista_temporaria)
 
-    def sprite_selecionado(self,sheet, frame, escala):
+    def sprite_selecionado(self, sheet, frame, escala):
         self.imagem = pg.Surface((self.largura, self.altura)).convert_alpha()
         self.imagem.blit(sheet, (0, 0), (frame * self.largura, 0, self.largura, self.altura))
         self.imagem = pg.transform.scale(self.imagem, (self.largura * escala, self.altura * escala))
@@ -39,29 +41,37 @@ class Jogadores(pg.sprite.Sprite):
         return self.imagem
 
     def mover(self):
-        if self.vetorUnitario[0] == self.vetorUnitario[1] == 0:
-            self.velocidade = [0,0]
-            self.frame_atual = 0
-            self.animacao_atual = Configs.seleciona_animacoes_parado[self.direcaoInicial[0], self.direcaoInicial[1]]
-            self.andando = False
-        else:
-            angulo = self.funcoes.inclinacaoSinCos(self.vetorUnitario[1], self.vetorUnitario[0])
-            Vmodulo = Configs.velocidade_personagem[self.classe]  
-         
-            if angulo % (math.pi/2) == 0:
-                self.direcaoInicial[0] = self.vetorUnitario[0]
-                self.direcaoInicial[1] = self.vetorUnitario[1]
-         
-            self.velocidade = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
-            self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]]
-            self.andando = True
+        if self.livre:
+            if self.vetorUnitario[0] == self.vetorUnitario[1] == 0:
+                self.velocidade = [0, 0]
+                self.frame_atual = 0
+                self.animacao_atual = Configs.seleciona_animacoes_parado[self.direcaoInicial[0], self.direcaoInicial[1]]
+            else:
+                angulo = self.funcoes.inclinacaoSinCos(self.vetorUnitario[1], self.vetorUnitario[0])
+                Vmodulo = Configs.velocidade_personagem[self.classe]  
             
+                if angulo % (math.pi/2) == 0:
+                    self.direcaoInicial[0] = self.vetorUnitario[0]
+                    self.direcaoInicial[1] = self.vetorUnitario[1]
+            
+                self.velocidade = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
+                self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]]
+
+    def ataqueBasico(self):
+        self.frame_atual = 0
+        self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
+        self.velocidade = [0, 0]
+        self.livre = False
+        self.atacando = True
+
     def desenha(self, tela, tempoAtual):
         self.posicao_rect = [self.posicao[0] - 31 * self.escala, self.posicao[1] - 41 * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME and self.andando:
+        if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME:
             self.frame_atual += 1
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
+                self.atacando = False
+                self.livre = True
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual
 
@@ -71,21 +81,21 @@ class Jogadores(pg.sprite.Sprite):
 class Jogador(Jogadores):
     def __init__(self, posicao, classe, grupos, sprites_obstaculos):
         super().__init__(posicao, classe, grupos, sprites_obstaculos)
-        self.image = pg.image.load('personagemColisao.png')
+        self.image = pg.image.load("personagemColisao.png")
         self.image = pg.transform.scale(self.image, (self.largura/2, self.altura/2))
         self.rect = self.image.get_rect(center = posicao)
         self.direcao = [0,0]
 
     def moverParteSolida(self,posicao):
         self.rect.x = posicao[0]
-        self.colisao('horizontal')
+        self.colisao("horizontal")
         self.rect.y = posicao[1]
-        self.colisao('vertical')
+        self.colisao("vertical")
         # print(self.rect)
         return self.rect[0],self.rect[1]
 
     def colisao(self,direcao):
-            if direcao ==  'horizontal':
+            if direcao ==  "horizontal":
                 for sprite in self.sprites_obstaculos:
                     if sprite.rect.colliderect(self.rect):
                         if self.rect.left < sprite.rect.left:
@@ -93,7 +103,7 @@ class Jogador(Jogadores):
                         else:
                             self.rect.left = sprite.rect.right
             
-            if direcao ==  'vertical':
+            if direcao ==  "vertical":
                 for sprite in self.sprites_obstaculos:
                     if sprite.rect.colliderect(self.rect):
                         if self.rect.top < sprite.rect.top:

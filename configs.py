@@ -4,7 +4,7 @@ class Configs:
     ALTURA_TELA = 720
     ESCALA = 2
     FRAME_RATE = 60
-    DURACAO_FRAME = 150
+    DURACAO_FRAME = 100
     BLOCOS_TAMANHO = 32
 
     spawnX_1 = (0.2 * LARGURA_TELA)
@@ -42,8 +42,12 @@ class Configs:
     ['4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4'],
     ]
 
-    frames_por_animacao1 = [1, 8, 1, 8, 1, 8, 1, 8, 6]
-    
+    frames_por_animacao = {
+        "cavaleiro": [1, 8, 1, 8, 1, 8, 1, 8, 6],
+        "arqueiro": [1, 8, 11, 1, 8, 11, 1, 8, 11, 1, 8, 11, 6],
+        "ladino": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6]
+    }
+
     angulo = {
         "direita": 0,
         "cima": math.pi/2,
@@ -53,40 +57,44 @@ class Configs:
 
     velocidade_personagem = {
         "cavaleiro": 5,
-        "arqueiro": 7
+        "arqueiro": 5,
+        "ladino": 5
     }
 
     dimensoes_personagem = {
         "cavaleiro": (64, 64),
-        "arqueiro": (64, 64)
+        "arqueiro": (64, 64),
+        "ladino": (64, 64)
     }
 
     raio_personagem = 16 * ESCALA
 
     massa_personagem = {
-        "cavaleiro": 10,
-        "arqueiro": 2
+        "cavaleiro": 5,
+        "arqueiro": 2,
+        "ladino": 2
     }
 
     cor_personagem = {
         "cavaleiro": (0, 0, 0),
-        "arqueiro": (100, 100, 100)
+        "arqueiro": (100, 100, 100),
+        "ladino": (100, 100, 100)
     }
 
     seleciona_animacoes = {
         (-1, 0): 1,
-        (1, 0): 3,
-        (0, -1): 5,
-        (0, 1): 7,
-        (0, 0): 3
+        (1, 0): 4,
+        (0, -1): 7,
+        (0, 1): 10,
+        (0, 0): 4
     }
 
     seleciona_animacoes_parado = {
         (-1, 0): 0,
-        (1, 0): 2,
-        (0, -1): 4,
-        (0, 1): 6,
-        (0, 0): 2
+        (1, 0): 3,
+        (0, -1): 6,
+        (0, 1): 9,
+        (0, 0): 3
     }
 
     COR_FUNDO = (71, 175, 191)
