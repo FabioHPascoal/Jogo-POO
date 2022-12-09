@@ -51,8 +51,9 @@ class Minion(pg.sprite.Sprite):
                         self.rect.right = sprite.rect.left
                     else:
                         self.rect.left = sprite.rect.right
-            for sprite in self.sprites_minions:
-                if sprite.rect.colliderect(self.rect):
+
+            for minion in self.sprites_minions:
+                if minion.rect.colliderect(self.rect):
                     colisaoEntreMinions += 1
                     if colisaoEntreMinions > 1:
                         if self.rect.left < sprite.rect.left:
@@ -69,8 +70,8 @@ class Minion(pg.sprite.Sprite):
                     else:
                         self.rect.top = sprite.rect.bottom
 
-            for sprite in self.sprites_minions:
-                if sprite.rect.colliderect(self.rect):
+            for minion in self.sprites_minions:
+                if minion.rect.colliderect(self.rect):
                     colisaoEntreMinions += 1
                     if colisaoEntreMinions > 1:
                         if self.rect.top < sprite.rect.top:

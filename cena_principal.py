@@ -14,7 +14,7 @@ class CenaPrincipal:
         self.tempoCorrido = 0
         self.tela = tela
         self.rodando = True
-        self.tempoImunidade = 1000
+        self.tempoEntreSpawn = 0
         #CAPTURAR SUPERFÍCIE DA TELA
         self.superficie_tela = pg.display.get_surface()
        
@@ -144,8 +144,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gerarMinions(self):
-        if len(self.sprites_minions) < 5 and self.tempoImunidade > 500 :
+        if len(self.sprites_minions) < 5 and pg.time.get_ticks()- self.tempoEntreSpawn > 10000 :
             Minion((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
-            randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), [self.sprites_minions], self.sprites_obstaculos)
-            self.tempoImunidade = 0
-        self.tempoImunidade += 1
+            randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)),'goblin', self.sprites_minions, self.sprites_obstaculos)
+            self.tempoEntreSpawn = pg.time.get_ticks()
