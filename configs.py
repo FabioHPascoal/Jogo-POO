@@ -1,8 +1,8 @@
 import math
 class Configs:
     LARGURA_TELA = 1280
-    ALTURA_TELA = 720
-    ESCALA = 1
+    ALTURA_TELA = 640
+    ESCALA = 2
     FRAME_RATE = 60
     DURACAO_FRAME = 100
     BLOCOS_TAMANHO = 32
