@@ -68,7 +68,7 @@ class Configs:
     }
 
     subracao_rect = {
-        "cavaleiro": (74, 45),
+        "cavaleiro": (73, 54),
         "arqueiro": (31, 41),
         "ladino": (31, 41)
     }

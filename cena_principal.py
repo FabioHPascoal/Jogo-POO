@@ -146,6 +146,6 @@ class CenaPrincipal:
     def gerarMinions(self):
         if len(self.sprites_minions) < 5 and self.tempoImunidade > 500 :
             Minion((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
-            randint(Configs.BLOCOS_TAMANHO,Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)),'goblin',self.sprites_minions,self.sprites_obstaculos)
+            randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), [self.sprites_minions], self.sprites_obstaculos)
             self.tempoImunidade = 0
         self.tempoImunidade += 1
