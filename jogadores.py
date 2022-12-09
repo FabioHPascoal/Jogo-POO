@@ -76,30 +76,30 @@ class Jogadores(pg.sprite.Sprite):
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual
 
-        # cor = Configs.cor_personagem[self.classe]
-        # pg.draw.circle(tela, cor, self.posicao, self.raio)
+        cor = Configs.cor_personagem[self.classe]
+        pg.draw.circle(tela, cor, self.posicao, self.raio)
         
 class Jogador(Jogadores):
     def __init__(self, posicao, classe, grupos, sprites_obstaculos,sprites_minions):
         super().__init__(posicao, classe, grupos)
-        self.image = pg.image.load('personagemColisao.png')
-        self.image = pg.transform.scale(self.image, (Configs.raio_personagem*2,Configs.raio_personagem*2))
+        self.image = pg.image.load("personagemColisao.png")
+        self.image = pg.transform.scale(self.image, (Configs.raio_personagem * 2, Configs.raio_personagem * 2))
         self.rect = self.image.get_rect(center = posicao)
-        self.direcao = [0,0]
+        self.direcao = [0, 0]
         self.sprites_obstaculos = sprites_obstaculos
         self.sprites_minions = sprites_minions
         self.tempoImunidade = 501
 
     def moverParteSolida(self,posicao):
         self.rect.x = posicao[0]-Configs.raio_personagem
-        self.colisao('horizontal')
+        self.colisao("horizontal")
         self.rect.y = posicao[1]-Configs.raio_personagem
-        self.colisao('vertical')
+        self.colisao("vertical")
         self.correcaoSairDoMapa()
         return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
 
-    def colisao(self,direcao):
-        if direcao ==  'horizontal':
+    def colisao(self, direcao):
+        if direcao == "horizontal":
             for sprite in self.sprites_obstaculos:
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.left < sprite.rect.left:
@@ -118,7 +118,7 @@ class Jogador(Jogadores):
                         self.tempoImunidade = 0
                     self.tempoImunidade += 1
         
-        if direcao ==  'vertical':
+        if direcao == "vertical":
             for sprite in self.sprites_obstaculos:
                 if sprite.rect.colliderect(self.rect):
                     if self.rect.top < sprite.rect.top:
@@ -146,7 +146,6 @@ class Jogador(Jogadores):
             self.rect.top = Configs.BLOCOS_TAMANHO
         if self.rect.bottom > Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO:
             self.rect.bottom = Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO
-
 
 class Interacoes():
     def __init__(self):
