@@ -2,6 +2,7 @@ import pygame as pg
 import math
 from configs import Configs
 from funcoes import Funcoes
+from habilidades import Flecha
 
 class Jogadores(pg.sprite.Sprite):
     def __init__(self, posicao, classe, grupos):
@@ -22,6 +23,7 @@ class Jogadores(pg.sprite.Sprite):
         self.sprites = []
         self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
         self.funcoes = Funcoes()
+        self.flecha_lista = pg.sprite.Group()
         self.vida = 3
 
         #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
@@ -60,6 +62,7 @@ class Jogadores(pg.sprite.Sprite):
     def ataqueBasico(self):
         self.frame_atual = 0
         self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
+       
         self.velocidade = [0, 0]
         self.livre = False
         self.atacando = True
@@ -70,17 +73,27 @@ class Jogadores(pg.sprite.Sprite):
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
         if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME:
             self.frame_atual += 1
+            
+            if self.atacando and self.classe == "arqueiro" and self.frame_atual == 9:
+                flecha = Flecha(self.direcaoInicial)
+                flecha.rect.x = self.posicao_rect[0]
+                flecha.rect.y = self.posicao_rect[1]
+                self.flecha_lista.add(flecha)
+
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
                 self.atacando = False
                 self.livre = True
                 self.frame_atual = 0
-            self.tempo_anterior = tempoAtual
+            self.tempo_anterior = tempoAtual     
 
-        cor = Configs.cor_personagem[self.classe]
-        pg.draw.circle(tela, cor, self.posicao, self.raio)
+        self.flecha_lista.update()
+        self.flecha_lista.draw(tela)      
+
+        # cor = Configs.cor_personagem[self.classe]
+        # pg.draw.circle(tela, cor, self.posicao, self.raio)
         
 class Jogador(Jogadores):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos,sprites_minions):
+    def __init__(self, posicao, classe, grupos, sprites_obstaculos, sprites_minions):
         super().__init__(posicao, classe, grupos)
         self.image = pg.image.load("personagemColisao.png")
         self.image = pg.transform.scale(self.image, (Configs.raio_personagem * 2, Configs.raio_personagem * 2))

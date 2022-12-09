@@ -103,6 +103,19 @@ class Configs:
         (0, 0): 3
     }
 
+    seleciona_animacoes_flecha = {
+        (-1, 0): 0,
+        (1, 0): 1,
+        (0, -1): 2,
+        (0, 1): 3,
+    }
+
+    frame_ataque_basico = {
+        "cavaleiro": 1,
+        "arqueiro": 9,
+        "ladino": 1
+    }
+
     COR_FUNDO = (71, 175, 191)
 
     desaceleracao = 1

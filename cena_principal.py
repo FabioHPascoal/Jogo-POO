@@ -15,10 +15,11 @@ class CenaPrincipal:
         self.tela = tela
         self.rodando = True
         self.tempoImunidade = 1000
-        #CAPTURAR SUPERFÍCIE DA TELA
+       
+        #Captura a superfície da tela
         self.superficie_tela = pg.display.get_surface()
        
-        #GRUPOS DE SPRITES
+        #Grupos de sprites
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
@@ -54,7 +55,6 @@ class CenaPrincipal:
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
-            # print(self.jogador1.animacao_atual)
 
     def tratamento_eventos(self):
         pg.event.get()
