@@ -2,47 +2,57 @@ import pygame as pg
 import math
 from configs import Configs
 from funcoes import Funcoes
-from habilidades import Flecha
 
 class Jogadores(pg.sprite.Sprite):
-    def __init__(self, posicao, classe, grupos):
-        super().__init__(grupos)
+    def __init__(self, posicao, classe):
+        super().__init__()
+        self.funcoes = Funcoes()
+        
         self.classe = classe
-        self.largura, self.altura = Configs.dimensoes_sprite[self.classe]
-        self.massa = Configs.massa_personagem[self.classe]
-        self.raio = Configs.raio_personagem
-        self.escala = Configs.ESCALA
-        self.livre = True
-        self.atacando = False
-        self.posicao = posicao
+        self.posicao = [posicao[0], posicao[1]]
         self.vetorUnitario = [0, 0]
-        self.direcaoInicial = [0,0]
+        self.direcaoInicial = [0, 0]
+        self.Vadicional = [0, 0]
+        self.vida = 3
+      
+        self.largura_sprite, self.altura_sprite = Configs.dimensoes_sprite[self.classe]
+        self.escala = Configs.ESCALA
+        self.sprite_sheet = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
+        self.image = pg.image.load(f"sprites/{Configs.hitbox_arquivo[self.classe]}.png").convert_alpha()
+        self.image = pg.transform.scale(self.image, Configs.DIMENSOES_PERSONAGEM)
+        self.rect = self.image.get_rect(center = self.posicao)
+        self.mask = pg.mask.from_surface(self.image)
+        self.tempo_anterior = pg.time.get_ticks()
         self.animacao_atual = 3
         self.frame_atual = 0
-        self.tempo_anterior = pg.time.get_ticks()
         self.sprites = []
-        self.images = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
-        self.funcoes = Funcoes()
-        self.flecha_lista = pg.sprite.Group()
-        self.vida = 3
+        self.livre = True
+        self.atacando = False
 
-        #Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
+        # Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
         for i in range(len(Configs.frames_por_animacao[self.classe])):
             lista_temporaria = []
             for _ in range(Configs.frames_por_animacao[self.classe][i]):
-                lista_temporaria.append(self.sprite_selecionado(self.images, contadorFrames, Configs.ESCALA))
+                lista_temporaria.append(self.sprite_selecionado(self.sprite_sheet, contadorFrames, Configs.ESCALA))
                 contadorFrames += 1
             self.sprites.append(lista_temporaria)
 
     def sprite_selecionado(self, sheet, frame, escala):
-        self.imagem = pg.Surface((self.largura, self.altura)).convert_alpha()
-        self.imagem.blit(sheet, (0, 0), (frame * self.largura, 0, self.largura, self.altura))
-        self.imagem = pg.transform.scale(self.imagem, (self.largura * escala, self.altura * escala))
-        self.imagem.set_colorkey((0, 0, 0, 0))
-        return self.imagem
+        imagem = pg.Surface((self.largura_sprite, self.altura_sprite)).convert_alpha()
+        imagem.blit(sheet, (0, 0), (frame * self.largura_sprite, 0, self.largura_sprite, self.altura_sprite))
+        imagem = pg.transform.scale(imagem, (self.largura_sprite * escala, self.altura_sprite * escala))
+        imagem.set_colorkey((0, 0, 0, 0))
+        return imagem
 
-    def mover(self):
+    def novaPosicao(self):
+        # Desaceleracao
+        if self.Vadicional[0] != 0:
+            self.Vadicional[0] -= Configs.DESACELERACAO * self.funcoes.sinal(self.Vadicional[0])
+        if self.Vadicional[1] != 0:
+            self.Vadicional[1] -= Configs.DESACELERACAO * self.funcoes.sinal(self.Vadicional[1]) 
+
+        # Movimento comandado pelo jogador
         if self.livre:
             if self.vetorUnitario[0] == self.vetorUnitario[1] == 0:
                 self.velocidade = [0, 0]
@@ -55,10 +65,18 @@ class Jogadores(pg.sprite.Sprite):
                 if angulo % (math.pi/2) == 0:
                     self.direcaoInicial[0] = self.vetorUnitario[0]
                     self.direcaoInicial[1] = self.vetorUnitario[1]
-            
+
                 self.velocidade = [int(Vmodulo * math.cos(angulo)), int(Vmodulo * math.sin(angulo))]
                 self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]]
 
+        self.posicaoBackup = self.rect.center
+        self.velocidadeTotal = [self.velocidade[0] + self.Vadicional[0], self.velocidade[1] + self.Vadicional[1]]
+
+        self.rect.centerx += self.velocidadeTotal[0]
+        self.rect.centery += self.velocidadeTotal[1]
+
+        self.proximaPosicao = self.rect.center
+    
     def ataqueBasico(self):
         self.frame_atual = 0
         self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
@@ -68,152 +86,14 @@ class Jogadores(pg.sprite.Sprite):
         self.atacando = True
 
     def desenha(self, tela, tempoAtual):
-        self.posicao_rect = [self.posicao[0] - Configs.subracao_rect[self.classe][0] * self.escala, 
-                             self.posicao[1] - Configs.subracao_rect[self.classe][1] * self.escala]
+        self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
+                             self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
         if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME:
             self.frame_atual += 1
-            
-            if self.atacando and self.classe == "arqueiro" and self.frame_atual == 9:
-                flecha = Flecha(self.direcaoInicial)
-                flecha.rect.x = self.posicao_rect[0]
-                flecha.rect.y = self.posicao_rect[1]
-                self.flecha_lista.add(flecha)
 
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
                 self.atacando = False
                 self.livre = True
                 self.frame_atual = 0
-            self.tempo_anterior = tempoAtual     
-
-        self.flecha_lista.update()
-        self.flecha_lista.draw(tela)      
-
-        # cor = Configs.cor_personagem[self.classe]
-        # pg.draw.circle(tela, cor, self.posicao, self.raio)
-        
-class Jogador(Jogadores):
-    def __init__(self, posicao, classe, grupos, sprites_obstaculos, sprites_minions):
-        super().__init__(posicao, classe, grupos)
-        self.image = pg.image.load("personagemColisao.png")
-        self.image = pg.transform.scale(self.image, (Configs.raio_personagem * 2, Configs.raio_personagem * 2))
-        self.rect = self.image.get_rect(center = posicao)
-        self.direcao = [0, 0]
-        self.sprites_obstaculos = sprites_obstaculos
-        self.sprites_minions = sprites_minions
-        self.tempoImunidade = 501
-
-    def moverParteSolida(self,posicao):
-        self.rect.x = posicao[0]-Configs.raio_personagem
-        self.colisao("horizontal")
-        self.rect.y = posicao[1]-Configs.raio_personagem
-        self.colisao("vertical")
-        self.correcaoSairDoMapa()
-        return self.rect[0]+Configs.raio_personagem,self.rect[1]+Configs.raio_personagem
-
-    def colisao(self, direcao):
-        if direcao == "horizontal":
-            for sprite in self.sprites_obstaculos:
-                if sprite.rect.colliderect(self.rect):
-                    if self.rect.left < sprite.rect.left:
-                        self.rect.right = sprite.rect.left
-                    elif self.rect.left > sprite.rect.left:
-                        self.rect.left = sprite.rect.right
-
-            for sprite in self.sprites_minions:
-                if sprite.rect.colliderect(self.rect):
-                    if self.rect.left < sprite.rect.left:
-                        self.rect.right = sprite.rect.left - 5
-                    elif self.rect.left > sprite.rect.left:
-                        self.rect.left = sprite.rect.right
-                    if self.tempoImunidade >= 100:
-                        self.vida -= 1
-                        self.tempoImunidade = 0
-                    self.tempoImunidade += 1
-        
-        if direcao == "vertical":
-            for sprite in self.sprites_obstaculos:
-                if sprite.rect.colliderect(self.rect):
-                    if self.rect.top < sprite.rect.top:
-                        self.rect.bottom = sprite.rect.top
-                    elif self.rect.top > sprite.rect.top:
-                        self.rect.top = sprite.rect.bottom
-    
-            for sprite in self.sprites_minions:
-                if sprite.rect.colliderect(self.rect):
-                    if self.rect.top < sprite.rect.top:
-                        self.rect.bottom = sprite.rect.top
-                    elif self.rect.top > sprite.rect.top:
-                        self.rect.top = sprite.rect.bottom
-                    if self.tempoImunidade >= 100:
-                        self.vida -= 1
-                        self.tempoImunidade = 0
-                    self.tempoImunidade += 1
-
-    def correcaoSairDoMapa(self):
-        if self.rect.left < Configs.BLOCOS_TAMANHO:
-            self.rect.left = Configs.BLOCOS_TAMANHO
-        if self.rect.right > Configs.LARGURA_TELA - Configs.BLOCOS_TAMANHO:
-            self.rect.right = Configs.LARGURA_TELA - Configs.BLOCOS_TAMANHO
-        if self.rect.top < Configs.BLOCOS_TAMANHO:
-            self.rect.top = Configs.BLOCOS_TAMANHO
-        if self.rect.bottom > Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO:
-            self.rect.bottom = Configs.ALTURA_TELA - Configs.BLOCOS_TAMANHO
-
-class Interacoes():
-    def __init__(self):
-        self.funcoes = Funcoes()
-        self.funcoes.velocidade_colisao(1, 1, 1, 1)
-        self.Vadicional1 = [0, 0]
-        self.Vadicional2 = [0, 0]
-
-    def atualiza_posicao(self, posicao1, posicao2, velocidade1, velocidade2, massa1, massa2):      
-        
-        self.X1, self.Y1 = posicao1
-        self.X2, self.Y2 = posicao2
-
-        V1x, V1y = velocidade1
-        V2x, V2y = velocidade2
-        
-        r = Configs.raio_personagem
-
-        # Desaceleração
-        if self.Vadicional1[0] != 0:
-            self.Vadicional1[0] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional1[0])
-        if self.Vadicional1[1] != 0:
-            self.Vadicional1[1] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional1[1])
-        if self.Vadicional2[0] != 0:
-            self.Vadicional2[0] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional2[0])
-        if self.Vadicional2[1] != 0:
-            self.Vadicional2[1] -= Configs.desaceleracao * self.funcoes.sinal(self.Vadicional2[1])
-
-        novaVelocidade1 = [V1x + self.Vadicional1[0], V1y + self.Vadicional1[1]]
-        novaVelocidade2 = [V2x + self.Vadicional2[0], V2y + self.Vadicional2[1]]
-
-        novo_X1 = self.X1 + novaVelocidade1[0]
-        novo_Y1 = self.Y1 + novaVelocidade1[1]
-        novo_X2 = self.X2 + novaVelocidade2[0]
-        novo_Y2 = self.Y2 + novaVelocidade2[1]
-
-        distancia_squared = self.funcoes.distancia_squared(novo_X1, novo_Y1, novo_X2, novo_Y2)
-       
-        #Não-colisão
-        if distancia_squared >= (2 * r) ** 2:
-            return [novo_X1, novo_Y1], [novo_X2, novo_Y2]
-
-        #Colisão
-        else:
-            angulo1 = self.funcoes.inclinacaoPontos(self.X2, self.Y2, self.X1, self.Y1) + math.pi
-            angulo2 = self.funcoes.inclinacaoPontos(self.X1, self.Y1, self.X2, self.Y2) + math.pi
-
-            moduloVelocidade1 = ((V1x ** 2) + (V1y ** 2)) ** 0.5
-            moduloVelocidade2 = ((V2x ** 2) + (V2y ** 2)) ** 0.5
-
-            solucao = self.funcoes.velocidade_colisao(massa1, int(moduloVelocidade1), massa2, int(moduloVelocidade2))
-
-            self.Vadicional1[0] += int(abs(solucao[0] - moduloVelocidade1) * math.cos(angulo1)) 
-            self.Vadicional1[1] += int(abs(solucao[0] - moduloVelocidade1) * math.sin(angulo1))
-            self.Vadicional2[0] += int(abs(solucao[1] - moduloVelocidade2) * math.cos(angulo2)) 
-            self.Vadicional2[1] += int(abs(solucao[1] - moduloVelocidade2) * math.sin(angulo2))
-            
-            return [self.X1, self.Y1], [self.X2, self.Y2]
+            self.tempo_anterior = tempoAtual      
