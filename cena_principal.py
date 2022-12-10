@@ -6,7 +6,8 @@ from jogadores import*
 from configs import Configs
 from bloco import*
 from minion import Minion
-from placar import placar
+from HUD import HUD
+from cronometro import Cronometro
 
 class CenaPrincipal:
     def __init__(self, tela):
@@ -15,6 +16,8 @@ class CenaPrincipal:
         self.tela = tela
         self.rodando = True
         self.tempoEntreSpawn = 0
+        self.cronometro = Cronometro()
+
         #CAPTURAR SUPERFÍCIE DA TELA
         self.superficie_tela = pg.display.get_surface()
        
@@ -139,7 +142,7 @@ class CenaPrincipal:
             self.jogador1.desenha(self.tela, pg.time.get_ticks())
             # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador1.rect)
             # pg.draw.rect(self.tela,Configs.BRANCO,self.jogador2.rect)
-        placar(self.jogador1.vida,self.jogador2.vida)
+        HUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks()))
         pg.display.flip()
 
     def gerarMinions(self):

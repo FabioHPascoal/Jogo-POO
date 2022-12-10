@@ -1,11 +1,11 @@
-from time import time
 class Cronometro:
     def __init__(self):
         self.reset()
 
     def reset(self):
-        self.tempo_referencia = time()
+        self.contagem = 2 * 60 * 1000 #2minutos
 
-    def tempo_passado(self):
-        tempo_atual = time()
-        return tempo_atual - self.tempo_referencia
+    def tempoPassado(self,tempoDeJogo):
+        return (self.contagem - tempoDeJogo)//1000
+
+
