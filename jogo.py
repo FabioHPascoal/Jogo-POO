@@ -3,6 +3,7 @@
 
 import pygame as pg
 from cena_principal import CenaPrincipal
+from cena_selecao_personagem import cenaSelecaoPersonagem
 from configs import Configs
 
 class JogoPOO:
@@ -13,5 +14,7 @@ class JogoPOO:
         pg.display.set_caption('JOGO')
     def rodar(self):
         while True:
+            escolher_personagem = cenaSelecaoPersonagem(self.tela)
+            escolher_personagem.rodar()
             cena_principal = CenaPrincipal(self.tela)
             cena_principal.rodar()
