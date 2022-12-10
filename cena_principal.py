@@ -4,8 +4,9 @@ from jogadores import*
 from bloco import*
 from configs import Configs
 from funcoes import Funcoes
-from placar import placar
+from HUD import HUD
 from random import randint
+from cronometro import Cronometro
 
 class CenaPrincipal:
     def __init__(self, tela):
@@ -20,7 +21,7 @@ class CenaPrincipal:
         self.tempoEntreSpawn = 0
         self.massa1 = Configs.massa_personagem[self.classe1]
         self.massa2 = Configs.massa_personagem[self.classe2]
-
+        self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
        
         #Captura a superfície da tela
@@ -200,7 +201,7 @@ class CenaPrincipal:
         # self.sprite_jogador1.draw(self.superficie_tela)
         # self.sprite_jogador2.draw(self.superficie_tela)
 
-        placar(self.jogador1.vida,self.jogador2.vida)
+        HUD(self.jogador1.vida, self.jogador2.vida, self.cronometro.tempoPassado(pg.time.get_ticks()))
 
         pg.display.flip()
 
