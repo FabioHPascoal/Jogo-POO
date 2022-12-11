@@ -29,6 +29,8 @@ class cenaSelecaoPersonagem:
         self.sprites_ladino = []
         self.frame_atual = 3
         self.tempo_anterior = 0
+        self.marcador1 = Configs.AZUL
+        self.marcador2 = Configs.AZUL
 
         # sprites arqueiro
         contadorFrames = 0
@@ -57,21 +59,34 @@ class cenaSelecaoPersonagem:
 
     def desenharPainel(self):
         self.tela.fill(Configs.BRANCO)
-        pg.draw.rect(self.tela,Configs.AZUL,self.retanguloJ1)
-        pg.draw.rect(self.tela,Configs.AZUL,self.retanguloJ2)
+        pg.draw.rect(self.tela,self.marcador1,self.retanguloJ1)
+        pg.draw.rect(self.tela,self.marcador2,self.retanguloJ2)
         self.exibirPersonagens()
         pg.display.flip()
         
     def exibirPersonagens(self):
-        infoJ1 = 'Classe: ' + str(self.selecionadoJ1)
         infoJ2 = 'Classe: ' + str(self.selecionadoJ2)
         superficie_tela = pg.display.get_surface()
-        superficie_dadosJ1= self.fonte.render(str(infoJ1),True,Configs.PRETO)
-        superficie_dadosJ2= self.fonte.render(str(infoJ2),True,Configs.PRETO)
-        retangulo1 = superficie_dadosJ1.get_rect(topleft = (350,30))
-        retangulo2 = superficie_dadosJ2.get_rect(topleft = (1000,30))
-        superficie_tela.blit(superficie_dadosJ1,retangulo1)
-        superficie_tela.blit(superficie_dadosJ2,retangulo2)
+
+        superficie_dadosJ1 = []
+        superficie_dadosJ2 = []
+
+        superficie_dadosJ1.append(self.fonte.render('Classe: ' + str(self.selecionadoJ1),True,Configs.PRETO))
+        superficie_dadosJ1.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ1]),True,Configs.PRETO))
+        superficie_dadosJ1.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ1]),True,Configs.PRETO))
+
+        superficie_dadosJ2.append(self.fonte.render('Classe: ' + str(self.selecionadoJ2),True,Configs.PRETO))
+        superficie_dadosJ2.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ2]),True,Configs.PRETO))
+        superficie_dadosJ2.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ2]),True,Configs.PRETO))
+
+        i = 0
+        for dados in superficie_dadosJ1:
+            superficie_tela.blit(dados,dados.get_rect(topleft = (350,60 + i*40)))
+            i += 1
+        i = 0
+        for dados in superficie_dadosJ2:
+            superficie_tela.blit(dados,dados.get_rect(topleft = (1000,60 + i*40)))
+            i += 1
 
         self.dicionario = {'arqueiro': self.sprites_arqueiro[self.frame_atual],'cavaleiro':self.sprites_cavaleiro[self.frame_atual],
         'ladino':self.sprites_ladino[self.frame_atual]}
@@ -122,6 +137,7 @@ class cenaSelecaoPersonagem:
 
             if pg.key.get_pressed()[pg.K_r]:
                 self.selecaoConcluida[0] = True
+                self.marcador1 = Configs.VERMELHO
 
             # Jogador 2
             if pg.key.get_pressed()[pg.K_l]:
@@ -137,11 +153,12 @@ class cenaSelecaoPersonagem:
             self.selecionadoJ2 = self.listaPersonagens[self.i2]
 
             if pg.key.get_pressed()[pg.K_p]:
-                self.selecaoConcluida[1] = True       
+                self.selecaoConcluida[1] = True   
+                self.marcador2 = Configs.VERMELHO    
 
     def rodar(self):
         while(self.selecaoConcluida != [True,True]):
             self.desenharPainel()
             self.escolherPersonagem()
-            self.tempo = pg.time.get_ticks()
             self.frameRate.tick(Configs.FRAME_RATE)
+            self.tempo = pg.time.get_ticks()

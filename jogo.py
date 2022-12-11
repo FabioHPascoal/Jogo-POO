@@ -13,5 +13,5 @@ class JogoPOO:
         while True:
             escolher_personagem = cenaSelecaoPersonagem(self.tela)
             escolher_personagem.rodar()
-            cena_principal = CenaPrincipal(self.tela,escolher_personagem.selecionadoJ1,escolher_personagem.selecionadoJ2)
+            cena_principal = CenaPrincipal(self.tela,escolher_personagem.selecionadoJ1,escolher_personagem.selecionadoJ2,escolher_personagem.tempo)
             cena_principal.rodar()

@@ -10,7 +10,8 @@ from random import randint
 from cronometro import Cronometro
 
 class CenaPrincipal:
-    def __init__(self, tela,classe1,classe2):
+    def __init__(self, tela,classe1,classe2,tempoGastoSelecaoPersonagem):
+        self.tempoGastoSelecaoPersonagem = tempoGastoSelecaoPersonagem
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
         self.tela = tela
@@ -265,8 +266,7 @@ class CenaPrincipal:
             self.lista_objetos[indice].desenha(self.tela, pg.time.get_ticks())
 
         self.lista_PosicaoY.clear()
-
-        self.hud.exibirHUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks()))
+        self.hud.exibirHUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks() - self.tempoGastoSelecaoPersonagem))
 
         pg.display.flip()
 
