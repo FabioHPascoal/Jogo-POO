@@ -10,13 +10,13 @@ from random import randint
 from cronometro import Cronometro
 
 class CenaPrincipal:
-    def __init__(self, tela):
+    def __init__(self, tela,classe1,classe2):
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
         self.tela = tela
         self.rodando = True
-        self.classe1 = "cavaleiro"
-        self.classe2 = "arqueiro"
+        self.classe1 = classe1
+        self.classe2 = classe2
         self.minion = "goblin"
         self.lista_minions = []
         self.lista_objetos = []
@@ -24,7 +24,7 @@ class CenaPrincipal:
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
-       
+        self.hud = HUD(Configs.vitalidade[self.classe1],Configs.vitalidade[self.classe2])
         #Captura a superfície da tela
         self.superficie_tela = pg.display.get_surface()
 
@@ -49,6 +49,10 @@ class CenaPrincipal:
              
                 if coluna == "4":
                     Bloco((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
+
+                if coluna == "5":
+                    Grama((x, y), [self.sprites_visiveis])
+                    Caixa((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
              
                 if coluna == " ":
                     Grama((x, y), [self.sprites_visiveis])
@@ -70,6 +74,7 @@ class CenaPrincipal:
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
+
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -122,6 +127,15 @@ class CenaPrincipal:
             self.jogador2.vetorUnitario[1] = 0
 
     def atualiza_estado(self):
+
+        #Verificar fim de jogo
+        if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
+            print(self.jogador1.morte,self.jogador2.morte)
+            self.rodando = False
+        if self.cronometro.cronometrado <= 0:
+            self.rodando = False
+
+
         self.sprites_visiveis
       
         self.jogador1.atualizaVelocidade()
@@ -189,6 +203,10 @@ class CenaPrincipal:
 
             # Colisão dos minions com o jogador 1
             if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
+                if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
+                    self.jogador1.vida -= 1
+                    self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
                 self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                 self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
@@ -200,6 +218,10 @@ class CenaPrincipal:
 
             # Colisão dos minions com o jogador 2
             if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
+                if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
+                    self.jogador2.vida -= 1
+                    self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
+
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)
                 self.jogador2.Vadicional[0] += velocidades_adicionais[0][0]
                 self.jogador2.Vadicional[1] += velocidades_adicionais[0][1]
@@ -244,7 +266,7 @@ class CenaPrincipal:
 
         self.lista_PosicaoY.clear()
 
-        HUD(self.jogador1.vida, self.jogador2.vida, self.cronometro.tempoPassado(pg.time.get_ticks()))
+        self.hud.exibirHUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks()))
 
         pg.display.flip()
 

@@ -16,8 +16,11 @@ class Jogadores(pg.sprite.Sprite):
         self.velocidade = [0, 0]
         self.Vadicional = [0, 0]
         self.massa = Configs.massa_personagem[classe]
-        self.vida = 3
-      
+        self.vida = Configs.vitalidade[classe]
+        self.tempoDeImunidade = 2000 #2segundo
+        self.tempoDoUltimoDano = 0
+        self.morte = False
+
         self.largura_sprite, self.altura_sprite = Configs.dimensoes_sprite[self.classe]
         self.escala = Configs.ESCALA
         self.sprite_sheet = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()
@@ -101,3 +104,9 @@ class Jogadores(pg.sprite.Sprite):
                 self.livre = True
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual      
+
+    def verificarMorte(self):
+        if self.vida <= 0:
+            print(self.vida)
+            self.morte = True
+        return self.morte
