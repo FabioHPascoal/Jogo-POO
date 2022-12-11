@@ -7,9 +7,11 @@ class cenaSelecaoPersonagem:
         self.frameRate = pg.time.Clock()
         self.tela = tela
         self.superficie_tela = pg.display.get_surface()
-        self.fonte = pg.font.Font(None, 40)
-        self.retanguloJ1 = pg.rect.Rect(30, 30, 200, 200)
-        self.retanguloJ2 = pg.rect.Rect(Configs.LARGURA_TELA / 2 + 30, 30, 200, 200)
+        self.painel = pg.image.load('sprites/selecaoPersonagens.png')
+        self.fonte = pg.font.SysFont('arialblack',25)
+        self.fonteHistoria = pg.font.SysFont('arialblack',20)
+        self.retanguloJ1 = pg.rect.Rect(100, 120, 200, 200)
+        self.retanguloJ2 = pg.rect.Rect(Configs.LARGURA_TELA / 2 + 100, 120, 200, 200)
         self.rodando = True
         self.listaPersonagens = ['arqueiro','ladino','cavaleiro']
         self.selecionadoJ1 = 'arqueiro'
@@ -34,21 +36,11 @@ class cenaSelecaoPersonagem:
         self.sprite_sheet_ladino = pg.image.load("sprites/ladino.png").convert_alpha()
         self.sprites_ladino = []
 
-        # sprites arqueiro
+        # sprites arqueiro, cavaleiro e ladino
         contadorFrames = 1
         for _ in range(8):
             self.sprites_arqueiro.append(self.sprite_selecionado(self.sprite_sheet_arqueiro, contadorFrames, Configs.dimensoes_sprite['arqueiro']))
-            contadorFrames += 1
-
-        # sprites cavaleiro
-        contadorFrames = 1
-        for _ in range(8):
             self.sprites_cavaleiro.append(self.sprite_selecionado(self.sprite_sheet_cavaleiro, contadorFrames, Configs.dimensoes_sprite['cavaleiro']))
-            contadorFrames += 1
-
-        # sprites ladino
-        contadorFrames = 1
-        for _ in range(8):
             self.sprites_ladino.append(self.sprite_selecionado(self.sprite_sheet_ladino, contadorFrames, Configs.dimensoes_sprite['ladino']))
             contadorFrames += 1
 
@@ -61,11 +53,14 @@ class cenaSelecaoPersonagem:
 
     def desenharPainel(self):
         self.tela.fill(Configs.BRANCO)
-        pg.draw.rect(self.tela,self.marcador1,self.retanguloJ1)
-        pg.draw.rect(self.tela,self.marcador2,self.retanguloJ2)
+        self.tela.blit(self.painel,(0,0))
         self.exibirPersonagens()
+
         pg.display.flip()
-        
+        fonts = pg.font.get_fonts()
+        print(len(fonts))
+        for f in fonts:
+            print(f)
     def exibirPersonagens(self):
         infoJ2 = 'Classe: ' + str(self.selecionadoJ2)
         superficie_tela = pg.display.get_surface()
@@ -73,23 +68,32 @@ class cenaSelecaoPersonagem:
         superficie_dadosJ1 = []
         superficie_dadosJ2 = []
 
-        superficie_dadosJ1.append(self.fonte.render('Classe: ' + str(self.selecionadoJ1),True,Configs.PRETO))
-        superficie_dadosJ1.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ1]),True,Configs.PRETO))
-        superficie_dadosJ1.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ1]),True,Configs.PRETO))
+        superficie_dadosJ1.append(self.fonte.render('Classe: ' + str(self.selecionadoJ1),True,Configs.CINZA))
+        superficie_dadosJ1.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ1]),True,Configs.CINZA))
+        superficie_dadosJ1.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ1]),True,Configs.CINZA))
+        historiaJ1 = (self.fonteHistoria.render(str(Configs.historia[self.selecionadoJ1][0]),True,Configs.CINZA_ESCURO),
+        self.fonteHistoria.render(str(Configs.historia[self.selecionadoJ1][1]),True,Configs.CINZA_ESCURO))
 
-        superficie_dadosJ2.append(self.fonte.render('Classe: ' + str(self.selecionadoJ2),True,Configs.PRETO))
-        superficie_dadosJ2.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ2]),True,Configs.PRETO))
-        superficie_dadosJ2.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ2]),True,Configs.PRETO))
-
+        superficie_dadosJ2.append(self.fonte.render('Classe: ' + str(self.selecionadoJ2),True,Configs.CINZA))
+        superficie_dadosJ2.append(self.fonte.render('Velocidade: '+  str(Configs.velocidade_personagem[self.selecionadoJ2]),True,Configs.CINZA))
+        superficie_dadosJ2.append(self.fonte.render('vitalidade: '+ str(Configs.vitalidade[self.selecionadoJ2]),True,Configs.CINZA))
+        historiaJ2 = (self.fonteHistoria.render(str(Configs.historia[self.selecionadoJ2][0]),True,Configs.CINZA_ESCURO),
+        self.fonteHistoria.render(str(Configs.historia[self.selecionadoJ2][1]),True,Configs.CINZA_ESCURO))
+        
         i = 0
         for dados in superficie_dadosJ1:
-            superficie_tela.blit(dados, dados.get_rect(topleft = (350, 60 + i * 40)))
+            superficie_tela.blit(dados, dados.get_rect(topleft = (330, 120 + i * 40)))
             i += 1
-       
+
         i = 0
         for dados in superficie_dadosJ2:
-            superficie_tela.blit(dados, dados.get_rect(topleft = (1000, 60 + i * 40)))
+            superficie_tela.blit(dados, dados.get_rect(topleft = (980, 120 + i * 40)))
             i += 1
+
+        superficie_tela.blit(historiaJ1[0],(130,450))
+        superficie_tela.blit(historiaJ2[0],(780,450))
+        superficie_tela.blit(historiaJ1[1],(130,470))
+        superficie_tela.blit(historiaJ2[1],(780,470))
 
         self.dicionario = {'arqueiro': self.sprites_arqueiro[self.frame_atual], 'cavaleiro':self.sprites_cavaleiro[self.frame_atual],
         'ladino':self.sprites_ladino[self.frame_atual]}

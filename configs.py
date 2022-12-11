@@ -13,6 +13,8 @@ class Configs:
     VERMELHO = (255,0,0)
     VERDE = (0,255,0)
     AZUL = (0,0,255)
+    CINZA = (197,197,197)
+    CINZA_ESCURO = (127,127,127)
     COR_FUNDO = (71, 175, 191)
 
     MAPA_FASE1 = [
@@ -129,4 +131,10 @@ class Configs:
         "arqueiro": "hitbox_jogadores",
         "ladino": "hitbox_jogadores",
         "goblin": "hitbox_minions"
+    }
+
+    historia = {
+        "cavaleiro": ("Honrado nas novelas de cavalaria,","defensor da princesa."),
+        "arqueiro": ("Amiga da princesa."," "),
+        "ladino": ("Miserável sem vergonha,","pretende sequestrar a princesa.")
     }
