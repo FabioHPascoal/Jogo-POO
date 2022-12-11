@@ -27,7 +27,7 @@ class Chamas(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = posicao)
         contadorFrames = 0
         self.frame_atual = 0
-
+        
     #     for _ in range(7):
     #         self.sprites(self.sprite_selecionado(self.image, contadorFrames, (64,64)))
     #         contadorFrames += 1
