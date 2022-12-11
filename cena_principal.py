@@ -261,22 +261,21 @@ class CenaPrincipal:
                     self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
                     self.lista_minions[j].rect.center = self.lista_minions[j].posicaoBackup
 
-            # # Colisão dos minions com obstáculos em X
-            # self.lista_minions[i].moverX()
-            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-            #     self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
-
-            # # Colisão dos minions com obstáculos em Y
-            # self.lista_minions[i].moverY()
-            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-            #     self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
-
             # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
             if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
                 self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
-           
+
+        # Colisão dos ataques
+        
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, True, pg.sprite.collide_mask):
+            self.jogador1.vida -= 1
+
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, True, pg.sprite.collide_mask):
+            self.jogador2.vida -= 1
+         
+
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
         self.ataques_basicos1.draw(self.superficie_tela)
@@ -333,7 +332,7 @@ class CenaPrincipal:
             direcao = self.jogador2.direcaoInicial
          
             if self.classe2 == "cavaleiro":
-                ataque = Espadada(self.jogador1.rect.center, direcao, self.espadada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                ataque = Espadada(self.jogador2.rect.center, direcao, self.espadada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "arqueiro":
                 ataque = Flecha(self.jogador2.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "ladino":

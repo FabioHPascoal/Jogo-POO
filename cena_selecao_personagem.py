@@ -61,10 +61,7 @@ class cenaSelecaoPersonagem:
         self.exibirPersonagens()
 
         pg.display.flip()
-        fonts = pg.font.get_fonts()
-        print(len(fonts))
-        for f in fonts:
-            print(f)
+
     def exibirPersonagens(self):
         infoJ2 = 'Classe: ' + str(self.selecionadoJ2)
         superficie_tela = pg.display.get_surface()
