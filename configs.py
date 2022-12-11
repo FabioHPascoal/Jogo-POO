@@ -2,7 +2,7 @@ import math
 class Configs:
     LARGURA_TELA = 1280
     ALTURA_TELA = 640
-    ESCALA = 1
+    ESCALA = 2
     FRAME_RATE = 60
     DURACAO_FRAME = 100
     BLOCOS_TAMANHO = 32
@@ -55,6 +55,10 @@ class Configs:
         "goblin": 3
     }
 
+    velocidade_projeteis = {
+        "flecha": 10,
+    }
+
     massa_personagem = {
         "cavaleiro": 5,
         "arqueiro": 3,
@@ -90,6 +94,13 @@ class Configs:
         "goblin": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6]
     }
 
+    frames_de_ataque = {
+        "cavaleiro": [4, 5],
+        "arqueiro": [9],
+        "ladino": [3, 4, 5],
+        "goblin": [3, 4, 5]
+    }
+
     seleciona_animacoes = {
         (-1, 0): 1,
         (1, 0): 4,
@@ -104,6 +115,13 @@ class Configs:
         (0, -1): 6,
         (0, 1): 9,
         (0, 0): 3
+    }
+
+    seleciona_frame_projetil = {
+        (-1, 0): 0,
+        (1, 0): 1,
+        (0, -1): 2,
+        (0, 1): 3,
     }
 
     hitbox_arquivo = {

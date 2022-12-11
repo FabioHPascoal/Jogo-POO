@@ -8,12 +8,14 @@ from funcoes import Funcoes
 from HUD import HUD
 from random import randint
 from cronometro import Cronometro
+from habilidades import*
 
 class CenaPrincipal:
     def __init__(self, tela,classe1,classe2,tempoGastoSelecaoPersonagem):
         self.tempoGastoSelecaoPersonagem = tempoGastoSelecaoPersonagem
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
+        self.escala = Configs.ESCALA
         self.tela = tela
         self.rodando = True
         self.classe1 = classe1
@@ -25,16 +27,28 @@ class CenaPrincipal:
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
-        self.hud = HUD(Configs.vitalidade[self.classe1],Configs.vitalidade[self.classe2])
-        #Captura a superfície da tela
+        self.hud = HUD(Configs.vitalidade[self.classe1], Configs.vitalidade[self.classe2])
+        # Captura a superfície da tela
         self.superficie_tela = pg.display.get_surface()
 
-        #Grupos de sprites
+        # Grupos de sprites
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
-        self.sprite_jogador1 = pg.sprite.GroupSingle()
-        self.sprite_jogador2 = pg.sprite.GroupSingle()
         self.sprites_minions = pg.sprite.Group()
+      
+        self.sprite_jogador1 = pg.sprite.GroupSingle()
+        self.ataques_basicos1 = pg.sprite.Group()
+     
+        self.sprite_jogador2 = pg.sprite.GroupSingle()
+        self.ataques_basicos2 = pg.sprite.Group()
+
+        # Formação das listas que contêm os sprites dos projéteis
+       
+        # Flecha:
+        self.flecha_sprites = []
+        self.flecha_original = pg.image.load("sprites/flecha.png").convert_alpha()
+        for i in range(4):
+            self.flecha_sprites.append(self.funcoes.sprite_selecionado(self.flecha_original, i, self.escala, (32, 32)))
 
         #Mapa com posição dos sprites
         self.cria_mapa()
@@ -72,10 +86,10 @@ class CenaPrincipal:
         while self.rodando:
             self.gera_minions()
             self.tratamento_eventos()
+            self.cria_ataques()
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
-
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -131,13 +145,12 @@ class CenaPrincipal:
 
         #Verificar fim de jogo
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
-            print(self.jogador1.morte,self.jogador2.morte)
             self.rodando = False
         if self.cronometro.cronometrado <= 0:
             self.rodando = False
 
-
         self.sprites_visiveis
+        self.ataques_basicos1.update()
       
         self.jogador1.atualizaVelocidade()
         self.jogador2.atualizaVelocidade()
@@ -184,7 +197,7 @@ class CenaPrincipal:
             self.jogador1.rect.center = self.jogador1.posicaoBackup
             self.jogador2.rect.center = self.jogador2.posicaoBackup
       
-        # Movimentação e colisão dos minions
+        # Loop de movimentação e colisão dos minions
         for i in range(len(self.lista_minions)):
             Pminion = self.lista_minions[i].rect.center
             Vminion = self.lista_minions[i].velocidade
@@ -252,6 +265,7 @@ class CenaPrincipal:
            
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
+        self.ataques_basicos1.draw(self.superficie_tela)
 
         # Adiciona as coordenadas Y de todos os objetos em uma lista
         for objeto in self.lista_objetos:
@@ -271,10 +285,17 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
             self.lista_objetos.append(minion)
             self.sprites_minions.add(minion)
             self.tempoEntreSpawn = pg.time.get_ticks()
+
+    def cria_ataques(self):
+        if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
+            direcao = self.jogador1.direcaoInicial
+            ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_projetil[direcao[0], direcao[1]]])
+            self.ataques_basicos1.add(ataque)
+            self.jogador1.atacando = False

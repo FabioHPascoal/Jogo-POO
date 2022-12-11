@@ -1,9 +1,17 @@
 import sympy as sym
+import pygame as pg
 import math
 
 class Funcoes:
     def __init__(self) -> None:
         pass
+
+    def sprite_selecionado(self, sheet, frame, escala, dimensoes):
+        imagem = pg.Surface((dimensoes[0], dimensoes[1])).convert_alpha()
+        imagem.blit(sheet, (0, 0), (frame * dimensoes[0], 0, dimensoes[0], dimensoes[1]))
+        imagem = pg.transform.scale(imagem, (dimensoes[0] * escala, dimensoes[1] * escala))
+        imagem.set_colorkey((0, 0, 0, 0))
+        return imagem
  
     def velocidade_colisao(self, massa1, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2

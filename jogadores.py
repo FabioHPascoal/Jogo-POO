@@ -17,7 +17,7 @@ class Jogadores(pg.sprite.Sprite):
         self.Vadicional = [0, 0]
         self.massa = Configs.massa_personagem[classe]
         self.vida = Configs.vitalidade[classe]
-        self.tempoDeImunidade = 2000 #2segundo
+        self.tempoDeImunidade = 2000 #2 segundos
         self.tempoDoUltimoDano = 0
         self.morte = False
 
@@ -100,7 +100,6 @@ class Jogadores(pg.sprite.Sprite):
             self.frame_atual += 1
 
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
-                self.atacando = False
                 self.livre = True
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual      
