@@ -13,7 +13,7 @@ class cenaSelecaoPersonagem:
         self.retanguloJ1 = pg.rect.Rect(100, 120, 200, 200)
         self.retanguloJ2 = pg.rect.Rect(Configs.LARGURA_TELA / 2 + 100, 120, 200, 200)
         self.rodando = True
-        self.listaPersonagens = ['arqueiro','ladino','cavaleiro']
+        self.listaPersonagens = ['arqueiro','ladino','cavaleiro', 'mago']
         self.selecionadoJ1 = 'arqueiro'
         self.selecionadoJ2 = 'arqueiro'
         self.i1 = 0
@@ -36,12 +36,16 @@ class cenaSelecaoPersonagem:
         self.sprite_sheet_ladino = pg.image.load("sprites/ladino.png").convert_alpha()
         self.sprites_ladino = []
 
+        self.sprite_sheet_mago = pg.image.load("sprites/mago.png").convert_alpha()
+        self.sprites_mago = []
+
         # sprites arqueiro, cavaleiro e ladino
         contadorFrames = 1
         for _ in range(8):
             self.sprites_arqueiro.append(self.sprite_selecionado(self.sprite_sheet_arqueiro, contadorFrames, Configs.dimensoes_sprite['arqueiro']))
             self.sprites_cavaleiro.append(self.sprite_selecionado(self.sprite_sheet_cavaleiro, contadorFrames, Configs.dimensoes_sprite['cavaleiro']))
             self.sprites_ladino.append(self.sprite_selecionado(self.sprite_sheet_ladino, contadorFrames, Configs.dimensoes_sprite['ladino']))
+            self.sprites_mago.append(self.sprite_selecionado(self.sprite_sheet_mago, contadorFrames, Configs.dimensoes_sprite['mago']))
             contadorFrames += 1
 
     def sprite_selecionado(self, sheet, frame, dimensoes):
@@ -96,7 +100,7 @@ class cenaSelecaoPersonagem:
         superficie_tela.blit(historiaJ2[1],(780,470))
 
         self.dicionario = {'arqueiro': self.sprites_arqueiro[self.frame_atual], 'cavaleiro':self.sprites_cavaleiro[self.frame_atual],
-        'ladino':self.sprites_ladino[self.frame_atual]}
+        'ladino':self.sprites_ladino[self.frame_atual], 'mago':self.sprites_mago[self.frame_atual]}
 
         self.posicao_rect = [self.retanguloJ1.centerx- Configs.subracao_rect[self.selecionadoJ1][0] * 3, 
                              self.retanguloJ1.centery - Configs.subracao_rect[self.selecionadoJ1][1] * 3 + 40]
@@ -148,14 +152,14 @@ class cenaSelecaoPersonagem:
                         self.selecaoConcluida[1] = True
                         self.marcador2 = Configs.VERMELHO
 
-        if self.i1 > 2:
+        if self.i1 > 3:
             self.i1 = 0
         elif self.i1 < 0:
-            self.i1 = 2
-        if self.i2>2:
+            self.i1 = 3
+        if self.i2> 3:
             self.i2 = 0
-        elif self.i2< 0:
-            self.i2 = 2
+        elif self.i2 < 0:
+            self.i2 = 3
       
         self.selecionadoJ1 = self.listaPersonagens[self.i1]
         self.selecionadoJ2 = self.listaPersonagens[self.i2]

@@ -54,6 +54,7 @@ class Configs:
         "cavaleiro": 5,
         "arqueiro": 5,
         "ladino": 5,
+        "mago": 5,
         "goblin": 3
     }
 
@@ -65,6 +66,7 @@ class Configs:
         "cavaleiro": 5,
         "arqueiro": 3,
         "ladino": 3,
+        "mago": 3,
         "goblin": 3
     }
 
@@ -72,6 +74,7 @@ class Configs:
         "cavaleiro": 5,
         "arqueiro": 3,
         "ladino": 3,
+        "mago": 3,
         "goblin": 3
     }
 
@@ -79,6 +82,7 @@ class Configs:
         "cavaleiro": (148, 90),
         "arqueiro": (64, 64),
         "ladino": (64, 64),
+        "mago": (64, 64),
         "goblin": (64, 64)
     }
 
@@ -86,6 +90,7 @@ class Configs:
         "cavaleiro": (73, 62),
         "arqueiro": (31, 49),
         "ladino": (31, 49),
+        "mago": (31, 50),
         "goblin": (31, 50)
     }
 
@@ -93,6 +98,7 @@ class Configs:
         "cavaleiro": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6],
         "arqueiro": [1, 8, 11, 1, 8, 11, 1, 8, 11, 1, 8, 11, 6],
         "ladino": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6],
+        "mago": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6],
         "goblin": [1, 8, 6, 1, 8, 6, 1, 8, 6, 1, 8, 6, 6]
     }
 
@@ -100,6 +106,7 @@ class Configs:
         "cavaleiro": [4, 5],
         "arqueiro": [9],
         "ladino": [3, 4, 5],
+        "mago": [6],
         "goblin": [3, 4, 5]
     }
 
@@ -130,6 +137,7 @@ class Configs:
         "cavaleiro": "hitbox_jogadores",
         "arqueiro": "hitbox_jogadores",
         "ladino": "hitbox_jogadores",
+        "mago": "hitbox_jogadores",
         "goblin": "hitbox_minions"
     }
 
