@@ -1,5 +1,6 @@
 import sys
 import pygame as pg
+import numpy
 from jogadores import*
 from bloco import*
 from configs import Configs
@@ -18,9 +19,9 @@ class CenaPrincipal:
         self.classe2 = "arqueiro"
         self.minion = "goblin"
         self.lista_minions = []
+        self.lista_objetos = []
+        self.lista_PosicaoY = []
         self.tempoEntreSpawn = 0
-        self.massa1 = Configs.massa_personagem[self.classe1]
-        self.massa2 = Configs.massa_personagem[self.classe2]
         self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
        
@@ -55,21 +56,20 @@ class CenaPrincipal:
                 if coluna == "1":
                     Grama((x, y), [self.sprites_visiveis])
                     self.jogador1 = Jogadores((x, y), self.classe1)
-            
+                    self.lista_objetos.append(self.jogador1)
+
                 if coluna == "2":
                     Grama((x, y), [self.sprites_visiveis])
                     self.jogador2 = Jogadores((x, y), self.classe2)
+                    self.lista_objetos.append(self.jogador2)
 
     def rodar(self):
         while self.rodando:
-            self.geraMinions()
+            self.gera_minions()
             self.tratamento_eventos()
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
-          
-            # if len(self.lista_minions) > 0:
-            #     print(self.lista_minions[0].animacao_atual)
 
     def tratamento_eventos(self):
         pg.event.get()
@@ -123,8 +123,31 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
         self.sprites_visiveis
-        self.jogador1.novaPosicao()
-        self.jogador2.novaPosicao()
+      
+        self.jogador1.atualizaVelocidade()
+        self.jogador2.atualizaVelocidade()
+      
+        self.jogador1.moverX()
+        self.jogador2.moverX()
+      
+        # Jogador 1 colidiu com obstáculo em X
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            self.jogador1.rect.centerx = self.jogador1.posicaoBackup[0]
+
+        # Jogador 2 colidiu com obstáculo em X
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            self.jogador2.rect.centerx = self.jogador2.posicaoBackup[0]
+
+        self.jogador1.moverY()
+        self.jogador2.moverY()
+      
+        # Jogador 1 colidiu com obstáculo em Y
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            self.jogador1.rect.centery = self.jogador1.posicaoBackup[1]
+
+        # Jogador 2 colidiu com obstáculo em Y
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            self.jogador2.rect.centery = self.jogador2.posicaoBackup[1]
 
         P1 = self.jogador1.posicaoBackup
         P2 = self.jogador2.posicaoBackup
@@ -132,25 +155,8 @@ class CenaPrincipal:
         V1 = self.jogador1.velocidade
         V2 = self.jogador2.velocidade
 
-        M1 = self.massa1
-        M2 = self.massa2
-      
-        for minion in self.lista_minions:
-            Pminion = minion.rect.center
-            
-            distancia1 = self.funcoes.distancia_squared(P1[0], P1[1], Pminion[0], Pminion[1])
-            distancia2 = self.funcoes.distancia_squared(P2[0], P2[1], Pminion[0], Pminion[1])
-
-            inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
-            inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
-
-            if distancia1 <= distancia2:
-                minion.vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao1)), self.funcoes.sinal(math.sin(inclinacao1))]
-
-            elif distancia1 > distancia2:
-                minion.vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao2)), self.funcoes.sinal(math.sin(inclinacao2))]
-                
-            minion.novaPosicao()
+        M1 = self.jogador1.massa
+        M2 = self.jogador2.massa
 
         #Jogadores colidiram
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprite_jogador2, False, pg.sprite.collide_mask):
@@ -162,53 +168,91 @@ class CenaPrincipal:
          
             self.jogador1.rect.center = self.jogador1.posicaoBackup
             self.jogador2.rect.center = self.jogador2.posicaoBackup
-
-        # Jogador 1 colidiu com obstáculo
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
-            self.jogador1.rect.center = self.jogador1.posicaoBackup
-
-        # # Jogador 1 colidiu com obstáculo
-        # if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
-        #     self.jogador1.rect.center = self.jogador1.posicaoBackup
+      
+        # Movimentação e colisão dos minions
+        for i in range(len(self.lista_minions)):
+            Pminion = self.lista_minions[i].rect.center
+            Vminion = self.lista_minions[i].velocidade
+            Mminion = self.lista_minions[i].massa
             
-        #     self.jogador1.rect.centerx = self.jogador1.proximaPosicao[0]
-        #     if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
-        #         self.jogador1.rect.centerx = self.jogador1.posicaoBackup[0]
+            distancia1 = self.funcoes.distancia_squared(P1[0], P1[1], Pminion[0], Pminion[1])
+            distancia2 = self.funcoes.distancia_squared(P2[0], P2[1], Pminion[0], Pminion[1])
 
-        #     self.jogador1.rect.centery = self.jogador1.proximaPosicao[1]
-        #     if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
-        #         self.jogador1.rect.centery = self.jogador1.posicaoBackup[1]
+            inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
+            inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
 
-        # Jogador 2 colidiu com obstáculo
-        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
-            self.jogador2.rect.center = self.jogador2.posicaoBackup
+            if distancia1 <= distancia2:
+                self.lista_minions[i].vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao1)), self.funcoes.sinal(math.sin(inclinacao1))]
 
+            elif distancia1 > distancia2:
+                self.lista_minions[i].vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao2)), self.funcoes.sinal(math.sin(inclinacao2))]
+
+            # Colisão dos minions com o jogador 1
+            if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
+                velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
+                self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
+                self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
+                self.lista_minions[i].Vadicional[0] += velocidades_adicionais[1][0]
+                self.lista_minions[i].Vadicional[1] += velocidades_adicionais[1][1]
+            
+                self.jogador1.rect.center = self.jogador1.posicaoBackup
+                self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
+
+            # Colisão dos minions com o jogador 2
+            if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
+                velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)
+                self.jogador2.Vadicional[0] += velocidades_adicionais[0][0]
+                self.jogador2.Vadicional[1] += velocidades_adicionais[0][1]
+                self.lista_minions[i].Vadicional[0] += velocidades_adicionais[1][0]
+                self.lista_minions[i].Vadicional[1] += velocidades_adicionais[1][1]
+            
+                self.jogador2.rect.center = self.jogador2.posicaoBackup
+                self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
+
+            self.lista_minions[i].atualizaVelocidade()
+
+            # Colisão entre os minions
+            for j in range(i + 1, len(self.lista_minions)):
+                if pg.sprite.collide_mask(self.lista_minions[i], self.lista_minions[j]):
+                    self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
+                    self.lista_minions[j].rect.center = self.lista_minions[j].posicaoBackup
+
+            # Colisão dos minions com obstáculos em X
+            self.lista_minions[i].moverX()
+            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+                self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
+
+            # Colisão dos minions com obstáculos em Y
+            self.lista_minions[i].moverY()
+            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+                self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
+           
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
 
-        for minion in self.lista_minions:
-            minion.desenha(self.tela, pg.time.get_ticks())
-    
-        if self.jogador1.rect.y < self.jogador2.rect.y:
-            self.jogador1.desenha(self.tela, pg.time.get_ticks())
-            self.jogador2.desenha(self.tela, pg.time.get_ticks())
+        # Adiciona as coordenadas Y de todos os objetos em uma lista
+        for objeto in self.lista_objetos:
+            self.lista_PosicaoY.append(objeto.rect.centery)
 
-        elif self.jogador1.rect.y >= self.jogador2.rect.y:
-            self.jogador2.desenha(self.tela, pg.time.get_ticks())
-            self.jogador1.desenha(self.tela, pg.time.get_ticks())
-       
-        # self.sprites_minions.draw(self.superficie_tela)
-        # self.sprite_jogador1.draw(self.superficie_tela)
-        # self.sprite_jogador2.draw(self.superficie_tela)
+        lista_PosicaoY_numpy = numpy.array(self.lista_PosicaoY)
+        
+        # Gera uma lista com o índice dos objetos na ordem em que devem ser desenhados na tela
+        lista_indice_sorted = numpy.argsort(lista_PosicaoY_numpy)
+
+        for indice in lista_indice_sorted:
+            self.lista_objetos[indice].desenha(self.tela, pg.time.get_ticks())
+
+        self.lista_PosicaoY.clear()
 
         HUD(self.jogador1.vida, self.jogador2.vida, self.cronometro.tempoPassado(pg.time.get_ticks()))
 
         pg.display.flip()
 
-    def geraMinions(self):
-        if len(self.sprites_minions) < 1 and pg.time.get_ticks() - self.tempoEntreSpawn > 10000 :
+    def gera_minions(self):
+        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
+            self.lista_objetos.append(minion)
             self.sprites_minions.add(minion)
             self.tempoEntreSpawn = pg.time.get_ticks()

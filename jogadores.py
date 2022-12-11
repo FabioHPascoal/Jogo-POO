@@ -9,10 +9,13 @@ class Jogadores(pg.sprite.Sprite):
         self.funcoes = Funcoes()
         
         self.classe = classe
-        self.posicao = [posicao[0], posicao[1]]
+        self.posicao = posicao
+        self.posicaoBackup = posicao
         self.vetorUnitario = [0, 0]
         self.direcaoInicial = [0, 0]
+        self.velocidade = [0, 0]
         self.Vadicional = [0, 0]
+        self.massa = Configs.massa_personagem[classe]
         self.vida = 3
       
         self.largura_sprite, self.altura_sprite = Configs.dimensoes_sprite[self.classe]
@@ -45,7 +48,7 @@ class Jogadores(pg.sprite.Sprite):
         imagem.set_colorkey((0, 0, 0, 0))
         return imagem
 
-    def novaPosicao(self):
+    def atualizaVelocidade(self):
         # Desaceleracao
         if self.Vadicional[0] != 0:
             self.Vadicional[0] -= Configs.DESACELERACAO * self.funcoes.sinal(self.Vadicional[0])
@@ -72,10 +75,11 @@ class Jogadores(pg.sprite.Sprite):
         self.posicaoBackup = self.rect.center
         self.velocidadeTotal = [self.velocidade[0] + self.Vadicional[0], self.velocidade[1] + self.Vadicional[1]]
 
+    def moverX(self):
         self.rect.centerx += self.velocidadeTotal[0]
-        self.rect.centery += self.velocidadeTotal[1]
 
-        self.proximaPosicao = self.rect.center
+    def moverY(self):
+        self.rect.centery += self.velocidadeTotal[1]
     
     def ataqueBasico(self):
         self.frame_atual = 0

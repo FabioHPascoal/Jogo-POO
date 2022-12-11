@@ -11,7 +11,7 @@ class JogoPOO:
   
     def rodar(self):
         while True:
-            escolher_personagem = cenaSelecaoPersonagem(self.tela)
-            escolher_personagem.rodar()
+            # escolher_personagem = cenaSelecaoPersonagem(self.tela)
+            # escolher_personagem.rodar()
             cena_principal = CenaPrincipal(self.tela)
             cena_principal.rodar()

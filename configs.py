@@ -57,9 +57,9 @@ class Configs:
 
     massa_personagem = {
         "cavaleiro": 5,
-        "arqueiro": 2,
-        "ladino": 2,
-        "goblin": 1
+        "arqueiro": 3,
+        "ladino": 3,
+        "goblin": 3
     }
 
     dimensoes_sprite = {
