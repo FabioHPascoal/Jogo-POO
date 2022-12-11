@@ -50,7 +50,6 @@ class Configs:
 
     velocidade_projeteis = {
         "flecha": 10,
-        "fireball": 6,
     }
 
     massa_personagem = {

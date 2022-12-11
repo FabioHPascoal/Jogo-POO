@@ -44,26 +44,17 @@ class CenaPrincipal:
 
         # Formação das listas que contêm os sprites dos projéteis
        
-        # Arqueiro - Flecha:
+        # Flecha:
         self.flecha_sprites = []
         self.flecha_original = pg.image.load("sprites/flecha.png").convert_alpha()
         for i in range(4):
             self.flecha_sprites.append(self.funcoes.sprite_selecionado(self.flecha_original, i, self.escala, (32, 32)))
 
-        # Cavaleiro - Espadada:
+        # Espadada:
         self.espadada_sprites = []
         self.espadada_original = pg.image.load("sprites/espadada.png").convert_alpha()
         for i in range(4):
             self.espadada_sprites.append(self.funcoes.sprite_selecionado(self.espadada_original, i, self.escala, (151, 110)))
-
-        # Mago - Fireball:
-        self.fireball_sprites = []
-        self.fireball_original = pg.image.load("sprites/fireball.png").convert_alpha()
-        for i in range(4):
-            self.fireball_sprites.append(self.funcoes.sprite_selecionado(self.fireball_original, i, self.escala, (32, 32)))
-   
-        # Mago - Fire_floor
-        self.fire_floor = pg.image.load("sprites/fire_floor.png").convert_alpha()
 
         #Mapa com posição dos sprites
         self.cria_mapa()
@@ -273,7 +264,7 @@ class CenaPrincipal:
             # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
-            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, True, pg.sprite.collide_mask):
+            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
                 self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
 
         # Colisão dos ataques
@@ -282,7 +273,8 @@ class CenaPrincipal:
             self.jogador1.vida -= 1
 
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, True, pg.sprite.collide_mask):
-            self.jogador2.vida -= 1  
+            self.jogador2.vida -= 1
+         
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
@@ -317,7 +309,9 @@ class CenaPrincipal:
 
     def cria_ataques(self):
 
-        if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:   
+        if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
+            self.jogador1.animacao_terminou = False
+            
             direcao = self.jogador1.direcaoInicial
          
             if self.classe1 == "cavaleiro":
@@ -327,12 +321,14 @@ class CenaPrincipal:
             if self.classe1 == "ladino":
                 pass
             if self.classe1 == "mago":
-                ataque = Fireball(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                pass
             
             self.ataques_basicos1.add(ataque)
             self.jogador1.atacando = False
 
         if self.jogador2.atacando and self.jogador2.frame_atual in Configs.frames_de_ataque[self.classe2]:
+            self.jogador2.animacao_terminou = False
+           
             direcao = self.jogador2.direcaoInicial
          
             if self.classe2 == "cavaleiro":
@@ -342,8 +338,7 @@ class CenaPrincipal:
             if self.classe2 == "ladino":
                 pass
             if self.classe2 == "mago":
-                ataque = Fireball(self.jogador2.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
-       
-            self.ataques_basicos2.add(ataque)
+                pass
 
+            self.ataques_basicos2.add(ataque)
             self.jogador2.atacando = False
