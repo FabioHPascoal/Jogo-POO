@@ -108,6 +108,14 @@ class Configs:
         "goblin": [3, 4, 5]
     }
 
+    duracao_frame_ataque = {
+        "cavaleiro": [4, 5],
+        "arqueiro": [9],
+        "ladino": [3, 4, 5],
+        "mago": [6],
+        "goblin": [3, 4, 5]
+    }
+
     seleciona_animacoes = {
         (-1, 0): 1,
         (1, 0): 4,
@@ -124,11 +132,12 @@ class Configs:
         (0, 0): 3
     }
 
-    seleciona_frame_projetil = {
+    seleciona_frame_ataque = {
         (-1, 0): 0,
         (1, 0): 1,
         (0, -1): 2,
         (0, 1): 3,
+        (0, 0): 3
     }
 
     hitbox_arquivo = {

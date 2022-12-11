@@ -102,7 +102,7 @@ class Jogadores(pg.sprite.Sprite):
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
                 self.livre = True
                 self.frame_atual = 0
-            self.tempo_anterior = tempoAtual      
+            self.tempo_anterior = tempoAtual  
 
     def verificarMorte(self):
         if self.vida <= 0:

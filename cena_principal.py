@@ -50,6 +50,12 @@ class CenaPrincipal:
         for i in range(4):
             self.flecha_sprites.append(self.funcoes.sprite_selecionado(self.flecha_original, i, self.escala, (32, 32)))
 
+        # Espadada:
+        self.espadada_sprites = []
+        self.espadada_original = pg.image.load("sprites/espadada.png").convert_alpha()
+        for i in range(4):
+            self.espadada_sprites.append(self.funcoes.sprite_selecionado(self.espadada_original, i, self.escala, (151, 110)))
+
         #Mapa com posição dos sprites
         self.cria_mapa()
 
@@ -151,6 +157,7 @@ class CenaPrincipal:
 
         self.sprites_visiveis
         self.ataques_basicos1.update()
+        self.ataques_basicos2.update()
       
         self.jogador1.atualizaVelocidade()
         self.jogador2.atualizaVelocidade()
@@ -222,6 +229,7 @@ class CenaPrincipal:
                     self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
+                
                 self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                 self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
                 self.lista_minions[i].Vadicional[0] += velocidades_adicionais[1][0]
@@ -253,19 +261,26 @@ class CenaPrincipal:
                     self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
                     self.lista_minions[j].rect.center = self.lista_minions[j].posicaoBackup
 
-            # Colisão dos minions com obstáculos em X
-            self.lista_minions[i].moverX()
-            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-                self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
+            # # Colisão dos minions com obstáculos em X
+            # self.lista_minions[i].moverX()
+            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            #     self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
 
-            # Colisão dos minions com obstáculos em Y
+            # # Colisão dos minions com obstáculos em Y
+            # self.lista_minions[i].moverY()
+            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            #     self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
+
+            # Colisão dos minions com obstáculos
+            self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
             if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-                self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
+                self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
            
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
         self.ataques_basicos1.draw(self.superficie_tela)
+        self.ataques_basicos2.draw(self.superficie_tela)
 
         # Adiciona as coordenadas Y de todos os objetos em uma lista
         for objeto in self.lista_objetos:
@@ -294,8 +309,37 @@ class CenaPrincipal:
             self.tempoEntreSpawn = pg.time.get_ticks()
 
     def cria_ataques(self):
+
         if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
+            self.jogador1.animacao_terminou = False
+            
             direcao = self.jogador1.direcaoInicial
-            ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_projetil[direcao[0], direcao[1]]])
+         
+            if self.classe1 == "cavaleiro":
+                ataque = Espadada(self.jogador1.rect.center, direcao, self.espadada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+            if self.classe1 == "arqueiro":
+                ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+            if self.classe1 == "ladino":
+                pass
+            if self.classe1 == "mago":
+                pass
+            
             self.ataques_basicos1.add(ataque)
             self.jogador1.atacando = False
+
+        if self.jogador2.atacando and self.jogador2.frame_atual in Configs.frames_de_ataque[self.classe2]:
+            self.jogador2.animacao_terminou = False
+           
+            direcao = self.jogador2.direcaoInicial
+         
+            if self.classe2 == "cavaleiro":
+                ataque = Espadada(self.jogador1.rect.center, direcao, self.espadada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+            if self.classe2 == "arqueiro":
+                ataque = Flecha(self.jogador2.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+            if self.classe2 == "ladino":
+                pass
+            if self.classe2 == "mago":
+                pass
+
+            self.ataques_basicos2.add(ataque)
+            self.jogador2.atacando = False
