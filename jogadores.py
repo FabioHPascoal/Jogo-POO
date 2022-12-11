@@ -20,7 +20,7 @@ class Jogadores(pg.sprite.Sprite):
         self.tempoDeImunidade = 2000 #2 segundos
         self.tempoDoUltimoDano = 0
         self.morte = False
-
+        self.ultimoAtaque = 0
         self.largura_sprite, self.altura_sprite = Configs.dimensoes_sprite[self.classe]
         self.escala = Configs.ESCALA
         self.sprite_sheet = pg.image.load(f"sprites/{self.classe}.png").convert_alpha()

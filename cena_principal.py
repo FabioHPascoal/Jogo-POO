@@ -310,8 +310,6 @@ class CenaPrincipal:
     def cria_ataques(self):
 
         if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
-            self.jogador1.animacao_terminou = False
-            
             direcao = self.jogador1.direcaoInicial
          
             if self.classe1 == "cavaleiro":
