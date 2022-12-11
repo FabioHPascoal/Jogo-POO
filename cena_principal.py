@@ -34,6 +34,7 @@ class CenaPrincipal:
         # Grupos de sprites
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
+        self.sprites_chamas = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
       
         self.sprite_jogador1 = pg.sprite.GroupSingle()
@@ -68,6 +69,9 @@ class CenaPrincipal:
                 x = indice_coluna * Configs.BLOCOS_TAMANHO
                 y = indice_linha * Configs.BLOCOS_TAMANHO
              
+                if coluna == " ":
+                    Grama((x, y), [self.sprites_visiveis])
+
                 if coluna == "4":
                     Bloco((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
 
@@ -75,9 +79,10 @@ class CenaPrincipal:
                     Grama((x, y), [self.sprites_visiveis])
                     Caixa((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
              
-                if coluna == " ":
+                if coluna == "6":
                     Grama((x, y), [self.sprites_visiveis])
-             
+                    Chamas((x, y), [self.sprites_visiveis, self.sprites_chamas])
+
                 if coluna == "1":
                     Grama((x, y), [self.sprites_visiveis])
                     self.jogador1 = Jogadores((x, y), self.classe1)
@@ -275,6 +280,13 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, True, pg.sprite.collide_mask):
             self.jogador2.vida -= 1
          
+        # Colisão J1 com chamas
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
+            self.jogador1.vida -= 1
+
+        # Colisão J2 com chamas
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
+            self.jogador2.vida -= 1
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
@@ -340,3 +352,5 @@ class CenaPrincipal:
 
             self.ataques_basicos2.add(ataque)
             self.jogador2.atacando = False
+
+    
