@@ -34,6 +34,7 @@ class CenaPrincipal:
         # Grupos de sprites
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
+        self.sprites_chamas = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
       
         self.sprite_jogador1 = pg.sprite.GroupSingle()
@@ -83,6 +84,10 @@ class CenaPrincipal:
                 if coluna == "5":
                     Grama((x, y), [self.sprites_visiveis])
                     Caixa((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
+
+                if coluna == "6":
+                    Grama((x, y), [self.sprites_visiveis])
+                    Chamas((x, y), [self.sprites_visiveis,self.sprites_chamas])
              
                 if coluna == " ":
                     Grama((x, y), [self.sprites_visiveis])
@@ -283,6 +288,14 @@ class CenaPrincipal:
 
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, True, pg.sprite.collide_mask):
             self.jogador2.vida -= 1  
+
+        # Colisão J1 com chamas
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
+            self.jogador1.vida -= 1
+
+        # Colisão J2 com chamas
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
+            self.jogador2.vida -= 1
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
