@@ -305,6 +305,10 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
             self.jogador2.vida -= 1
 
+        #matar minions
+        for minion in self.lista_minions:
+            pg.sprite.spritecollide(minion, self.ataques_basicos1, True, collided = None)
+
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
         
