@@ -225,6 +225,9 @@ class CenaPrincipal:
             distancia1 = self.funcoes.distancia_squared(P1[0], P1[1], Pminion[0], Pminion[1])
             distancia2 = self.funcoes.distancia_squared(P2[0], P2[1], Pminion[0], Pminion[1])
 
+            # inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
+            # inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
+
             if distancia1 <= distancia2:
                 if distancia1 > 50:
                     Pnext = CenaPrincipal.calc_pos(self, Pminion, P1)
@@ -282,12 +285,9 @@ class CenaPrincipal:
 
             # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
-            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-                self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
-        
             self.lista_minions[i].moverY()
-            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-                self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
+            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+            #     self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
         
         # Colisão dos ataques
         
@@ -391,36 +391,21 @@ class CenaPrincipal:
             return (0, 0)
         mapa_pos = CenaPrincipal.goblin_mode(mapa_col, pos2, pos1)
 
-        next_pos = [pos1[0], pos1[1]]
-        while (next_pos != pos2):
-            if (next_pos[0] - 1 > -1):
-                if (mapa_pos[next_pos[0] - 1][next_pos[1]] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
-                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0] - 1,next_pos[1]]) != -1:
-                        next_pos = [next_pos[0] - 1, next_pos[1]]
-                    else:
-                        break
-            if (next_pos[0] + 1 < Configs.BLOCOS_X):
-                if (mapa_pos[next_pos[0] + 1][next_pos[1]] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
-                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0] + 1,next_pos[1]]) != -1:
-                        next_pos = [next_pos[0] + 1, next_pos[1]]
-                    else:
-                        break
-            if (next_pos[1] - 1 > -1):
-                if (mapa_pos[next_pos[0]][next_pos[1] - 1] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
-                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0],next_pos[1] - 1]) != -1:
-                        next_pos = [next_pos[0], next_pos[1] - 1]
-                    else:
-                        break
-            if (next_pos[1] + 1 < Configs.BLOCOS_Y):
-                if (mapa_pos[next_pos[0]][next_pos[1] + 1] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
-                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0],next_pos[1] + 1]) != -1:
-                        next_pos = [next_pos[0], next_pos[1] + 1]
-                    else:
-                        break
-            if next_pos == pos2:
-                break
-
-        return [next_pos[0]*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, next_pos[1]*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+        next_pos = [0, 0]
+        if (pos1[0] - 1 > -1):
+            if (mapa_pos[pos1[0] - 1][pos1[1]] == mapa_pos[pos1[0]][pos1[1]] - 1):
+                next_pos = [(pos1[0] - 1)*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, (pos1[1])*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+        if (pos1[0] + 1 < Configs.BLOCOS_X):
+            if (mapa_pos[pos1[0] + 1][pos1[1]] == mapa_pos[pos1[0]][pos1[1]] - 1):
+                next_pos = [(pos1[0] + 1)*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, (pos1[1])*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+        if (pos1[1] - 1 > -1):
+            if (mapa_pos[pos1[0]][pos1[1] - 1] == mapa_pos[pos1[0]][pos1[1]] - 1):
+                next_pos = [(pos1[0])*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, (pos1[1] - 1)*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+        if (pos1[1] + 1 < Configs.BLOCOS_Y):
+            if (mapa_pos[pos1[0]][pos1[1] + 1] == mapa_pos[pos1[0]][pos1[1]] - 1):
+                next_pos = [(pos1[0])*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, (pos1[1] + 1)*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+        
+        return next_pos
 
     def goblin_mode(mapa_pos, ponto, pos2):
         cont = 1
@@ -455,29 +440,3 @@ class CenaPrincipal:
                     frontier.append([ponto[0], ponto[1]])
                     ponto[1]-=1
         return(mapa_pos)
-    
-    def raycast(mapa_pos, pos1, pos2):
-        if (pos1 == pos2):
-            return 0
-        if (pos1[0] != pos2[0]):
-            ang = (pos2[1] - pos1[1])/(pos2[0] - pos1[0])
-        else:
-            return 1
-        diff = pos2[0] - pos1[0]
-
-        ponto1 = [pos1[0]+0.5, pos1[1]]
-        ponto2 = [pos1[0]+0.5, pos1[1]+1]
-
-        for i in range(10):
-            ponto1[0] += 0.1*diff
-            ponto1[1] += 0.1*diff*ang
-            if mapa_pos[math.trunc(ponto1[0])][math.trunc(ponto1[1])] == -1:
-                return -1
-
-        for i in range(10):
-            ponto2[0] += 0.1*diff
-            ponto2[1] += 0.1*diff*ang
-            if mapa_pos[math.trunc(ponto2[0])][math.trunc(ponto2[1])] == -1:
-                return -1
-
-        return 1
