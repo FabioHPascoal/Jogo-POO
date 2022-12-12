@@ -55,7 +55,7 @@ class Configs:
         "arqueiro": 5,
         "ladino": 5,
         "mago": 5,
-        "goblin": 3
+        "goblin": 2
     }
 
     velocidade_projeteis = {

@@ -305,9 +305,25 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
             self.jogador2.vida -= 1
 
-        #matar minions
-        for minion in self.lista_minions:
-            pg.sprite.spritecollide(minion, self.ataques_basicos1, True, collided = None)
+        #matar minions J1
+        contador = 0
+        for minion in self.sprites_minions:
+            if pg.sprite.spritecollide(minion,self.ataques_basicos1,False):
+                minion.kill()
+                self.lista_minions.remove(self.lista_minions[contador])
+                self.lista_objetos.remove(self.lista_objetos[contador+2])
+                contador += 1
+
+        #matar minions J2
+        contador = 0
+        for minion in self.sprites_minions:
+            if pg.sprite.spritecollide(minion,self.ataques_basicos2,False):
+                minion.kill()
+                self.lista_minions.remove(self.lista_minions[contador])
+                self.lista_objetos.remove(self.lista_objetos[contador+2])
+                contador += 1
+
+        
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
@@ -336,7 +352,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 1 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)

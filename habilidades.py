@@ -52,7 +52,7 @@ class Fire_floor(pg.sprite.Sprite):
     def __init__(self, posicao, direcao, image):
         super().__init__()
         self.tempoSurgimento = pg.time.get_ticks()
-        self.projetil = True
+        self.projetil = False
         self.duracao = 5000
         self.direcao = direcao
         self.posicao = [posicao[0] + Funcoes.sinal(self, direcao[0]) * 150, posicao[1] + Funcoes.sinal(self, direcao[1]) * 150]
