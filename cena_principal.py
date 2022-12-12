@@ -163,11 +163,16 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
 
-        #Verificar fim de jogo
+        #Verificar fim de jogo e vencedor
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
+            if self.jogador1.morte:
+                self.vencedor = 'jogador2'
+            else:
+                self.vencedor = 'jogador1'
             self.rodando = False
         if self.cronometro.cronometrado <= 0:
             self.rodando = False
+
 
         self.sprites_visiveis
         self.ataques_basicos1.update()
@@ -278,7 +283,7 @@ class CenaPrincipal:
             # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
-            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, True, pg.sprite.collide_mask):
+            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
                 self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
 
         # Colisão dos ataques
@@ -324,7 +329,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 1 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 2 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
