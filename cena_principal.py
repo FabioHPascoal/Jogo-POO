@@ -163,11 +163,16 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
 
-        #Verificar fim de jogo
+        #Verificar fim de jogo e vencedor
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
+            if self.jogador1.morte:
+                self.vencedor = 'jogador2'
+            else:
+                self.vencedor = 'jogador1'
             self.rodando = False
         if self.cronometro.cronometrado <= 0:
             self.rodando = False
+
 
         self.sprites_visiveis
         self.ataques_basicos1.update()
