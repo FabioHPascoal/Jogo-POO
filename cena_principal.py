@@ -341,7 +341,7 @@ class CenaPrincipal:
                 pass
             if self.classe1 == "mago":
                 ataque = Fireball(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
-            
+                
             self.ataques_basicos1.add(ataque)
             self.jogador1.atacando = False
 
