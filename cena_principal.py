@@ -56,12 +56,6 @@ class CenaPrincipal:
         self.espadada_original = pg.image.load("sprites/espadada.png").convert_alpha()
         for i in range(4):
             self.espadada_sprites.append(self.funcoes.sprite_selecionado(self.espadada_original, i, self.escala, (151, 110)))
-
-        # Mago - Fireball:
-        self.fireball_sprites = []
-        self.fireball_original = pg.image.load("sprites/fireball.png").convert_alpha()
-        for i in range(4):
-            self.fireball_sprites.append(self.funcoes.sprite_selecionado(self.fireball_original, i, self.escala, (32, 32)))
    
         # Mago - Fire_floor
         self.fire_floor = pg.image.load("sprites/fire_floor.png").convert_alpha()
@@ -282,9 +276,12 @@ class CenaPrincipal:
 
             # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
+            if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
+                self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
+           
             self.lista_minions[i].moverY()
             if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-                self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
+                self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
 
         # Colisão dos ataques
         
@@ -329,7 +326,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 2 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
@@ -349,7 +346,7 @@ class CenaPrincipal:
             if self.classe1 == "ladino":
                 pass
             if self.classe1 == "mago":
-                ataque = Fireball(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                ataque = Fire_floor(self.jogador1.rect.center, direcao, self.fire_floor)
                 
             self.ataques_basicos1.add(ataque)
             self.jogador1.atacando = False
@@ -364,7 +361,7 @@ class CenaPrincipal:
             if self.classe2 == "ladino":
                 pass
             if self.classe2 == "mago":
-                ataque = Fireball(self.jogador2.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                ataque = Fire_floor(self.jogador2.rect.center, direcao, self.fire_floor)
        
             self.ataques_basicos2.add(ataque)
 
