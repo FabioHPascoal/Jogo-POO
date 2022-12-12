@@ -167,7 +167,6 @@ class CenaPrincipal:
         if self.cronometro.cronometrado <= 0:
             self.rodando = False
 
-
         self.sprites_visiveis
         self.ataques_basicos1.update()
         self.ataques_basicos2.update()
@@ -226,13 +225,20 @@ class CenaPrincipal:
             distancia1 = self.funcoes.distancia_squared(P1[0], P1[1], Pminion[0], Pminion[1])
             distancia2 = self.funcoes.distancia_squared(P2[0], P2[1], Pminion[0], Pminion[1])
 
-            inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
-            inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
-
             if distancia1 <= distancia2:
+                if distancia1 > 50:
+                    Pnext = CenaPrincipal.calc_pos(self, Pminion, P1)
+                    inclinacao1 = self.funcoes.inclinacaoPontos(Pnext[0], Pnext[1], Pminion[0], Pminion[1])
+                else:
+                    inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
                 self.lista_minions[i].vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao1)), self.funcoes.sinal(math.sin(inclinacao1))]
 
-            elif distancia1 > distancia2:
+            else:
+                if distancia2 > 50:
+                    Pnext = CenaPrincipal.calc_pos(self, Pminion, P2)
+                    inclinacao2 = self.funcoes.inclinacaoPontos(Pnext[0], Pnext[1], Pminion[0], Pminion[1])
+                else:
+                    inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
                 self.lista_minions[i].vetorUnitario = [self.funcoes.sinal(math.cos(inclinacao2)), self.funcoes.sinal(math.sin(inclinacao2))]
 
             # Colisão dos minions com o jogador 1
@@ -278,11 +284,11 @@ class CenaPrincipal:
             self.lista_minions[i].moverX()
             if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
                 self.lista_minions[i].rect.centerx = self.lista_minions[i].posicaoBackup[0]
-           
+        
             self.lista_minions[i].moverY()
             if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
                 self.lista_minions[i].rect.centery = self.lista_minions[i].posicaoBackup[1]
-
+        
         # Colisão dos ataques
         
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, True, pg.sprite.collide_mask):
@@ -326,7 +332,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 1 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
@@ -366,3 +372,108 @@ class CenaPrincipal:
             self.ataques_basicos2.add(ataque)
 
             self.jogador2.atacando = False
+
+    def calc_pos(self, Pminion, Pplayer):
+        pos1 = [math.trunc(Pminion[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pminion[1]/Configs.BLOCOS_TAMANHO)]
+        pos2 = [math.trunc(Pplayer[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pplayer[1]/Configs.BLOCOS_TAMANHO)]
+
+        mapa_col = [[0]*Configs.BLOCOS_Y for i in range(Configs.BLOCOS_X)]
+        for i in range(Configs.BLOCOS_X):
+            for j in range(Configs.BLOCOS_Y):
+                if Configs.MAPA_FASE1[j][i] == '4' or Configs.MAPA_FASE1[j][i] == '5':
+                    mapa_col[i][j] = -1
+
+        if (mapa_col[pos1[0]][pos1[1]] == -1):
+            return (0, 0)
+        mapa_pos = CenaPrincipal.goblin_mode(mapa_col, pos2, pos1)
+
+        next_pos = [pos1[0], pos1[1]]
+        while (next_pos != pos2):
+            if (next_pos[0] - 1 > -1):
+                if (mapa_pos[next_pos[0] - 1][next_pos[1]] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
+                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0] - 1,next_pos[1]]) != -1:
+                        next_pos = [next_pos[0] - 1, next_pos[1]]
+                    else:
+                        break
+            if (next_pos[0] + 1 < Configs.BLOCOS_X):
+                if (mapa_pos[next_pos[0] + 1][next_pos[1]] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
+                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0] + 1,next_pos[1]]) != -1:
+                        next_pos = [next_pos[0] + 1, next_pos[1]]
+                    else:
+                        break
+            if (next_pos[1] - 1 > -1):
+                if (mapa_pos[next_pos[0]][next_pos[1] - 1] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
+                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0],next_pos[1] - 1]) != -1:
+                        next_pos = [next_pos[0], next_pos[1] - 1]
+                    else:
+                        break
+            if (next_pos[1] + 1 < Configs.BLOCOS_Y):
+                if (mapa_pos[next_pos[0]][next_pos[1] + 1] == mapa_pos[next_pos[0]][next_pos[1]] - 1):
+                    if next_pos == pos1 or CenaPrincipal.raycast(mapa_pos, pos1, [next_pos[0],next_pos[1] + 1]) != -1:
+                        next_pos = [next_pos[0], next_pos[1] + 1]
+                    else:
+                        break
+            if next_pos == pos2:
+                break
+
+        return [next_pos[0]*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2, next_pos[1]*Configs.BLOCOS_TAMANHO + Configs.BLOCOS_TAMANHO/2]
+
+    def goblin_mode(mapa_pos, ponto, pos2):
+        cont = 1
+        mapa_pos[ponto[0]][ponto[1]] = 1
+        frontier = [[ponto[0], ponto[1]]]
+        while (len(frontier) > 0 and frontier[0] != pos2):
+            ponto = frontier.pop(0)
+            cont = mapa_pos[ponto[0]][ponto[1]] + 1
+
+            if (ponto[0] - 1 > -1):
+                if (mapa_pos[ponto[0] - 1][ponto[1]] > cont or mapa_pos[ponto[0] - 1][ponto[1]] == 0):
+                    ponto[0]-=1
+                    mapa_pos[ponto[0]][ponto[1]] = cont
+                    frontier.append([ponto[0], ponto[1]])
+                    ponto[0]+=1
+            if (ponto[0] + 1 < Configs.BLOCOS_X):
+                if (mapa_pos[ponto[0] + 1][ponto[1]] > cont or mapa_pos[ponto[0] + 1][ponto[1]] == 0):
+                    ponto[0]+=1
+                    mapa_pos[ponto[0]][ponto[1]] = cont
+                    frontier.append([ponto[0], ponto[1]])
+                    ponto[0]-=1
+            if (ponto[1] - 1 > -1):
+                if (mapa_pos[ponto[0]][ponto[1] - 1] > cont or mapa_pos[ponto[0]][ponto[1] - 1] == 0):
+                    ponto[1]-=1
+                    mapa_pos[ponto[0]][ponto[1]] = cont
+                    frontier.append([ponto[0], ponto[1]])
+                    ponto[1]+=1
+            if (ponto[1] + 1 < Configs.BLOCOS_Y):
+                if (mapa_pos[ponto[0]][ponto[1] + 1] > cont or mapa_pos[ponto[0]][ponto[1] + 1] == 0):
+                    ponto[1]+=1
+                    mapa_pos[ponto[0]][ponto[1]] = cont
+                    frontier.append([ponto[0], ponto[1]])
+                    ponto[1]-=1
+        return(mapa_pos)
+    
+    def raycast(mapa_pos, pos1, pos2):
+        if (pos1 == pos2):
+            return 0
+        if (pos1[0] != pos2[0]):
+            ang = (pos2[1] - pos1[1])/(pos2[0] - pos1[0])
+        else:
+            return 1
+        diff = pos2[0] - pos1[0]
+
+        ponto1 = [pos1[0]+0.5, pos1[1]]
+        ponto2 = [pos1[0]+0.5, pos1[1]+1]
+
+        for i in range(10):
+            ponto1[0] += 0.1*diff
+            ponto1[1] += 0.1*diff*ang
+            if mapa_pos[math.trunc(ponto1[0])][math.trunc(ponto1[1])] == -1:
+                return -1
+
+        for i in range(10):
+            ponto2[0] += 0.1*diff
+            ponto2[1] += 0.1*diff*ang
+            if mapa_pos[math.trunc(ponto2[0])][math.trunc(ponto2[1])] == -1:
+                return -1
+
+        return 1
