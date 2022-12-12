@@ -11,7 +11,7 @@ from cronometro import Cronometro
 from habilidades import*
 
 class CenaPrincipal:
-    def __init__(self, tela,classe1,classe2,tempoGastoSelecaoPersonagem):
+    def __init__(self, tela, classe1, classe2,tempoGastoSelecaoPersonagem):
         self.tempoGastoSelecaoPersonagem = tempoGastoSelecaoPersonagem
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
@@ -299,8 +299,12 @@ class CenaPrincipal:
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
-        self.ataques_basicos1.draw(self.superficie_tela)
-        self.ataques_basicos2.draw(self.superficie_tela)
+        
+        if Configs.tipo_de_classe[self.classe1] == "ranged":
+            self.ataques_basicos1.draw(self.superficie_tela)
+        
+        if Configs.tipo_de_classe[self.classe2] == "ranged":
+            self.ataques_basicos2.draw(self.superficie_tela)
 
         # Adiciona as coordenadas Y de todos os objetos em uma lista
         for objeto in self.lista_objetos:
@@ -320,7 +324,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 1 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
