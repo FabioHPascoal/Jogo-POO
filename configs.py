@@ -112,11 +112,11 @@ class Configs:
     }
 
     duracao_frame_ataque = {
-        "cavaleiro": [4, 5],
-        "arqueiro": [9],
-        "ladino": [3, 4, 5],
-        "mago": [6],
-        "goblin": [3, 4, 5]
+        "cavaleiro": 100,
+        "arqueiro": 80,
+        "ladino": 30,
+        "mago": 80,
+        "goblin": 50
     }
 
     seleciona_animacoes = {

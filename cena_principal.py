@@ -24,6 +24,8 @@ class CenaPrincipal:
         self.lista_minions = []
         self.lista_objetos = []
         self.lista_PosicaoY = []
+        self.minions_mortos = []
+        self.minions_vivos = []
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
@@ -36,6 +38,7 @@ class CenaPrincipal:
         self.sprites_obstaculos = pg.sprite.Group()
         self.sprites_chamas = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
+        self.sprites_ataques_basicos = pg.sprite.Group()
       
         self.sprite_jogador1 = pg.sprite.GroupSingle()
         self.ataques_basicos1 = pg.sprite.Group()
@@ -59,6 +62,7 @@ class CenaPrincipal:
    
         # Mago - Fire_floor
         self.fire_floor = pg.image.load("sprites/fire_floor.png").convert_alpha()
+        self.fire_floor = pg.transform.scale(self.fire_floor, (128, 128))
 
         #Mapa com posição dos sprites
         self.cria_mapa()
@@ -168,8 +172,7 @@ class CenaPrincipal:
             self.rodando = False
 
         self.sprites_visiveis
-        self.ataques_basicos1.update()
-        self.ataques_basicos2.update()
+        self.sprites_ataques_basicos.update()
       
         self.jogador1.atualizaVelocidade()
         self.jogador2.atualizaVelocidade()
@@ -225,9 +228,6 @@ class CenaPrincipal:
             distancia1 = self.funcoes.distancia_squared(P1[0], P1[1], Pminion[0], Pminion[1])
             distancia2 = self.funcoes.distancia_squared(P2[0], P2[1], Pminion[0], Pminion[1])
 
-            # inclinacao1 = self.funcoes.inclinacaoPontos(P1[0], P1[1], Pminion[0], Pminion[1])
-            # inclinacao2 = self.funcoes.inclinacaoPontos(P2[0], P2[1], Pminion[0], Pminion[1])
-
             if distancia1 <= distancia2:
                 if distancia1 > 50:
                     Pnext = CenaPrincipal.calc_pos(self, Pminion, P1)
@@ -247,7 +247,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 1
             if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                    self.jogador1.vida -= 1
+                    # self.jogador1.vida -= 1
                     self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
@@ -263,7 +263,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 2
             if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                    self.jogador2.vida -= 1
+                    # self.jogador2.vida -= 1
                     self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)
@@ -283,11 +283,8 @@ class CenaPrincipal:
                     self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
                     self.lista_minions[j].rect.center = self.lista_minions[j].posicaoBackup
 
-            # Colisão dos minions com obstáculos
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
-            # if pg.sprite.spritecollide(self.lista_minions[i], self.sprites_obstaculos, False, pg.sprite.collide_mask):
-            #     self.lista_minions[i].rect.center = self.lista_minions[i].posicaoBackup
         
         # Colisão dos ataques
         
@@ -305,25 +302,18 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
             self.jogador2.vida -= 1
 
-        #matar minions J1
-        contador = 0
+        # Colisão dos minions com ataques
         for minion in self.sprites_minions:
-            if pg.sprite.spritecollide(minion,self.ataques_basicos1,False):
+            if pg.sprite.spritecollide(minion, self.sprites_ataques_basicos, False):
                 minion.kill()
-                self.lista_minions.remove(self.lista_minions[contador])
-                self.lista_objetos.remove(self.lista_objetos[contador+2])
-                contador += 1
+                self.minions_mortos.append(minion.indice)
 
-        #matar minions J2
-        contador = 0
-        for minion in self.sprites_minions:
-            if pg.sprite.spritecollide(minion,self.ataques_basicos2,False):
-                minion.kill()
-                self.lista_minions.remove(self.lista_minions[contador])
-                self.lista_objetos.remove(self.lista_objetos[contador+2])
-                contador += 1
-
-        
+        # print(self.minions_vivos, self.minions_mortos)
+        for index in sorted(self.minions_mortos, reverse = True):
+            del self.lista_minions[index]
+            del self.lista_objetos[index + 2]
+            self.minions_vivos.remove(index)
+        self.minions_mortos.clear()
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
@@ -352,9 +342,17 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000 :
+        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 3000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
+            if len(self.minions_vivos) == 0:
+                minion.contagem_minions(0)
+                self.minions_vivos.append(0)
+            else:
+                for i in range(len(self.minions_vivos) + 1):
+                    if i not in self.minions_vivos:
+                        minion.contagem_minions(i)
+                        self.minions_vivos.append(i)
             self.lista_minions.append(minion)
             self.lista_objetos.append(minion)
             self.sprites_minions.add(minion)
@@ -375,6 +373,7 @@ class CenaPrincipal:
                 ataque = Fire_floor(self.jogador1.rect.center, direcao, self.fire_floor)
                 
             self.ataques_basicos1.add(ataque)
+            self.sprites_ataques_basicos.add(ataque)
             self.jogador1.atacando = False
 
         if self.jogador2.atacando and self.jogador2.frame_atual in Configs.frames_de_ataque[self.classe2]:
@@ -390,7 +389,7 @@ class CenaPrincipal:
                 ataque = Fire_floor(self.jogador2.rect.center, direcao, self.fire_floor)
        
             self.ataques_basicos2.add(ataque)
-
+            self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
 
     def calc_pos(self, Pminion, Pplayer):

@@ -109,3 +109,6 @@ class Jogadores(pg.sprite.Sprite):
             print(self.vida)
             self.morte = True
         return self.morte
+
+    def contagem_minions(self, indice):
+        self.indice = indice
