@@ -59,6 +59,12 @@ class CenaPrincipal:
         self.espadada_original = pg.image.load("sprites/espadada.png").convert_alpha()
         for i in range(4):
             self.espadada_sprites.append(self.funcoes.sprite_selecionado(self.espadada_original, i, self.escala, (151, 110)))
+
+        # Mago - Fireball:
+        self.fireball_sprites = []
+        self.fireball_original = pg.image.load("sprites/fireball.png").convert_alpha()
+        for i in range(4):
+            self.fireball_sprites.append(self.funcoes.sprite_selecionado(self.fireball_original, i, self.escala, (32, 32)))
    
         # Mago - Fire_floor
         self.fire_floor = pg.image.load("sprites/fire_floor.png").convert_alpha()
@@ -184,6 +190,17 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
             self.jogador1.rect.centerx = self.jogador1.posicaoBackup[0]
 
+        # if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+        #     print(self.jogador1.velocidadeTotal[0])
+        #     for i in range(1, self.jogador1.velocidadeTotal[0]):
+        #         self.jogador1.rect.centerx -= i
+        #         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
+        #             self.jogador1.rect.centerx += i
+        #             print(i)
+        #         else:
+        #             break
+        #     print("")
+
         # Jogador 2 colidiu com obstáculo em X
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
             self.jogador2.rect.centerx = self.jogador2.posicaoBackup[0]
@@ -288,10 +305,10 @@ class CenaPrincipal:
         
         # Colisão dos ataques
         
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, True, pg.sprite.collide_mask):
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
             self.jogador1.vida -= 1
 
-        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, True, pg.sprite.collide_mask):
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
             self.jogador2.vida -= 1  
 
         # Colisão J1 com chamas
@@ -308,7 +325,7 @@ class CenaPrincipal:
                 minion.kill()
                 self.minions_mortos.append(minion.indice)
 
-        # print(self.minions_vivos, self.minions_mortos)
+        print(self.minions_vivos, self.minions_mortos)
         for index in sorted(self.minions_mortos, reverse = True):
             del self.lista_minions[index]
             del self.lista_objetos[index + 2]
@@ -342,7 +359,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 3 and pg.time.get_ticks() - self.tempoEntreSpawn > 3000:
+        if len(self.sprites_minions) < 10 and pg.time.get_ticks() - self.tempoEntreSpawn > 1000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             if len(self.minions_vivos) == 0:
@@ -370,7 +387,12 @@ class CenaPrincipal:
             if self.classe1 == "ladino":
                 pass
             if self.classe1 == "mago":
-                ataque = Fire_floor(self.jogador1.rect.center, direcao, self.fire_floor)
+                if len(self.ataques_basicos1) == 0:
+                    ataque = Flecha(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                else:
+                    for fireball in self.ataques_basicos1:
+                        ataque = Fire_floor(fireball.rect.center, self.fire_floor)
+                        fireball.kill()
                 
             self.ataques_basicos1.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
