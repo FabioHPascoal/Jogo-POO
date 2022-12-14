@@ -34,6 +34,7 @@ class CenaPrincipal:
         # Grupos de sprites
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
+        self.sprites_objetosQuebraveis = pg.sprite.Group()
         self.sprites_chamas = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
         self.sprites_ataques_basicos = pg.sprite.Group()
@@ -85,7 +86,7 @@ class CenaPrincipal:
 
                 if coluna == "5":
                     Grama((x, y), [self.sprites_visiveis])
-                    Caixa((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
+                    Caixa((x, y), [self.sprites_visiveis, self.sprites_objetosQuebraveis])
 
                 if coluna == "6":
                     Grama((x, y), [self.sprites_visiveis])
@@ -172,7 +173,12 @@ class CenaPrincipal:
             else:
                 self.vencedor = 'jogador1'
             self.rodando = False
+
         if self.cronometro.cronometrado <= 0:
+            if self.jogador1.minionsDerrotados > self.jogador2.minionsDerrotados:
+                self.vencedor = 'jogador1'
+            else:
+                self.vencedor = 'jogador2'
             self.rodando = False
 
         self.sprites_visiveis
@@ -309,18 +315,11 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
             self.jogador1.vida -= 1
 
-        # Colisão J1 com chamas
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
-            self.jogador1.vida -= 1
-
-        # Colisão J2 com chamas
-        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
-            self.jogador2.vida -= 1
-
-        # Colisão dos minions com ataques
+        # Colisão dos minions com ataques do J1
         for minion in self.sprites_minions:
-            if pg.sprite.spritecollide(minion, self.sprites_ataques_basicos, False):
+            if pg.sprite.spritecollide(minion, self.ataques_basicos1, False):
                 minion.morte = True
+                self.jogador1.minionsDerrotados += 1
 
         for minion in self.lista_minions:
             if minion.morte == True:
@@ -328,16 +327,40 @@ class CenaPrincipal:
 
         for minion in self.lista_objetos:
             if minion.morte == True:
-                self.lista_objetos.remove(minion)     
+                self.lista_objetos.remove(minion)  
+
         for minion in self.sprites_minions:
             if minion.morte == True:
                 minion.kill()
 
-        print(self.lista_minions)
-        print(self.lista_objetos)
-        print(self.sprites_minions)
-        print(" ")
+        # Colisão dos minions com ataques do J2
+        for minion in self.sprites_minions:
+            if pg.sprite.spritecollide(minion, self.ataques_basicos2, False):
+                minion.morte = True
+                self.jogador2.minionsDerrotados += 1
+
+        for minion in self.lista_minions:
+            if minion.morte == True:
+                self.lista_minions.remove(minion)
+
+        for minion in self.lista_objetos:
+            if minion.morte == True:
+                self.lista_objetos.remove(minion)  
+
+        for minion in self.sprites_minions:
+            if minion.morte == True:
+                minion.kill()
+
+        #Colisão dos ataques com os objetos quebráveis
+        for objeto in self.sprites_objetosQuebraveis:
+            if pg.sprite.spritecollide(objeto,self.sprites_ataques_basicos,False):
+                objeto.kill()
         
+        #Colisão dos ataques com objetos não quebráveis
+        for ataque in self.sprites_ataques_basicos:
+            if pg.sprite.spritecollide(ataque,self.sprites_obstaculos,False):
+                ataque.kill()
+
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
         
@@ -365,7 +388,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 1000:
+        if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)

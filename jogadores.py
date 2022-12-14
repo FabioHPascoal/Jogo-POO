@@ -35,7 +35,7 @@ class Jogadores(pg.sprite.Sprite):
         self.atacando = False
         self.livre = True
         self.estado = "livre"
-        
+        self.minionsDerrotados = 0
 
         # Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
