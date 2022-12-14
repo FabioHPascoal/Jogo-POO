@@ -109,6 +109,8 @@ class Jogadores(pg.sprite.Sprite):
         self.estado = "atacando"
 
     def desenha(self, tela, tempoAtual):
+        print(Configs.duracao_frame_estado[self.estado][self.classe][self.frame_atual])
+        print(self.estado, self.classe, self.frame_atual)
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
                              self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)

@@ -99,6 +99,3 @@ class Fire_floor(pg.sprite.Sprite):
         self.tempoExistente = pg.time.get_ticks() - self.tempoSurgimento
         if self.tempoExistente > self.duracao:
             self.kill()
-
-class HealingMagic(pg.sprite.Sprite):
-    pass

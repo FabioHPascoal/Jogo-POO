@@ -304,12 +304,12 @@ class CenaPrincipal:
         for ataque in self.ataques_basicos1:
             if pg.sprite.collide_mask(ataque, self.sprite_jogador2.sprite):
                 if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                    self.jogador1.vida -= 1
-                    self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+                    self.jogador2.vida -= 1
+                    self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
                     if self.classe1 in Configs.ataques_sao_desenhados:
                         ataque.kill()
                 if self.classe1 == "cavaleiro":
-                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
+                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (5, 5), V2, 5, M2) # a velocidade deve depender do angulo 
                     self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
                     self.jogador2.Vadicional[1] += velocidades_adicionais[1][1]
 
@@ -322,7 +322,7 @@ class CenaPrincipal:
                     if self.classe2 in Configs.ataques_sao_desenhados:
                         ataque.kill()
                     if self.classe2 == "cavaleiro":
-                        velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
+                        velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (5, 5), M1, 5)
                         self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                         self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
       
@@ -510,7 +510,7 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
+        if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
@@ -577,6 +577,10 @@ class CenaPrincipal:
             self.ataques_basicos2.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
+
+    def cria_habilidades(self):
+        if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
+            pass
 
     def calc_pos(self, Pminion, Pplayer):
         pos1 = [math.trunc(Pminion[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pminion[1]/Configs.BLOCOS_TAMANHO)]
