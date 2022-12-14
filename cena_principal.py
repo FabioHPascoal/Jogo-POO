@@ -26,6 +26,7 @@ class CenaPrincipal:
         self.lista_PosicaoY = []
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
+        self.ultimaAtualizacaoAgua = pg.time.get_ticks()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
         self.hud = HUD(Configs.vitalidade[self.classe1], Configs.vitalidade[self.classe2])
         # Captura a superfície da tela
@@ -35,7 +36,7 @@ class CenaPrincipal:
         self.sprites_visiveis = pg.sprite.Group()
         self.sprites_obstaculos = pg.sprite.Group()
         self.sprites_objetosQuebraveis = pg.sprite.Group()
-        self.sprites_chamas = pg.sprite.Group()
+        self.sprites_agua = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
         self.sprites_ataques_basicos = pg.sprite.Group()
       
@@ -85,13 +86,39 @@ class CenaPrincipal:
                     Bloco((x, y), [self.sprites_visiveis, self.sprites_obstaculos])
 
                 if coluna == "5":
-                    Grama((x, y), [self.sprites_visiveis])
+                    GramaCentro((x, y), [self.sprites_visiveis])
                     Caixa((x, y), [self.sprites_visiveis, self.sprites_objetosQuebraveis])
 
                 if coluna == "6":
-                    Grama((x, y), [self.sprites_visiveis])
-                    Chamas((x, y), [self.sprites_visiveis,self.sprites_chamas])
+                    Agua((x, y), [self.sprites_visiveis,self.sprites_agua])
              
+                if coluna == "7":
+                    GramaRioD((x, y), [self.sprites_visiveis])
+
+                if coluna == "8":
+                    GramaRioE((x, y), [self.sprites_visiveis])
+
+                if coluna == '9':
+                    Ponte((x, y), [self.sprites_visiveis],0)
+                if coluna == '10':
+                    Ponte((x, y), [self.sprites_visiveis],1)
+                if coluna == '11':
+                    Ponte((x, y), [self.sprites_visiveis],2)
+                if coluna == '12':
+                    Ponte((x, y), [self.sprites_visiveis],3)
+                if coluna == '13':
+                    Ponte((x, y), [self.sprites_visiveis],4)
+                if coluna == '14':
+                    Ponte((x, y), [self.sprites_visiveis],5)
+                if coluna == '15':
+                    Ponte((x, y), [self.sprites_visiveis],6)
+                if coluna == '16':
+                    Ponte((x, y), [self.sprites_visiveis],7)
+                if coluna == '17':
+                    Ponte((x, y), [self.sprites_visiveis],8)
+                if coluna == '18':
+                    Ponte((x, y), [self.sprites_visiveis],9)
+
                 if coluna == " ":
                     Grama((x, y), [self.sprites_visiveis])
              
@@ -166,6 +193,12 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
 
+        #Atualizar frame da agua
+        if pg.time.get_ticks() - self.ultimaAtualizacaoAgua > 800:
+            for agua in self.sprites_agua:
+                agua.update()
+                self.ultimaAtualizacaoAgua = pg.time.get_ticks()
+            
         P1 = self.jogador1.posicaoBackup
         P2 = self.jogador2.posicaoBackup
 
