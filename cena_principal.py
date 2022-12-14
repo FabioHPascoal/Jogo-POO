@@ -291,7 +291,7 @@ class CenaPrincipal:
 
         self.jogador1.moverY()
         self.jogador2.moverY()
-      
+        
         # Jogador 1 colidiu com obstáculo em Y
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
             self.jogador1.rect.centery = self.jogador1.posicaoBackup[1]
@@ -307,6 +307,8 @@ class CenaPrincipal:
                 self.jogador2.tempoDoUltimoDano =  pg.time.get_ticks()
                 print("J1")
                 if self.classe1 == "cavaleiro":
+                    self.jogador2.stunnado = True
+                    self.jogador2.inicioStun = pg.time.get_ticks()
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
                     self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
                     self.jogador2.Vadicional[1] += velocidades_adicionais[1][1]
@@ -318,6 +320,8 @@ class CenaPrincipal:
                 self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
                 print("J2")
                 if self.classe2 == "cavaleiro":
+                    self.jogador1.stunnado = True
+                    self.jogador1.inicioStun = pg.time.get_ticks()
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
                     self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                     self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
@@ -476,7 +480,12 @@ class CenaPrincipal:
                 coracao.kill()
                 self.jogador2.vida += 1
 
+        #verificar stun
+        self.jogador1.stun()
+        self.jogador2.stun()
+
     def desenha(self):
+        print(self.jogador1.stunnado,self.jogador2.stunnado)
         self.sprites_visiveis.draw(self.superficie_tela)
 
         # if Configs.tipo_de_classe[self.classe1] == "ranged":

@@ -17,9 +17,13 @@ class Jogadores(pg.sprite.Sprite):
         self.Vadicional = [0, 0]
         self.massa = Configs.massa_personagem[classe]
         self.vida = Configs.vitalidade[classe]
-        self.tempoDeImunidade = 2000 #2 segundos
+        self.tempoDeImunidade = 1000 #1 segundos
         self.tempoDoUltimoDano = 0
         self.morte = False
+        self.inicioStun = 0
+        self.delayDoStun = 300
+        self.stunnado = False
+        self.paralisar = False
         self.ultimoAtaque = 0
         self.largura_sprite, self.altura_sprite = Configs.dimensoes_sprite[self.classe]
         self.escala = Configs.ESCALA
@@ -82,38 +86,39 @@ class Jogadores(pg.sprite.Sprite):
         self.velocidadeTotal = [self.velocidade[0] + self.Vadicional[0], self.velocidade[1] + self.Vadicional[1]]
 
     def moverX(self):
-        if self.naAgua and self.velocidadeTotal[0] > 0:
-            self.rect.centerx += 2
-        elif self.naAgua and self.velocidadeTotal[0] < 0:
-            self.rect.centerx -= 2
-        elif self.naAgua == False:
-            self.rect.centerx += self.velocidadeTotal[0]
+        if self.paralisar == False:
+            if self.naAgua and self.velocidadeTotal[0] > 0:
+                self.rect.centerx += 2
+            elif self.naAgua and self.velocidadeTotal[0] < 0:
+                self.rect.centerx -= 2
+            elif self.naAgua == False:
+                self.rect.centerx += self.velocidadeTotal[0]
 
     def moverY(self):
-        if self.naAgua and self.velocidadeTotal[1] > 0:
-            self.rect.centery +=  2
-        elif self.naAgua and self.velocidadeTotal[1] < 0:
-            self.rect.centery -= 1
-        elif self.naAgua and self.velocidadeTotal[1] == 0:
-            self.rect.centery += 2
-        elif self.naAgua == False:
-            self.rect.centery += self.velocidadeTotal[1]
-    
+        if self.paralisar == False:
+            if self.naAgua and self.velocidadeTotal[1] > 0:
+                self.rect.centery +=  2
+            elif self.naAgua and self.velocidadeTotal[1] < 0:
+                self.rect.centery -= 1
+            elif self.naAgua and self.velocidadeTotal[1] == 0:
+                self.rect.centery += 1
+            elif self.naAgua == False:
+                self.rect.centery += self.velocidadeTotal[1]
+        
     def ataqueBasico(self):
-        self.frame_atual = 0
-        self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
-       
-        self.velocidade = [0, 0]
-        self.livre = False
-        self.atacando = True
-        self.estado = "atacando"
+        if self.stunnado == False:
+            self.frame_atual = 0
+            self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
+        
+            self.velocidade = [0, 0]
+            self.livre = False
+            self.atacando = True
+            self.estado = "atacando"
 
     def desenha(self, tela, tempoAtual):
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
                              self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        print(self.estado, self.classe, self.frame_atual)
-        print(Configs.duracao_frame_estado[self.estado][self.classe][self.frame_atual])
         if tempoAtual - self.tempo_anterior >= Configs.duracao_frame_estado[self.estado][self.classe][self.frame_atual]:
             self.frame_atual += 1
 
@@ -128,5 +133,9 @@ class Jogadores(pg.sprite.Sprite):
             self.morte = True
         return self.morte
 
-    def stunnado(self):
-        pass
+    def stun(self):
+        if self.stunnado == True and pg.time.get_ticks()-self.inicioStun > self.delayDoStun:
+            self.paralisar = True
+            if pg.time.get_ticks() - self.inicioStun > 2000: #stunnado por 2s
+                self.stunnado = False
+                self.paralisar = False
