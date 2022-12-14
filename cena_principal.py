@@ -303,13 +303,13 @@ class CenaPrincipal:
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
         
-        # Colisão dos ataques
-        
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
-            self.jogador1.vida -= 1
-
+        # Colisão dos ataques do J1 com o J2
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
             self.jogador2.vida -= 1  
+      
+        # Colisão dos ataques do J2 com o J1
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
+            self.jogador1.vida -= 1
 
         # Colisão J1 com chamas
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprites_chamas, True, pg.sprite.collide_mask):
@@ -387,20 +387,27 @@ class CenaPrincipal:
             if self.classe1 == "ladino":
                 pass
             if self.classe1 == "mago":
-                if len(self.ataques_basicos1) == 0:
-                    ataque = Flecha(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                no_fireball = True
+                for ataque_mago in self.ataques_basicos1:  
+                    if isinstance(ataque_mago, Fireball):
+                        fireball = ataque_mago
+                        no_fireball = False
+                
+                if no_fireball:        
+                    ataque = Fireball(self.jogador1.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                
                 else:
-                    for fireball in self.ataques_basicos1:
-                        ataque = Fire_floor(fireball.rect.center, self.fire_floor)
-                        fireball.kill()
+                    ataque = Fire_floor(ataque_mago.rect.center, self.fire_floor)
+                    fireball.kill()
                 
             self.ataques_basicos1.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
             self.jogador1.atacando = False
+            self.jogador1.estado = "livre"
 
         if self.jogador2.atacando and self.jogador2.frame_atual in Configs.frames_de_ataque[self.classe2]:
             direcao = self.jogador2.direcaoInicial
-         
+        
             if self.classe2 == "cavaleiro":
                 ataque = Espadada(self.jogador2.rect.center, direcao, self.espadada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "arqueiro":
@@ -408,11 +415,23 @@ class CenaPrincipal:
             if self.classe2 == "ladino":
                 pass
             if self.classe2 == "mago":
-                ataque = Fire_floor(self.jogador2.rect.center, direcao, self.fire_floor)
+                no_fireball = True
+                for ataque_mago in self.ataques_basicos1:  
+                    if isinstance(ataque_mago, Fireball):
+                        fireball = ataque_mago
+                        no_fireball = False
+                
+                if no_fireball:        
+                    ataque = Fireball(self.jogador2.rect.center, direcao, self.fireball_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                
+                else:
+                    ataque = Fire_floor(ataque_mago.rect.center, self.fire_floor)
+                    fireball.kill()
        
             self.ataques_basicos2.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
+            self.jogador2.estado = "livre"
 
     def calc_pos(self, Pminion, Pplayer):
         pos1 = [math.trunc(Pminion[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pminion[1]/Configs.BLOCOS_TAMANHO)]

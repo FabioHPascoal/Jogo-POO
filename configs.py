@@ -111,12 +111,21 @@ class Configs:
         "goblin": [3, 4, 5]
     }
 
-    duracao_frame_ataque = {
-        "cavaleiro": 100,
-        "arqueiro": 80,
-        "ladino": 30,
-        "mago": 80,
-        "goblin": 50
+    duracao_frame_estado = {
+        "atacando": {
+            "cavaleiro": 100,
+            "arqueiro": 80,
+            "ladino": 30,
+            "mago": 50,
+            "goblin": 50
+        },
+        "livre": {
+            "cavaleiro": 100,
+            "arqueiro": 80,
+            "ladino": 30,
+            "mago": 80,
+            "goblin": 50
+        }
     }
 
     seleciona_animacoes = {

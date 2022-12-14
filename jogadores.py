@@ -32,8 +32,10 @@ class Jogadores(pg.sprite.Sprite):
         self.animacao_atual = 3
         self.frame_atual = 0
         self.sprites = []
-        self.livre = True
         self.atacando = False
+        self.livre = True
+        self.estado = "livre"
+        
 
         # Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
@@ -91,16 +93,18 @@ class Jogadores(pg.sprite.Sprite):
         self.velocidade = [0, 0]
         self.livre = False
         self.atacando = True
+        self.estado = "atacando"
 
     def desenha(self, tela, tempoAtual):
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
                              self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        if tempoAtual - self.tempo_anterior >= Configs.DURACAO_FRAME:
+        if tempoAtual - self.tempo_anterior >= Configs.duracao_frame_estado[self.estado][self.classe]:
             self.frame_atual += 1
 
             if self.frame_atual == len(self.sprites[self.animacao_atual]):
                 self.livre = True
+                self.estado = "livre"
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual  
 
