@@ -166,6 +166,15 @@ class CenaPrincipal:
 
     def atualiza_estado(self):
 
+        P1 = self.jogador1.posicaoBackup
+        P2 = self.jogador2.posicaoBackup
+
+        V1 = self.jogador1.velocidade
+        V2 = self.jogador2.velocidade
+
+        M1 = self.jogador1.massa
+        M2 = self.jogador2.massa
+
         #Verificar fim de jogo e vencedor
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
             if self.jogador1.morte:
@@ -220,15 +229,26 @@ class CenaPrincipal:
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_obstaculos, False, pg.sprite.collide_mask):
             self.jogador2.rect.centery = self.jogador2.posicaoBackup[1]
 
-        P1 = self.jogador1.posicaoBackup
-        P2 = self.jogador2.posicaoBackup
+        # Colisão dos ataques do J1 com o J2
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
+            if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
+                self.jogador2.vida -= 1
+                self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
+                if self.classe1 == "cavaleiro":
+                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
+                    self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
+                    self.jogador2.Vadicional[1] += velocidades_adicionais[1][1]
 
-        V1 = self.jogador1.velocidade
-        V2 = self.jogador2.velocidade
-
-        M1 = self.jogador1.massa
-        M2 = self.jogador2.massa
-
+        # Colisão dos ataques do J2 com o J1
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
+            if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
+                self.jogador1.vida -= 1
+                self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+                if self.classe2 == "cavaleiro":
+                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
+                    self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
+                    self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
+      
         #Jogadores colidiram
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprite_jogador2, False, pg.sprite.collide_mask):
             velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, V2, M1, M2)
@@ -363,10 +383,10 @@ class CenaPrincipal:
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
-        
+
         if Configs.tipo_de_classe[self.classe1] == "ranged":
             self.ataques_basicos1.draw(self.superficie_tela)
-        
+
         if Configs.tipo_de_classe[self.classe2] == "ranged":
             self.ataques_basicos2.draw(self.superficie_tela)
 
@@ -375,7 +395,7 @@ class CenaPrincipal:
             self.lista_PosicaoY.append(objeto.rect.centery)
 
         lista_PosicaoY_numpy = numpy.array(self.lista_PosicaoY)
-        
+
         # Gera uma lista com o índice dos objetos na ordem em que devem ser desenhados na tela
         lista_indice_sorted = numpy.argsort(lista_PosicaoY_numpy)
 

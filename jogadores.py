@@ -113,3 +113,6 @@ class Jogadores(pg.sprite.Sprite):
             print(self.vida)
             self.morte = True
         return self.morte
+
+    def stunnado(self):
+        pass
