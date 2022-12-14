@@ -35,7 +35,6 @@ class Jogadores(pg.sprite.Sprite):
         self.atacando = False
         self.livre = True
         self.estado = "livre"
-        
 
         # Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
@@ -113,3 +112,6 @@ class Jogadores(pg.sprite.Sprite):
             print(self.vida)
             self.morte = True
         return self.morte
+
+    def stunnado(self):
+        pass
