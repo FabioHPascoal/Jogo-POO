@@ -93,7 +93,9 @@ class Jogadores(pg.sprite.Sprite):
         if self.naAgua and self.velocidadeTotal[1] > 0:
             self.rect.centery +=  2
         elif self.naAgua and self.velocidadeTotal[1] < 0:
-            self.rect.centery -= 2
+            self.rect.centery -= 1
+        elif self.naAgua and self.velocidadeTotal[1] == 0:
+            self.rect.centery += 2
         elif self.naAgua == False:
             self.rect.centery += self.velocidadeTotal[1]
     
