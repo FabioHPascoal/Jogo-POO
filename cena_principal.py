@@ -61,6 +61,12 @@ class CenaPrincipal:
         for i in range(4):
             self.espadada_sprites.append(self.funcoes.sprite_selecionado(self.espadada_original, i, self.escala, (151, 110)))
 
+        # Ladino- Facada:
+        self.facada_sprites = []
+        self.facada_original = pg.image.load("sprites/facada.png").convert_alpha()
+        for i in range(4):
+            self.facada_sprites.append(self.funcoes.sprite_selecionado(self.facada_original, i, self.escala, (32, 32)))
+
         # Mago - Fireball:
         self.fireball_sprites = []
         self.fireball_original = pg.image.load("sprites/fireball.png").convert_alpha()
@@ -299,6 +305,7 @@ class CenaPrincipal:
             if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
                 # self.jogador2.vida -= 1
                 self.jogador2.tempoDoUltimoDano =  pg.time.get_ticks()
+                print("J1")
                 if self.classe1 == "cavaleiro":
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
                     self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
@@ -309,12 +316,13 @@ class CenaPrincipal:
             if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
                 # self.jogador1.vida -= 1
                 self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+                print("J2")
                 if self.classe2 == "cavaleiro":
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
                     self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                     self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
       
-        #Jogadores colidiram
+        # Colisão entre os jogadores
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprite_jogador2, False, pg.sprite.collide_mask):
             velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, V2, M1, M2)
             self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
@@ -516,7 +524,7 @@ class CenaPrincipal:
             if self.classe1 == "arqueiro":
                 ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe1 == "ladino":
-                pass
+                ataque = Facada(self.jogador1.rect.center, direcao, self.facada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe1 == "mago":
                 no_fireball = True
                 for ataque_mago in self.ataques_basicos1:  
@@ -544,7 +552,7 @@ class CenaPrincipal:
             if self.classe2 == "arqueiro":
                 ataque = Flecha(self.jogador2.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "ladino":
-                pass
+                ataque = Facada(self.jogador2.rect.center, direcao, self.facada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "mago":
                 no_fireball = True
                 for ataque_mago in self.ataques_basicos1:  
