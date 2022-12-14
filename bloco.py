@@ -69,8 +69,9 @@ class Agua(pg.sprite.Sprite):
 
         for frame in range(4):
             self.sprites.append(self.sprite_selecionado(self.sheet,frame,(Configs.BLOCOS_TAMANHO,Configs.BLOCOS_TAMANHO)))
-    def update(self):
-        self.image = self.sprites[randint(0,3)]
+            
+    def update(self,frame):
+        self.image = self.sprites[frame]
 
     def sprite_selecionado(self, sheet, frame, dimensoes):
         imagem = pg.Surface(dimensoes).convert_alpha()

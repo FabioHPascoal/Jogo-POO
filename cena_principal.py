@@ -27,6 +27,7 @@ class CenaPrincipal:
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
         self.ultimaAtualizacaoAgua = pg.time.get_ticks()
+        self.movimentoAgua = True
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
         self.hud = HUD(Configs.vitalidade[self.classe1], Configs.vitalidade[self.classe2])
         # Captura a superfície da tela
@@ -162,7 +163,9 @@ class CenaPrincipal:
         if self.jogador1.livre:
             if pg.key.get_pressed()[pg.K_c]:
                 self.jogador1.ataqueBasico()
-        
+            if pg.key.get_pressed()[pg.K_v]:
+                self.jogador1.habilidade()
+
         # Movimento em X
         if pg.key.get_pressed()[pg.K_a]:
             self.jogador1.vetorUnitario[0] = -1
@@ -184,7 +187,9 @@ class CenaPrincipal:
         if self.jogador2.livre:
             if pg.key.get_pressed()[pg.K_PERIOD]:
                 self.jogador2.ataqueBasico()
-        
+            if pg.key.get_pressed()[pg.K_SEMICOLON]:
+                self.jogador2.habilidade()
+
         # Movimento em X
         if pg.key.get_pressed()[pg.K_j]:
             self.jogador2.vetorUnitario[0] = -1
@@ -202,12 +207,6 @@ class CenaPrincipal:
             self.jogador2.vetorUnitario[1] = 0
 
     def atualiza_estado(self):
-
-        #Atualizar frame da agua
-        if pg.time.get_ticks() - self.ultimaAtualizacaoAgua > 800:
-            for agua in self.sprites_agua:
-                agua.update()
-                self.ultimaAtualizacaoAgua = pg.time.get_ticks()
             
         P1 = self.jogador1.posicaoBackup
         P2 = self.jogador2.posicaoBackup
@@ -217,6 +216,35 @@ class CenaPrincipal:
 
         M1 = self.jogador1.massa
         M2 = self.jogador2.massa
+
+        #Atualizar frame da agua
+        if pg.time.get_ticks() - self.ultimaAtualizacaoAgua > 800:
+            contador = 0
+            posicaoOndas1 = [0,1,2,6,7,11,12,13]
+            posicaoOndas2 = [3,4,5,8,9,10,14,15,16]
+            if self.movimentoAgua:
+                for agua in self.sprites_agua:
+                    if contador in posicaoOndas1:
+                        agua.update(1)
+                    if contador in posicaoOndas2:
+                        agua.update(0)
+                    contador += 1
+                    if contador == 17:
+                        contador = 0
+                    self.ultimaAtualizacaoAgua = pg.time.get_ticks()
+                    self.movimentoAgua = False
+            else:
+                for agua in self.sprites_agua:
+                    if contador in posicaoOndas1:
+                        agua.update(0)
+                    if contador in posicaoOndas2:
+                        agua.update(1)
+                    contador += 1
+                    if contador == 17:
+                        contador = 0
+                    self.ultimaAtualizacaoAgua = pg.time.get_ticks()
+                    self.movimentoAgua = True
+            
 
         #Verificar fim de jogo e vencedor
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
