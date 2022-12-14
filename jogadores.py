@@ -17,7 +17,7 @@ class Jogadores(pg.sprite.Sprite):
         self.Vadicional = [0, 0]
         self.massa = Configs.massa_personagem[classe]
         self.vida = Configs.vitalidade[classe]
-        self.tempoDeImunidade = 2000 #2 segundos
+        self.tempoDeImunidade = 1000 #1 segundo
         self.tempoDoUltimoDano = 0
         self.morte = False
         self.ultimoAtaque = 0
@@ -112,8 +112,6 @@ class Jogadores(pg.sprite.Sprite):
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
                              self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
-        print(self.estado, self.classe, self.frame_atual)
-        print(Configs.duracao_frame_estado[self.estado][self.classe][self.frame_atual])
         if tempoAtual - self.tempo_anterior >= Configs.duracao_frame_estado[self.estado][self.classe][self.frame_atual]:
             self.frame_atual += 1
 
