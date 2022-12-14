@@ -51,6 +51,12 @@ class Caixa(pg.sprite.Sprite):
         self.image = pg.image.load("sprites/caixa.png").convert_alpha()
         self.rect = self.image.get_rect(topleft = posicao)
 
+class Coracao(pg.sprite.Sprite):
+    def __init__(self,posicao,grupos_sprites):
+        super().__init__(grupos_sprites)
+        self.image = pg.image.load("sprites/coracao.png").convert_alpha()
+        self.rect = self.image.get_rect(topleft = posicao)
+
 class Agua(pg.sprite.Sprite):
     def __init__(self,posicao,grupos_sprites):
         super().__init__(grupos_sprites)
@@ -63,7 +69,6 @@ class Agua(pg.sprite.Sprite):
 
         for frame in range(4):
             self.sprites.append(self.sprite_selecionado(self.sheet,frame,(Configs.BLOCOS_TAMANHO,Configs.BLOCOS_TAMANHO)))
-
     def update(self):
         self.image = self.sprites[randint(0,3)]
 
