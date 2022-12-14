@@ -497,6 +497,8 @@ class CenaPrincipal:
                 ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe1 == "ladino":
                 ataque = Facada(self.jogador1.rect.center, direcao, self.facada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                self.jogador1.Vadicional[0] += 20 * direcao[0]
+                self.jogador1.Vadicional[1] += 20 * direcao[1]
             if self.classe1 == "mago":
                 no_fireball = True
                 for ataque_mago in self.ataques_basicos1:  
@@ -514,7 +516,6 @@ class CenaPrincipal:
             self.ataques_basicos1.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
             self.jogador1.atacando = False
-            self.jogador1.estado = "livre"
 
         if self.jogador2.atacando and self.jogador2.frame_atual in Configs.frames_de_ataque[self.classe2]:
             direcao = self.jogador2.direcaoInicial
@@ -542,7 +543,6 @@ class CenaPrincipal:
             self.ataques_basicos2.add(ataque)
             self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
-            self.jogador2.estado = "livre"
 
     def calc_pos(self, Pminion, Pplayer):
         pos1 = [math.trunc(Pminion[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pminion[1]/Configs.BLOCOS_TAMANHO)]

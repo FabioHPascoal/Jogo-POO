@@ -55,7 +55,6 @@ class Funcoes:
         Vadicional2[0] = int(abs(solucao[1] - moduloVelocidade2) * math.cos(angulo2)) 
         Vadicional2[1] = int(abs(solucao[1] - moduloVelocidade2) * math.sin(angulo2))
         
-        # print(Vadicional1, Vadicional2)
         return [Vadicional1, Vadicional2]
 
     def distancia_squared(self, X1, Y1, X2, Y2):

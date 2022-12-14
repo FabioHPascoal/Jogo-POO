@@ -111,20 +111,28 @@ class Configs:
         "goblin": [3, 4, 5]
     }
 
+    frames_de_habilidade = {
+        "cavaleiro": [],
+        "arqueiro": [],
+        "ladino": [],
+        "mago": [5],
+        "goblin": []
+    }
+
     duracao_frame_estado = {
         "atacando": {
-            "cavaleiro": 100,
-            "arqueiro": 70,
-            "ladino": 30,
-            "mago": 50,
-            "goblin": 50
+            "cavaleiro": [100, 100, 100, 100, 100, 100],
+            "arqueiro": [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+            "ladino": [50, 50, 50, 50, 50, 50],
+            "mago": [80, 80, 80, 80, 80, 80, 80, 80],
+            "goblin": [50, 50, 50, 50, 50, 50]
         },
         "livre": {
-            "cavaleiro": 100,
-            "arqueiro": 80,
-            "ladino": 30,
-            "mago": 80,
-            "goblin": 50
+            "cavaleiro": [100, 100, 100, 100, 100, 100, 100, 100],
+            "arqueiro": [80, 80, 80, 80, 80, 80, 80, 80],
+            "ladino": [80, 80, 80, 80, 80, 80, 80, 80],
+            "mago": [80, 80, 80, 80, 80, 80, 80, 80],
+            "goblin": [80, 80, 80, 80, 80, 80, 80, 80]
         }
     }
 
