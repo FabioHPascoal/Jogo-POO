@@ -110,7 +110,6 @@ class Jogadores(pg.sprite.Sprite):
 
     def verificarMorte(self):
         if self.vida <= 0:
-            print(self.vida)
             self.morte = True
         return self.morte
 
