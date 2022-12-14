@@ -11,7 +11,7 @@ from cronometro import Cronometro
 from habilidades import*
 
 class CenaPrincipal:
-    def __init__(self, tela, classe1, classe2,tempoGastoSelecaoPersonagem):
+    def __init__(self, tela, classe1, classe2, tempoGastoSelecaoPersonagem):
         self.tempoGastoSelecaoPersonagem = tempoGastoSelecaoPersonagem
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
@@ -269,8 +269,8 @@ class CenaPrincipal:
         # Colisão dos ataques do J1 com o J2
         if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
             if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                self.jogador2.vida -= 1
-                self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
+                # self.jogador2.vida -= 1
+                self.jogador2.tempoDoUltimoDano =  pg.time.get_ticks()
                 if self.classe1 == "cavaleiro":
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
                     self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
@@ -279,7 +279,7 @@ class CenaPrincipal:
         # Colisão dos ataques do J2 com o J1
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
             if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                self.jogador1.vida -= 1
+                # self.jogador1.vida -= 1
                 self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
                 if self.classe2 == "cavaleiro":
                     velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
@@ -363,14 +363,6 @@ class CenaPrincipal:
 
             self.lista_minions[i].moverX()
             self.lista_minions[i].moverY()
-        
-        # Colisão dos ataques do J1 com o J2
-        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
-            self.jogador2.vida -= 1  
-      
-        # Colisão dos ataques do J2 com o J1
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
-            self.jogador1.vida -= 1
 
         # Colisão dos minions com ataques do J1
         for minion in self.sprites_minions:
@@ -451,11 +443,11 @@ class CenaPrincipal:
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
 
-        if Configs.tipo_de_classe[self.classe1] == "ranged":
-            self.ataques_basicos1.draw(self.superficie_tela)
+        # if Configs.tipo_de_classe[self.classe1] == "ranged":
+        self.ataques_basicos1.draw(self.superficie_tela)
 
-        if Configs.tipo_de_classe[self.classe2] == "ranged":
-            self.ataques_basicos2.draw(self.superficie_tela)
+        # if Configs.tipo_de_classe[self.classe2] == "ranged":
+        self.ataques_basicos2.draw(self.superficie_tela)
 
         # Adiciona as coordenadas Y de todos os objetos em uma lista
         for objeto in self.lista_objetos:
@@ -469,13 +461,16 @@ class CenaPrincipal:
         for indice in lista_indice_sorted:
             self.lista_objetos[indice].desenha(self.tela, pg.time.get_ticks())
 
+        self.sprite_jogador1.draw(self.superficie_tela)
+        self.sprite_jogador2.draw(self.superficie_tela)
+
         self.lista_PosicaoY.clear()
         self.hud.exibirHUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks() - self.tempoGastoSelecaoPersonagem))
 
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
+        if len(self.sprites_minions) < 0 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
             self.lista_minions.append(minion)
