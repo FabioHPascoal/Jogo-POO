@@ -36,6 +36,7 @@ class Jogadores(pg.sprite.Sprite):
         self.livre = True
         self.estado = "livre"
         self.minionsDerrotados = 0
+        self.naAgua = False
 
         # Forma uma lista de listas do tipo [movimento sendo executado][frame do movimento]
         contadorFrames = 0
@@ -81,10 +82,20 @@ class Jogadores(pg.sprite.Sprite):
         self.velocidadeTotal = [self.velocidade[0] + self.Vadicional[0], self.velocidade[1] + self.Vadicional[1]]
 
     def moverX(self):
-        self.rect.centerx += self.velocidadeTotal[0]
+        if self.naAgua and self.velocidadeTotal[0] > 0:
+            self.rect.centerx += 2
+        elif self.naAgua and self.velocidadeTotal[0] < 0:
+            self.rect.centerx -= 2
+        elif self.naAgua == False:
+            self.rect.centerx += self.velocidadeTotal[0]
 
     def moverY(self):
-        self.rect.centery += self.velocidadeTotal[1]
+        if self.naAgua and self.velocidadeTotal[1] > 0:
+            self.rect.centery +=  2
+        elif self.naAgua and self.velocidadeTotal[1] < 0:
+            self.rect.centery -= 2
+        elif self.naAgua == False:
+            self.rect.centery += self.velocidadeTotal[1]
     
     def ataqueBasico(self):
         self.frame_atual = 0
@@ -110,7 +121,6 @@ class Jogadores(pg.sprite.Sprite):
 
     def verificarMorte(self):
         if self.vida <= 0:
-            print(self.vida)
             self.morte = True
         return self.morte
 

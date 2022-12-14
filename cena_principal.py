@@ -39,7 +39,7 @@ class CenaPrincipal:
         self.sprites_agua = pg.sprite.Group()
         self.sprites_minions = pg.sprite.Group()
         self.sprites_ataques_basicos = pg.sprite.Group()
-      
+        self.sprites_coracoes = pg.sprite.Group()
         self.sprite_jogador1 = pg.sprite.GroupSingle()
         self.ataques_basicos1 = pg.sprite.Group()
      
@@ -99,6 +99,7 @@ class CenaPrincipal:
                     GramaRioE((x, y), [self.sprites_visiveis])
 
                 if coluna == '9':
+                    GramaRioE((x, y), [self.sprites_visiveis])
                     Ponte((x, y), [self.sprites_visiveis],0)
                 if coluna == '10':
                     Ponte((x, y), [self.sprites_visiveis],1)
@@ -107,8 +108,10 @@ class CenaPrincipal:
                 if coluna == '12':
                     Ponte((x, y), [self.sprites_visiveis],3)
                 if coluna == '13':
+                    GramaRioD((x, y), [self.sprites_visiveis])
                     Ponte((x, y), [self.sprites_visiveis],4)
                 if coluna == '14':
+                    GramaRioE((x, y), [self.sprites_visiveis])
                     Ponte((x, y), [self.sprites_visiveis],5)
                 if coluna == '15':
                     Ponte((x, y), [self.sprites_visiveis],6)
@@ -117,6 +120,7 @@ class CenaPrincipal:
                 if coluna == '17':
                     Ponte((x, y), [self.sprites_visiveis],8)
                 if coluna == '18':
+                    GramaRioD((x, y), [self.sprites_visiveis])
                     Ponte((x, y), [self.sprites_visiveis],9)
 
                 if coluna == " ":
@@ -407,12 +411,42 @@ class CenaPrincipal:
         #Colisão dos ataques com os objetos quebráveis
         for objeto in self.sprites_objetosQuebraveis:
             if pg.sprite.spritecollide(objeto,self.sprites_ataques_basicos,False):
+                Coracao((objeto.rect.x,objeto.rect.y), [self.sprites_visiveis,self.sprites_coracoes])
                 objeto.kill()
-        
+
         #Colisão dos ataques com objetos não quebráveis
         for ataque in self.sprites_ataques_basicos:
             if pg.sprite.spritecollide(ataque,self.sprites_obstaculos,False):
-                ataque.kill()
+                if ataque.projetil:
+                    ataque.kill()
+
+        #J1 na agua
+        if pg.sprite.spritecollide(self.sprite_jogador1.sprite,self.sprites_agua, False, pg.sprite.collide_mask):
+            self.jogador1.naAgua = True
+        else:
+            self.jogador1.naAgua = False
+
+        #J2 na agua
+        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.sprites_agua, False, pg.sprite.collide_mask):
+            self.jogador2.naAgua = True
+        else:
+            self.jogador2.naAgua = False
+
+        #Minion na agua
+        for minion in self.sprites_minions:
+            if pg.sprite.spritecollide(minion, self.sprites_agua, False):
+                minion.naAgua = True
+            else:
+                minion.naAgua = False
+
+        #capturar coração
+        for coracao in self.sprites_coracoes:
+            if pg.sprite.collide_rect(coracao,self.sprite_jogador1.sprite):
+                coracao.kill()
+                self.jogador1.vida += 1
+            if pg.sprite.collide_rect(coracao,self.sprite_jogador2.sprite):
+                coracao.kill()
+                self.jogador2.vida += 1
 
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
