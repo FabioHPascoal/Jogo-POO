@@ -7,7 +7,7 @@ class Espadada(pg.sprite.Sprite):
         super().__init__()
         self.tempoSurgimento = pg.time.get_ticks()
         self.projetil = False
-        self.duracao = 700
+        self.duracao = 300
         self.direcao = direcao
         self.posicao = posicao
         self.velocidade = 0

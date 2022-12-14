@@ -114,7 +114,7 @@ class Configs:
     duracao_frame_estado = {
         "atacando": {
             "cavaleiro": 100,
-            "arqueiro": 80,
+            "arqueiro": 70,
             "ladino": 30,
             "mago": 50,
             "goblin": 50
