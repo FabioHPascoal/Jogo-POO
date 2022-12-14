@@ -65,7 +65,7 @@ class CenaPrincipal:
         self.facada_sprites = []
         self.facada_original = pg.image.load("sprites/facada.png").convert_alpha()
         for i in range(4):
-            self.facada_sprites.append(self.funcoes.sprite_selecionado(self.facada_original, i, self.escala, (32, 32)))
+            self.facada_sprites.append(self.funcoes.sprite_selecionado(self.facada_original, i, self.escala, (39, 32)))
 
         # Mago - Fireball:
         self.fireball_sprites = []
@@ -301,11 +301,13 @@ class CenaPrincipal:
             self.jogador2.rect.centery = self.jogador2.posicaoBackup[1]
 
         # Colisão dos ataques do J1 com o J2
-        if pg.sprite.spritecollide(self.sprite_jogador2.sprite, self.ataques_basicos1, False, pg.sprite.collide_mask):
-            if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                # self.jogador2.vida -= 1
-                self.jogador2.tempoDoUltimoDano =  pg.time.get_ticks()
-                print("J1")
+        for ataque in self.ataques_basicos1:
+            if pg.sprite.collide_mask(ataque, self.sprite_jogador2.sprite):
+                if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
+                    self.jogador1.vida -= 1
+                    self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+                    if self.classe1 in Configs.ataques_sao_desenhados:
+                        ataque.kill()
                 if self.classe1 == "cavaleiro":
                     self.jogador2.stunnado = True
                     self.jogador2.inicioStun = pg.time.get_ticks()
@@ -314,17 +316,17 @@ class CenaPrincipal:
                     self.jogador2.Vadicional[1] += velocidades_adicionais[1][1]
 
         # Colisão dos ataques do J2 com o J1
-        if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.ataques_basicos2, False, pg.sprite.collide_mask):
-            if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                # self.jogador1.vida -= 1
-                self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
-                print("J2")
-                if self.classe2 == "cavaleiro":
-                    self.jogador1.stunnado = True
-                    self.jogador1.inicioStun = pg.time.get_ticks()
-                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
-                    self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
-                    self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
+        for ataque in self.ataques_basicos2:
+            if pg.sprite.collide_mask(ataque, self.sprite_jogador1.sprite):
+                if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
+                    self.jogador1.vida -= 1
+                    self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
+                    if self.classe2 in Configs.ataques_sao_desenhados:
+                        ataque.kill()
+                    if self.classe2 == "cavaleiro":
+                        velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (10, 10), M1, 5)
+                        self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
+                        self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
       
         # Colisão entre os jogadores
         if pg.sprite.spritecollide(self.sprite_jogador1.sprite, self.sprite_jogador2, False, pg.sprite.collide_mask):
@@ -488,11 +490,11 @@ class CenaPrincipal:
         print(self.jogador1.stunnado,self.jogador2.stunnado)
         self.sprites_visiveis.draw(self.superficie_tela)
 
-        # if Configs.tipo_de_classe[self.classe1] == "ranged":
-        self.ataques_basicos1.draw(self.superficie_tela)
+        if self.classe1 in Configs.ataques_sao_desenhados:
+            self.ataques_basicos1.draw(self.superficie_tela)
 
-        # if Configs.tipo_de_classe[self.classe2] == "ranged":
-        self.ataques_basicos2.draw(self.superficie_tela)
+        if self.classe2 in Configs.ataques_sao_desenhados:
+            self.ataques_basicos2.draw(self.superficie_tela)
 
         # Adiciona as coordenadas Y de todos os objetos em uma lista
         for objeto in self.lista_objetos:
@@ -534,8 +536,8 @@ class CenaPrincipal:
                 ataque = Flecha(self.jogador1.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe1 == "ladino":
                 ataque = Facada(self.jogador1.rect.center, direcao, self.facada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
-                self.jogador1.Vadicional[0] += 20 * direcao[0]
-                self.jogador1.Vadicional[1] += 20 * direcao[1]
+                self.jogador1.Vadicional[0] += 25 * direcao[0]
+                self.jogador1.Vadicional[1] += 25 * direcao[1]
             if self.classe1 == "mago":
                 no_fireball = True
                 for ataque_mago in self.ataques_basicos1:  
@@ -563,6 +565,8 @@ class CenaPrincipal:
                 ataque = Flecha(self.jogador2.rect.center, direcao, self.flecha_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
             if self.classe2 == "ladino":
                 ataque = Facada(self.jogador2.rect.center, direcao, self.facada_sprites[Configs.seleciona_frame_ataque[direcao[0], direcao[1]]])
+                self.jogador2.Vadicional[0] += 25 * direcao[0]
+                self.jogador2.Vadicional[1] += 25 * direcao[1]
             if self.classe2 == "mago":
                 no_fireball = True
                 for ataque_mago in self.ataques_basicos1:  

@@ -41,42 +41,37 @@ class Configs:
         "esquerda": math.pi,
         "baixo": (3/2) * math.pi
     }
- 
-    tipo_de_classe = {
-        "cavaleiro": "melee",
-        "arqueiro": "ranged",
-        "ladino": "melee",
-        "mago": "ranged",
-        "goblin": "melee"
-    }
+
+    ataques_sao_desenhados = ["arqueiro", "mago"]
 
     velocidade_personagem = {
-        "cavaleiro": 5,
-        "arqueiro": 8,
+        "cavaleiro": 4,
+        "arqueiro": 6,
         "ladino": 5,
-        "mago": 5,
+        "mago": 6,
         "goblin": 2
     }
 
     velocidade_projeteis = {
         "flecha": 10,
         "fireball": 6,
+        "facada": 22
     }
 
     massa_personagem = {
         "cavaleiro": 5,
         "arqueiro": 3,
-        "ladino": 3,
+        "ladino": 4,
         "mago": 3,
         "goblin": 3
     }
 
     vitalidade = {
-        "cavaleiro": 5,
-        "arqueiro": 3,
-        "ladino": 3,
-        "mago": 3,
-        "goblin": 3
+        "cavaleiro": 8,
+        "arqueiro": 5,
+        "ladino": 6,
+        "mago": 5,
+        "goblin": 5
     }
 
     dimensoes_sprite = {
@@ -121,9 +116,9 @@ class Configs:
 
     duracao_frame_estado = {
         "atacando": {
-            "cavaleiro": [100, 100, 100, 100, 100, 100],
-            "arqueiro": [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
-            "ladino": [50, 50, 50, 50, 50, 50],
+            "cavaleiro": [120, 120, 120, 120, 50, 50],
+            "arqueiro": [50, 50, 50, 50, 50, 50, 50, 50, 400, 50, 50],
+            "ladino": [300, 300, 150, 30, 30, 400],
             "mago": [80, 80, 80, 80, 80, 80, 80, 80],
             "goblin": [50, 50, 50, 50, 50, 50]
         },
