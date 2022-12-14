@@ -24,8 +24,6 @@ class CenaPrincipal:
         self.lista_minions = []
         self.lista_objetos = []
         self.lista_PosicaoY = []
-        self.minions_mortos = []
-        self.minions_vivos = []
         self.tempoEntreSpawn = 0
         self.cronometro = Cronometro()
         self.funcoes.velocidade_colisao(1, 1, 1, 1)
@@ -322,16 +320,24 @@ class CenaPrincipal:
         # Colisão dos minions com ataques
         for minion in self.sprites_minions:
             if pg.sprite.spritecollide(minion, self.sprites_ataques_basicos, False):
+                minion.morte = True
+
+        for minion in self.lista_minions:
+            if minion.morte == True:
+                self.lista_minions.remove(minion)
+
+        for minion in self.lista_objetos:
+            if minion.morte == True:
+                self.lista_objetos.remove(minion)     
+        for minion in self.sprites_minions:
+            if minion.morte == True:
                 minion.kill()
-                self.minions_mortos.append(minion.indice)
 
-        print(self.minions_vivos, self.minions_mortos)
-        for index in sorted(self.minions_mortos, reverse = True):
-            del self.lista_minions[index]
-            del self.lista_objetos[index + 2]
-            self.minions_vivos.remove(index)
-        self.minions_mortos.clear()
-
+        print(self.lista_minions)
+        print(self.lista_objetos)
+        print(self.sprites_minions)
+        print(" ")
+        
     def desenha(self):
         self.sprites_visiveis.draw(self.superficie_tela)
         
@@ -359,17 +365,9 @@ class CenaPrincipal:
         pg.display.flip()
 
     def gera_minions(self):
-        if len(self.sprites_minions) < 10 and pg.time.get_ticks() - self.tempoEntreSpawn > 1000:
+        if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 1000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
-            if len(self.minions_vivos) == 0:
-                minion.contagem_minions(0)
-                self.minions_vivos.append(0)
-            else:
-                for i in range(len(self.minions_vivos) + 1):
-                    if i not in self.minions_vivos:
-                        minion.contagem_minions(i)
-                        self.minions_vivos.append(i)
             self.lista_minions.append(minion)
             self.lista_objetos.append(minion)
             self.sprites_minions.add(minion)
