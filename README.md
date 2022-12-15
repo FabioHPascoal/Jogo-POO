@@ -5,6 +5,7 @@ Para rodar o jogo, é necessário a instalação da biblioteca pygame e o pip. A
 pip install numpy
 
 Além disso, foi o utilizado o pacote sympy para cálculo de quantidade de movimento nas colisões, que pode ser instalado pelo terminal do VSCODE com a seguinte linha:
+
 pip install sympy
 
 Controles J1:
