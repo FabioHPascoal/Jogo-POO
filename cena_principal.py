@@ -311,7 +311,7 @@ class CenaPrincipal:
                 if self.classe1 == "cavaleiro":
                     self.jogador2.stunnado = True
                     self.jogador2.inicioStun = pg.time.get_ticks()
-                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (10, 10), V2, 5, M2) # a velocidade deve depender do angulo 
+                    velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, (3, 3), V2, 2, M2)
                     self.jogador2.Vadicional[0] += velocidades_adicionais[1][0]
                     self.jogador2.Vadicional[1] += velocidades_adicionais[1][1]
 
@@ -324,7 +324,7 @@ class CenaPrincipal:
                     if self.classe2 in Configs.ataques_sao_desenhados:
                         ataque.kill()
                     if self.classe2 == "cavaleiro":
-                        velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (5, 5), M1, 5)
+                        velocidades_adicionais = self.funcoes.velocidadeColisao(P1, P2, V1, (3, 3), M1, 2)
                         self.jogador1.Vadicional[0] += velocidades_adicionais[0][0]
                         self.jogador1.Vadicional[1] += velocidades_adicionais[0][1]
       
@@ -367,7 +367,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 1
             if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                    # self.jogador1.vida -= 1
+                    self.jogador1.vida -= 1
                     self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
@@ -383,7 +383,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 2
             if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                    # self.jogador2.vida -= 1
+                    self.jogador2.vida -= 1
                     self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)

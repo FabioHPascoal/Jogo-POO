@@ -22,8 +22,8 @@ class HUD:
             self.coracoesJ1fundo.append(CoracoesPretos((30 + 64 * vidas, 30)))
 
         for vidas in range(self.vitalidadeJ2):
-            self.coracoesJ2.append(Coracoes((936 + 64 * vidas, 30)))
-            self.coracoesJ2fundo.append(CoracoesPretos((30 + 64 * vidas, 30)))
+            self.coracoesJ2.append(Coracoes((750 + 64 * vidas, 30)))
+            self.coracoesJ2fundo.append(CoracoesPretos((750 + 64 * vidas, 30)))
 
     def exibirHUD(self, vidasJ1:int, vidasJ2:int,cronometro:int, y = 20, x = Configs.LARGURA_TELA/2)->None:
         self.superficie_cronometro = fonte.render(str(cronometro), True,'White')
@@ -52,7 +52,7 @@ class HUD:
             self.vitalidadeJ1 -= 1
 
         if self.vitalidadeJ2 < vidasJ2:
-            self.coracoesJ2.append(Coracoes((936 + 64 * (vidasJ2-1), 30)))
+            self.coracoesJ2.append(Coracoes((750 + 64 * (vidasJ2-1), 30)))
             self.vitalidadeJ2 += 1
         elif self.vitalidadeJ2 > vidasJ2 and len(self.coracoesJ2) > 0:
             self.coracoesJ2.pop()
