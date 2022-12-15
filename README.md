@@ -4,7 +4,8 @@ Para rodar o jogo, é necessário a instalação da biblioteca pygame e o pip. A
 
 pip install numpy
 
-Além disso, foi o utilizado o pacote sympy para cálculo de quantidade de movimento nas colisões.
+Além disso, foi o utilizado o pacote sympy para cálculo de quantidade de movimento nas colisões, que pode ser instalado pelo terminal do VSCODE com a seguinte linha:
+pip install sympy
 
 Controles J1:
 	Painel de seleção:
@@ -12,7 +13,7 @@ Controles J1:
 		c seleciona
 	Jogo:
 		a,s,d,w movimentam o personagem
-		c ataca
+		c ataca, v habilidade
 
 Controles J2:
 	Painel de seleção:
@@ -20,5 +21,5 @@ Controles J2:
 		. seleciona
 	Jogo:
 		j,k,l,i movimentam o personagem
-		. ataca
+		. ataca, ; habilidade
 ESC encerra o game
