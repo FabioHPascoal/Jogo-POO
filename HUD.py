@@ -10,7 +10,8 @@ class HUD:
         self.superficie_tela = pg.display.get_surface()
         self.vitalidadeJ1 = vitalidadeJ1
         self.vitalidadeJ2 = vitalidadeJ2
-
+        self.vidaMaximaJ1 = vitalidadeJ1
+        self.vidaMaximaJ2 = vitalidadeJ2
         self.coracoesJ1 = []
         self.coracoesJ2 = []
 
@@ -20,13 +21,20 @@ class HUD:
         for vidas in range(self.vitalidadeJ2):
             self.coracoesJ2.append(Coracoes((936 + 64 * vidas, 30)))
 
+
     def exibirHUD(self, vidasJ1:int, vidasJ2:int,cronometro:int, y = 20, x = Configs.LARGURA_TELA/2)->None:
         self.superficie_cronometro = fonte.render(str(cronometro), True,'White')
         self.retangulo_cronometro = self.superficie_cronometro.get_rect(center = (x,y))
         self.superficie_tela.blit(self.superficie_cronometro, self.retangulo_cronometro)
 
         self.atualizarCoracoes(vidasJ1,vidasJ2)
+        #desenha a vida maxima
+        for vidas in range(self.vidaMaximaJ1):
+            self.superficie_tela.blit(self.imagem_de_fundo, vidas.rect)
+        for vidas in range(self.vidaMaximaJ2):
+            self.superficie_tela.blit(self.imagem_de_fundo, vidas.rect)
 
+        #desenha as vidas
         for vidas in self.coracoesJ1:
             self.superficie_tela.blit(vidas.image, vidas.rect)
         for vidas in self.coracoesJ2:
@@ -50,4 +58,5 @@ class HUD:
 class Coracoes:
     def __init__(self, posicao:list)->None:
         self.image = pg.image.load("sprites/coracao.png").convert_alpha()
+        self.imagem_de_fundo = pg.image.load("sprites/coracao.png").convert_alpha()
         self.rect = self.image.get_rect(topleft = posicao)
