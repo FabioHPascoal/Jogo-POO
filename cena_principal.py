@@ -148,6 +148,7 @@ class CenaPrincipal:
             self.gera_minions()
             self.tratamento_eventos()
             self.cria_ataques()
+            self.cria_habilidades()
             self.atualiza_estado()
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
@@ -562,7 +563,7 @@ class CenaPrincipal:
                 self.jogador2.Vadicional[1] += 25 * direcao[1]
             if self.classe2 == "mago":
                 no_fireball = True
-                for ataque_mago in self.ataques_basicos1:  
+                for ataque_mago in self.ataques_basicos2:  
                     if isinstance(ataque_mago, Fireball):
                         fireball = ataque_mago
                         no_fireball = False
@@ -578,9 +579,30 @@ class CenaPrincipal:
             self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
 
-    def cria_habilidades(self):
-        if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:
-            pass
+    def cria_habilidades(self):  
+        if self.jogador1.castando_skill and self.jogador1.frame_atual in Configs.frames_de_habilidade[self.classe1]:
+            if self.classe1 == "cavaleiro":
+                pass
+            if self.classe1 == "arqueiro":
+                pass
+            if self.classe1 == "ladino":
+                pass
+            if self.classe1 == "mago":
+                self.jogador1.vida += 1
+
+            self.jogador1.castando_skill = False
+
+        if self.jogador2.castando_skill and self.jogador2.frame_atual in Configs.frames_de_habilidade[self.classe2]:
+            if self.classe2 == "cavaleiro":
+                pass
+            if self.classe2 == "arqueiro":
+                pass
+            if self.classe2 == "ladino":
+                pass
+            if self.classe2 == "mago":
+                self.jogador2.vida += 1
+
+            self.jogador2.castando_skill = False
 
     def calc_pos(self, Pminion, Pplayer):
         pos1 = [math.trunc(Pminion[0]/Configs.BLOCOS_TAMANHO), math.trunc(Pminion[1]/Configs.BLOCOS_TAMANHO)]

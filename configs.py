@@ -129,11 +129,11 @@ class Configs:
             "mago": [80, 80, 80, 80, 80, 80, 80, 80],
             "goblin": [80, 80, 80, 80, 80, 80, 80, 80]
         },
-        "skill": {
+        "castando_skill": {
             "cavaleiro": [],
             "arqueiro": [],
             "ladino": [],
-            "mago": [80, 80, 80, 80, 80, 80, 80],
+            "mago": [120, 120, 120, 120, 120, 400, 120],
             "goblin": []
         }
     }
