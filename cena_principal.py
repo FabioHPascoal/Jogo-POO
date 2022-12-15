@@ -244,8 +244,7 @@ class CenaPrincipal:
                     if contador == 17:
                         contador = 0
                     self.ultimaAtualizacaoAgua = pg.time.get_ticks()
-                    self.movimentoAgua = True
-            
+                    self.movimentoAgua = True  
 
         #Verificar fim de jogo e vencedor
         if self.jogador1.verificarMorte() or self.jogador2.verificarMorte():
@@ -368,7 +367,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 1
             if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                    self.jogador1.vida -= 1
+                    # self.jogador1.vida -= 1
                     self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
@@ -384,7 +383,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 2
             if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                    self.jogador2.vida -= 1
+                    # self.jogador2.vida -= 1
                     self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)
@@ -409,27 +408,21 @@ class CenaPrincipal:
 
         # Colisão dos minions com ataques do J1
         for minion in self.sprites_minions:
-            if pg.sprite.spritecollide(minion, self.ataques_basicos1, False):
-                minion.morte = True
-                self.jogador1.minionsDerrotados += 1
-
-        for minion in self.lista_minions:
-            if minion.morte == True:
-                self.lista_minions.remove(minion)
-
-        for minion in self.lista_objetos:
-            if minion.morte == True:
-                self.lista_objetos.remove(minion)  
-
-        for minion in self.sprites_minions:
-            if minion.morte == True:
-                minion.kill()
+            for ataque in self.ataques_basicos1:
+                if pg.sprite.collide_mask(minion, ataque):
+                    minion.morte = True
+                    self.jogador1.minionsDerrotados += 1
+                    if ataque.projetil:
+                        ataque.kill()
 
         # Colisão dos minions com ataques do J2
         for minion in self.sprites_minions:
-            if pg.sprite.spritecollide(minion, self.ataques_basicos2, False):
-                minion.morte = True
-                self.jogador2.minionsDerrotados += 1
+            for ataque in self.ataques_basicos2:
+                if pg.sprite.collide_mask(minion, ataque):
+                    minion.morte = True
+                    self.jogador2.minionsDerrotados += 1
+                    if ataque.projetil:
+                        ataque.kill()
 
         for minion in self.lista_minions:
             if minion.morte == True:
@@ -508,8 +501,8 @@ class CenaPrincipal:
         for indice in lista_indice_sorted:
             self.lista_objetos[indice].desenha(self.tela, pg.time.get_ticks())
 
-        self.sprite_jogador1.draw(self.superficie_tela)
-        self.sprite_jogador2.draw(self.superficie_tela)
+        # self.sprite_jogador1.draw(self.superficie_tela)
+        # self.sprite_jogador2.draw(self.superficie_tela)
 
         self.lista_PosicaoY.clear()
         self.hud.exibirHUD(self.jogador1.vida,self.jogador2.vida,self.cronometro.tempoPassado(pg.time.get_ticks() - self.tempoGastoSelecaoPersonagem))
