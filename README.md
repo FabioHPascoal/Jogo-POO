@@ -10,17 +10,18 @@ pip install sympy
 
 Controles J1:
 	Painel de seleção:
-		a,d mudam o personagem
+		a, d mudam o personagem
 		c seleciona
 	Jogo:
-		a,s,d,w movimentam o personagem
+		a, s, d, w movimentam o personagem
 		c ataca, v habilidade
 
 Controles J2:
 	Painel de seleção:
-		j,l mudam o personagem
+		j, l mudam o personagem
 		. seleciona
 	Jogo:
-		j,k,l,i movimentam o personagem
+		j, k, l, i movimentam o personagem
 		. ataca, ; habilidade
+
 ESC encerra o game
