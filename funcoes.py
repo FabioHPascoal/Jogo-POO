@@ -6,14 +6,14 @@ class Funcoes:
     def __init__(self) -> None:
         pass
 
-    def sprite_selecionado(self, sheet, frame, escala, dimensoes):
+    def sprite_selecionado(self, sheet, frame:int, escala:int, dimensoes:list):
         imagem = pg.Surface((dimensoes[0], dimensoes[1])).convert_alpha()
         imagem.blit(sheet, (0, 0), (frame * dimensoes[0], 0, dimensoes[0], dimensoes[1]))
         imagem = pg.transform.scale(imagem, (dimensoes[0] * escala, dimensoes[1] * escala))
         imagem.set_colorkey((0, 0, 0, 0))
         return imagem
  
-    def velocidade_colisao(self, massa1, velocidade1, massa2, velocidade2):
+    def velocidade_colisao(self, massa1:int, velocidade1, massa2, velocidade2):
         Qmvi = massa1 * velocidade1 + massa2 * velocidade2
         EciX2 = massa1 * velocidade1 ** 2 + massa2 * velocidade2 ** 2
         
@@ -69,7 +69,7 @@ class Funcoes:
         inclinacao = math.atan2(sin, cos)
         return inclinacao
 
-    def sinal(self, valor):
+    def sinal(self, valor)->int:
         if valor > 0.1:
             return 1
         elif valor < -0.1:
