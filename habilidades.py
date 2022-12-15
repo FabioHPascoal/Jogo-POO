@@ -3,7 +3,7 @@ from funcoes import Funcoes
 from configs import Configs
 
 class Espadada(pg.sprite.Sprite):
-    def __init__(self, posicao, direcao, image):
+    def __init__(self, posicao:list, direcao:list, image)->None:
         super().__init__()
         self.tempoSurgimento = pg.time.get_ticks()
         self.projetil = False
@@ -18,7 +18,7 @@ class Espadada(pg.sprite.Sprite):
         self.direcaoX = Funcoes.sinal(self, self.direcao[0])
         self.direcaoY = Funcoes.sinal(self, self.direcao[1])
  
-    def update(self):
+    def update(self)->None:
         self.rect.centerx += self.velocidade * self.direcaoX
         self.rect.centery += self.velocidade * self.direcaoY
         self.tempoExistente = pg.time.get_ticks() - self.tempoSurgimento
@@ -26,7 +26,7 @@ class Espadada(pg.sprite.Sprite):
             self.kill()
 
 class Flecha(pg.sprite.Sprite):
-    def __init__(self, posicao, direcao, image):
+    def __init__(self, posicao:list, direcao:list, image)->None:
         super().__init__()
         self.projetil = True
         self.direcao = direcao
@@ -39,12 +39,12 @@ class Flecha(pg.sprite.Sprite):
         self.direcaoX = Funcoes.sinal(self, self.direcao[0])
         self.direcaoY = Funcoes.sinal(self, self.direcao[1])
  
-    def update(self):
+    def update(self)->None:
         self.rect.centerx += self.velocidade * self.direcaoX
         self.rect.centery += self.velocidade * self.direcaoY
 
 class Facada(pg.sprite.Sprite):
-    def __init__(self, posicao, direcao, image):
+    def __init__(self, posicao:list, direcao:list, image)->None:
         super().__init__()
         self.tempoSurgimento = pg.time.get_ticks()
         self.projetil = True
@@ -59,7 +59,7 @@ class Facada(pg.sprite.Sprite):
         self.direcaoX = Funcoes.sinal(self, self.direcao[0])
         self.direcaoY = Funcoes.sinal(self, self.direcao[1])
  
-    def update(self):
+    def update(self)->None:
         self.rect.centerx += self.velocidade * self.direcaoX
         self.rect.centery += self.velocidade * self.direcaoY
         self.tempoExistente = pg.time.get_ticks() - self.tempoSurgimento
@@ -67,7 +67,7 @@ class Facada(pg.sprite.Sprite):
             self.kill()
 
 class Fireball(pg.sprite.Sprite):
-    def __init__(self, posicao, direcao, image):
+    def __init__(self, posicao:list, direcao:list, image)->None:
         super().__init__()
         self.projetil = True
         self.direcao = direcao
@@ -80,12 +80,12 @@ class Fireball(pg.sprite.Sprite):
         self.direcaoX = Funcoes.sinal(self, self.direcao[0])
         self.direcaoY = Funcoes.sinal(self, self.direcao[1])
  
-    def update(self):
+    def update(self)->None:
         self.rect.centerx += self.velocidade * self.direcaoX
         self.rect.centery += self.velocidade * self.direcaoY
 
 class Fire_floor(pg.sprite.Sprite):
-    def __init__(self, posicao, image):
+    def __init__(self, posicao:list, image)->None:
         super().__init__()
         self.tempoSurgimento = pg.time.get_ticks()
         self.projetil = False
@@ -95,7 +95,7 @@ class Fire_floor(pg.sprite.Sprite):
         self.rect = self.image.get_rect(center = self.posicao)
         self.mask = pg.mask.from_surface(self.image)
  
-    def update(self):
+    def update(self)->None:
         self.tempoExistente = pg.time.get_ticks() - self.tempoSurgimento
         if self.tempoExistente > self.duracao:
             self.kill()

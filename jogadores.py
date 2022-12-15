@@ -4,7 +4,7 @@ from configs import Configs
 from funcoes import Funcoes
 
 class Jogadores(pg.sprite.Sprite):
-    def __init__(self, posicao, classe):
+    def __init__(self, posicao:list, classe:str)->None:
         super().__init__()
         self.funcoes = Funcoes()
         
@@ -52,14 +52,14 @@ class Jogadores(pg.sprite.Sprite):
                 contadorFrames += 1
             self.sprites.append(lista_temporaria)
 
-    def sprite_selecionado(self, sheet, frame, escala):
+    def sprite_selecionado(self, sheet, frame:int, escala:int):
         imagem = pg.Surface((self.largura_sprite, self.altura_sprite)).convert_alpha()
         imagem.blit(sheet, (0, 0), (frame * self.largura_sprite, 0, self.largura_sprite, self.altura_sprite))
         imagem = pg.transform.scale(imagem, (self.largura_sprite * escala, self.altura_sprite * escala))
         imagem.set_colorkey((0, 0, 0, 0))
         return imagem
 
-    def atualizaVelocidade(self):
+    def atualizaVelocidade(self)->None:
         # Desaceleracao
         if self.Vadicional[0] != 0:
             self.Vadicional[0] -= Configs.DESACELERACAO * self.funcoes.sinal(self.Vadicional[0])
@@ -86,7 +86,7 @@ class Jogadores(pg.sprite.Sprite):
         self.posicaoBackup = self.rect.center
         self.velocidadeTotal = [self.velocidade[0] + self.Vadicional[0], self.velocidade[1] + self.Vadicional[1]]
 
-    def moverX(self):
+    def moverX(self)->None:
         if self.paralisar == False:
             if self.naAgua and self.velocidadeTotal[0] > 0:
                 self.rect.centerx += 2
@@ -95,7 +95,7 @@ class Jogadores(pg.sprite.Sprite):
             elif self.naAgua == False:
                 self.rect.centerx += self.velocidadeTotal[0]
 
-    def moverY(self):
+    def moverY(self)->None:
         if self.paralisar == False:
             if self.naAgua and self.velocidadeTotal[1] > 0:
                 self.rect.centery +=  2
@@ -106,7 +106,7 @@ class Jogadores(pg.sprite.Sprite):
             elif self.naAgua == False:
                 self.rect.centery += self.velocidadeTotal[1]
         
-    def ataqueBasico(self):
+    def ataqueBasico(self)->None:
         if self.stunnado == False:
             self.frame_atual = 0
             self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 1
@@ -116,7 +116,7 @@ class Jogadores(pg.sprite.Sprite):
             self.atacando = True
             self.estado = "atacando"
 
-    def habilidade(self):
+    def habilidade(self)->None:
         self.frame_atual = 0
         self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 2
        
@@ -125,7 +125,7 @@ class Jogadores(pg.sprite.Sprite):
         self.castando_skill = True
         self.estado = "castando_skill"
 
-    def desenha(self, tela, tempoAtual):
+    def desenha(self, tela, tempoAtual:int)->None:
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
                              self.rect.centery - Configs.subracao_rect[self.classe][1] * self.escala]
         tela.blit(self.sprites[self.animacao_atual][self.frame_atual], self.posicao_rect)
@@ -138,12 +138,12 @@ class Jogadores(pg.sprite.Sprite):
                 self.frame_atual = 0
             self.tempo_anterior = tempoAtual  
 
-    def verificarMorte(self):
+    def verificarMorte(self)->bool:
         if self.vida <= 0:
             self.morte = True
         return self.morte
 
-    def stun(self):
+    def stun(self)->None:
         if self.stunnado == True and pg.time.get_ticks()-self.inicioStun > self.delayDoStun:
             self.paralisar = True
             if pg.time.get_ticks() - self.inicioStun > 2000: #stunnado por 2s

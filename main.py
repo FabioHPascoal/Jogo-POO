@@ -1,6 +1,6 @@
 from jogo import JogoPOO
 
-def main(): 
+def main()->None: 
     jogo = JogoPOO()
     jogo.rodar()
 

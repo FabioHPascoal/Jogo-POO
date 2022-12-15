@@ -3,7 +3,7 @@ import sys
 from configs import*
 
 class cenaSelecaoPersonagem:
-    def __init__(self,tela):
+    def __init__(self,tela)->None:
         self.frameRate = pg.time.Clock()
         self.tela = tela
         self.superficie_tela = pg.display.get_surface()
@@ -48,21 +48,21 @@ class cenaSelecaoPersonagem:
             self.sprites_mago.append(self.sprite_selecionado(self.sprite_sheet_mago, contadorFrames, Configs.dimensoes_sprite['mago']))
             contadorFrames += 1
 
-    def sprite_selecionado(self, sheet, frame, dimensoes):
+    def sprite_selecionado(self, sheet, frame:int, dimensoes):
         imagem = pg.Surface(dimensoes).convert_alpha()
         imagem.blit(sheet, (0, 0), (frame * dimensoes[0], 0, dimensoes[0], dimensoes[1]))
         imagem = pg.transform.scale(imagem, (dimensoes[0] * 3, dimensoes[1] * 3))
         imagem.set_colorkey((0, 0, 0, 0))
         return imagem
 
-    def desenharPainel(self):
+    def desenharPainel(self)->None:
         self.tela.fill(Configs.BRANCO)
         self.tela.blit(self.painel,(0,0))
         self.exibirPersonagens()
 
         pg.display.flip()
 
-    def exibirPersonagens(self):
+    def exibirPersonagens(self)->None:
         infoJ2 = 'Classe: ' + str(self.selecionadoJ2)
         superficie_tela = pg.display.get_surface()
 
@@ -121,7 +121,7 @@ class cenaSelecaoPersonagem:
                 self.frame_atual = 0
             self.tempo_anterior = pg.time.get_ticks()
 
-    def escolherPersonagem(self):
+    def escolherPersonagem(self)->None:
         eventos = pg.event.get()
 
         if pg.key.get_pressed()[pg.K_ESCAPE]:
@@ -161,7 +161,7 @@ class cenaSelecaoPersonagem:
         self.selecionadoJ1 = self.listaPersonagens[self.i1]
         self.selecionadoJ2 = self.listaPersonagens[self.i2]
 
-    def rodar(self):
+    def rodar(self)->None:
         while(self.selecaoConcluida != [True, True]):
             self.desenharPainel()
             self.escolherPersonagem()

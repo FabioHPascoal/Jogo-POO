@@ -11,7 +11,7 @@ from cronometro import Cronometro
 from habilidades import*
 
 class CenaPrincipal:
-    def __init__(self, tela, classe1, classe2, tempoGastoSelecaoPersonagem):
+    def __init__(self, tela, classe1:str, classe2:str, tempoGastoSelecaoPersonagem:int)->None:
         self.tempoGastoSelecaoPersonagem = tempoGastoSelecaoPersonagem
         self.funcoes = Funcoes()
         self.frameRate = pg.time.Clock()
@@ -83,7 +83,7 @@ class CenaPrincipal:
         self.sprite_jogador1.add(self.jogador1)
         self.sprite_jogador2.add(self.jogador2)
 
-    def cria_mapa(self):
+    def cria_mapa(self)->None:
         for indice_linha, linha in enumerate(Configs.MAPA_FASE1):
             for indice_coluna, coluna in enumerate(linha):
                 x = indice_coluna * Configs.BLOCOS_TAMANHO
@@ -143,7 +143,7 @@ class CenaPrincipal:
                     self.jogador2 = Jogadores((x, y), self.classe2)
                     self.lista_objetos.append(self.jogador2)
 
-    def rodar(self):
+    def rodar(self)->None:
         while self.rodando:
             self.gera_minions()
             self.tratamento_eventos()
@@ -153,7 +153,7 @@ class CenaPrincipal:
             self.desenha()
             self.frameRate.tick(Configs.FRAME_RATE)
 
-    def tratamento_eventos(self):
+    def tratamento_eventos(self)->None:
         pg.event.get()
 
         if pg.key.get_pressed()[pg.K_ESCAPE]:
@@ -207,7 +207,7 @@ class CenaPrincipal:
         else:
             self.jogador2.vetorUnitario[1] = 0
 
-    def atualiza_estado(self):
+    def atualiza_estado(self)->None:
             
         P1 = self.jogador1.posicaoBackup
         P2 = self.jogador2.posicaoBackup
@@ -368,7 +368,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 1
             if pg.sprite.collide_mask(self.sprite_jogador1.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador1.tempoDoUltimoDano > self.jogador1.tempoDeImunidade:
-                    # self.jogador1.vida -= 1
+                    self.jogador1.vida -= 1
                     self.jogador1.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P1, Pminion, V1, Vminion, M1, Mminion)
@@ -384,7 +384,7 @@ class CenaPrincipal:
             # Colisão dos minions com o jogador 2
             if pg.sprite.collide_mask(self.sprite_jogador2.sprite, self.lista_minions[i]):
                 if pg.time.get_ticks() - self.jogador2.tempoDoUltimoDano > self.jogador2.tempoDeImunidade:
-                    # self.jogador2.vida -= 1
+                    self.jogador2.vida -= 1
                     self.jogador2.tempoDoUltimoDano = pg.time.get_ticks()
 
                 velocidades_adicionais = self.funcoes.velocidadeColisao(P2, Pminion, V2, Vminion, M2, Mminion)
@@ -487,8 +487,7 @@ class CenaPrincipal:
         self.jogador1.stun()
         self.jogador2.stun()
 
-    def desenha(self):
-        print(self.jogador1.stunnado,self.jogador2.stunnado)
+    def desenha(self)->None:
         self.sprites_visiveis.draw(self.superficie_tela)
 
         if self.classe1 in Configs.ataques_sao_desenhados:
@@ -517,7 +516,7 @@ class CenaPrincipal:
 
         pg.display.flip()
 
-    def gera_minions(self):
+    def gera_minions(self)->None:
         if len(self.sprites_minions) < 4 and pg.time.get_ticks() - self.tempoEntreSpawn > 5000:
             minion = Jogadores((randint(Configs.BLOCOS_TAMANHO,Configs.LARGURA_TELA-Configs.BLOCOS_TAMANHO),
             randint(Configs.BLOCOS_TAMANHO, Configs.ALTURA_TELA-Configs.BLOCOS_TAMANHO)), "goblin")
@@ -526,7 +525,7 @@ class CenaPrincipal:
             self.sprites_minions.add(minion)
             self.tempoEntreSpawn = pg.time.get_ticks()
 
-    def cria_ataques(self):
+    def cria_ataques(self)->None:
 
         if self.jogador1.atacando and self.jogador1.frame_atual in Configs.frames_de_ataque[self.classe1]:   
             direcao = self.jogador1.direcaoInicial
@@ -586,7 +585,7 @@ class CenaPrincipal:
             self.sprites_ataques_basicos.add(ataque)
             self.jogador2.atacando = False
 
-    def cria_habilidades(self):  
+    def cria_habilidades(self)->None:  
         if self.jogador1.castando_skill and self.jogador1.frame_atual in Configs.frames_de_habilidade[self.classe1]:
             if self.classe1 == "cavaleiro":
                 pass
@@ -595,7 +594,8 @@ class CenaPrincipal:
             if self.classe1 == "ladino":
                 pass
             if self.classe1 == "mago":
-                self.jogador1.vida += 1
+                if self.jogador1.vida < Configs.vitalidade[self.classe1]:
+                    self.jogador1.vida += 1
 
             self.jogador1.castando_skill = False
 
@@ -607,7 +607,8 @@ class CenaPrincipal:
             if self.classe2 == "ladino":
                 pass
             if self.classe2 == "mago":
-                self.jogador2.vida += 1
+                if self.jogador2.vida < Configs.vitalidade[self.classe2]:
+                    self.jogador2.vida += 1
 
             self.jogador2.castando_skill = False
 
@@ -641,7 +642,7 @@ class CenaPrincipal:
         
         return next_pos
 
-    def goblin_mode(mapa_pos, ponto, pos2):
+    def goblin_mode(mapa_pos:int, ponto, pos2)->None:
         cont = 1
         mapa_pos[ponto[0]][ponto[1]] = 1
         frontier = [[ponto[0], ponto[1]]]

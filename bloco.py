@@ -93,7 +93,7 @@ class Agua(pg.sprite.Sprite):
     #         self.tempo_anterior = pg.time.get_ticks()
 
 
-    def sprite_selecionado(self, sheet, frame, dimensoes):
+    def sprite_selecionado(self, sheet, frame:int, dimensoes:list):
         imagem = pg.Surface(dimensoes).convert_alpha()
         imagem.blit(sheet, (0, 0), (frame * dimensoes[0], 0, dimensoes[0], dimensoes[1]))
         imagem.set_colorkey((0, 0, 0, 0))
