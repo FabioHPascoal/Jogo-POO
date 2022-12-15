@@ -37,6 +37,7 @@ class Jogadores(pg.sprite.Sprite):
         self.frame_atual = 0
         self.sprites = []
         self.atacando = False
+        self.castando_skill = False
         self.livre = True
         self.estado = "livre"
         self.minionsDerrotados = 0
@@ -114,6 +115,15 @@ class Jogadores(pg.sprite.Sprite):
             self.livre = False
             self.atacando = True
             self.estado = "atacando"
+
+    def habilidade(self):
+        self.frame_atual = 0
+        self.animacao_atual = Configs.seleciona_animacoes[self.direcaoInicial[0], self.direcaoInicial[1]] + 2
+       
+        self.velocidade = [0, 0]
+        self.livre = False
+        self.castando_skill = True
+        self.estado = "castando_skill"
 
     def desenha(self, tela, tempoAtual):
         self.posicao_rect = [self.rect.centerx - Configs.subracao_rect[self.classe][0] * self.escala, 
