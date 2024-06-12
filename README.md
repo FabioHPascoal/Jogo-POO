@@ -1,4 +1,4 @@
-O seguinte projeto consiste em um trabalho acadêmico visando o conhecimento o metódo de programação orienta a objetos (POO). Para sua implementação, foi utilizada a biblioteca pygame, para a construção do jogo.
+O seguinte projeto consiste em um trabalho acadêmico visando o conhecimento o metódo de programação orientada a objetos (POO). Para sua implementação, foi utilizada a biblioteca pygame, para a construção do jogo.
 
 Para rodar o jogo, é necessário a instalação da biblioteca pygame e o pip. Ademais, utilizou o numpy, que pode ser instalado pelo terminal do VSCODE com a seguinte linha:
 
